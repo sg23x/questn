@@ -1,11 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:psych/UI/waitingToStart/structure.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class NameInputPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String playerName;
     void submitName(String name) {
+      Firestore.instance.collection("test").add(
+        {
+          "playerName": playerName,
+        },
+      );
+
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -35,9 +42,11 @@ class NameInputPage extends StatelessWidget {
               "Go!",
             ),
             onPressed: () {
-              submitName(
-                playerName,
-              );
+              playerName != null
+                  ? submitName(
+                      playerName,
+                    )
+                  : null;
             },
           ),
           SizedBox(
