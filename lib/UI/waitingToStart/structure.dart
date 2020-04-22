@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:psych/UI/waitingToStart/playerCard.dart';
 
 class WaitingToStart extends StatelessWidget {
   WaitingToStart({
@@ -16,22 +17,34 @@ class WaitingToStart extends StatelessWidget {
           return Scaffold();
         }
         return Scaffold(
-            body: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Text(
-                  'game id : $gameID',
-                ),
-                Text(
-                  'name : $playerName', // listview for player names to be added
-                ),
-              ],
+          appBar: AppBar(
+            title: Text(
+              "Game ID: $gameID",
             ),
-          ],
-        ));
+            centerTitle: true,
+          ),
+          body: Column(
+            children: <Widget>[
+              Expanded(
+                child: ListView.builder(
+                  itemBuilder: (context, i) {
+                    return PlayerWaitingCard(
+                      name: snapshot.data['players'][i],
+                    );
+                  },
+                  shrinkWrap: true,
+                  itemCount: snapshot.data['players'].length,
+                ),
+              ),
+              RaisedButton(
+                child: Text(
+                  "Start Game",
+                ),
+                onPressed: () {},
+              ),
+            ],
+          ),
+        );
       },
       stream:
           Firestore.instance.collection('test').document(gameID).snapshots(),
