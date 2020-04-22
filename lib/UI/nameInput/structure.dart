@@ -1,23 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:psych/UI/gameSelection/structure.dart';
 import 'package:psych/UI/waitingToStart/structure.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 class NameInputPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String playerName;
-    void submitName(String name) {
-      Firestore.instance.collection("test").add(
-        {
-          "playerName": playerName,
-        },
-      );
 
+    void submitName() async {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (BuildContext context) => WaitingToStart(
-            playerName: name,
+          builder: (BuildContext context) => GameSelection(
+            playerName: playerName,
           ),
         ),
       );
@@ -42,11 +37,7 @@ class NameInputPage extends StatelessWidget {
               "Go!",
             ),
             onPressed: () {
-              playerName != null
-                  ? submitName(
-                      playerName,
-                    )
-                  : null;
+              playerName != null ? submitName() : null;
             },
           ),
           SizedBox(
