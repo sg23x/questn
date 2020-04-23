@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:psych/UI/waitingToStart/structure.dart';
+import 'dart:math';
 
 class JoinGameButton extends StatelessWidget {
   JoinGameButton({
@@ -21,6 +22,15 @@ class JoinGameButton extends StatelessWidget {
                       .collection('test')
                       .document(gameID)
                       .get();
+                  String generateUserCode() {
+                    Random rnd;
+                    int min = 1000;
+                    int max = 9999;
+                    rnd = new Random();
+                    var r = min + rnd.nextInt(max - min);
+                    return r.toString();
+                  }
+
                   if (snap.exists) {
                     Firestore.instance
                         .collection('test')
@@ -28,7 +38,12 @@ class JoinGameButton extends StatelessWidget {
                         .updateData(
                       {
                         'players': FieldValue.arrayUnion(
-                          [playerName],
+                          [
+                            {
+                              'userID': generateUserCode(),
+                              'name': playerName,
+                            },
+                          ],
                         ),
                       },
                     );
@@ -36,7 +51,6 @@ class JoinGameButton extends StatelessWidget {
                       context,
                       MaterialPageRoute(
                         builder: (BuildContext context) => WaitingToStart(
-                          playerName: playerName,
                           gameID: gameID,
                         ),
                       ),

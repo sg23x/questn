@@ -22,21 +22,37 @@ class StartAGameButton extends StatelessWidget {
 
     String uniqueCode = generateUniqueID();
 
+    String generateUserCode() {
+      Random rnd;
+      int min = 1000;
+      int max = 9999;
+      rnd = new Random();
+      var r = min + rnd.nextInt(max - min);
+      return r.toString();
+    }
+
     void startGame() {
-      players.add(playerName);
+      players.add(
+        {
+          'userID': generateUserCode(),
+          'name': playerName,
+        },
+      );
       Navigator.push(
         context,
         MaterialPageRoute(
           builder: (BuildContext context) => WaitingToStart(
-            playerName: playerName,
+
             gameID: uniqueCode,
           ),
         ),
       );
 
-      Firestore.instance.document("test/" + uniqueCode).setData({
-        "players": players,
-      });
+      Firestore.instance.document("test/" + uniqueCode).setData(
+        {
+          "players": players,
+        },
+      );
     }
 
     return RaisedButton(

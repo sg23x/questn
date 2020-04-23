@@ -4,10 +4,9 @@ import 'package:psych/UI/waitingToStart/playerCard.dart';
 
 class WaitingToStart extends StatelessWidget {
   WaitingToStart({
-    @required this.playerName,
     @required this.gameID,
   });
-  final String playerName;
+
   final String gameID;
   @override
   Widget build(BuildContext context) {
@@ -29,7 +28,7 @@ class WaitingToStart extends StatelessWidget {
                 child: ListView.builder(
                   itemBuilder: (context, i) {
                     return PlayerWaitingCard(
-                      name: snapshot.data['players'][i],
+                      name: snapshot.data['players'][i]['name'],
                     );
                   },
                   shrinkWrap: true,
