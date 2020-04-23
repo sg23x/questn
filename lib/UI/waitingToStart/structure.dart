@@ -1,13 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:psych/UI/waitingToStart/playerCard.dart';
+import 'package:psych/UI/waitingToStart/startTheGameButton.dart';
 
 class WaitingToStart extends StatelessWidget {
   WaitingToStart({
     @required this.gameID,
+    @required this.playerID,
   });
 
   final String gameID;
+  final String playerID;
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
@@ -35,12 +38,9 @@ class WaitingToStart extends StatelessWidget {
                   itemCount: snapshot.data['players'].length,
                 ),
               ),
-              RaisedButton(
-                child: Text(
-                  "Start Game",
-                ),
-                onPressed: () {},
-              ),
+              playerID == snapshot.data['players'][0]['userID']
+                  ? StartTheGameButton()
+                  : SizedBox(),
             ],
           ),
         );

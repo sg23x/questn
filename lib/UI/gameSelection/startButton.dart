@@ -31,19 +31,22 @@ class StartAGameButton extends StatelessWidget {
       return r.toString();
     }
 
+    final String playerID = generateUserCode();
+
     void startGame() {
       players.add(
         {
-          'userID': generateUserCode(),
+          'userID': playerID,
           'name': playerName,
+
         },
       );
       Navigator.push(
         context,
         MaterialPageRoute(
           builder: (BuildContext context) => WaitingToStart(
-
             gameID: uniqueCode,
+            playerID: playerID,
           ),
         ),
       );

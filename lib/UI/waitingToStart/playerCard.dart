@@ -5,6 +5,7 @@ class PlayerWaitingCard extends StatelessWidget {
     @required this.name,
   });
   final String name;
+
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.all(

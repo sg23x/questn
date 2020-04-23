@@ -9,6 +9,17 @@ class JoinGameButton extends StatelessWidget {
   });
   final String playerName;
   Widget build(BuildContext context) {
+    String generateUserCode() {
+      Random rnd;
+      int min = 1000;
+      int max = 9999;
+      rnd = new Random();
+      var r = min + rnd.nextInt(max - min);
+      return r.toString();
+    }
+
+    final String playerID = generateUserCode();
+
     void joinGame() {
       showDialog(
         context: context,
@@ -22,14 +33,6 @@ class JoinGameButton extends StatelessWidget {
                       .collection('test')
                       .document(gameID)
                       .get();
-                  String generateUserCode() {
-                    Random rnd;
-                    int min = 1000;
-                    int max = 9999;
-                    rnd = new Random();
-                    var r = min + rnd.nextInt(max - min);
-                    return r.toString();
-                  }
 
                   if (snap.exists) {
                     Firestore.instance
@@ -40,7 +43,7 @@ class JoinGameButton extends StatelessWidget {
                         'players': FieldValue.arrayUnion(
                           [
                             {
-                              'userID': generateUserCode(),
+                              'userID': playerID,
                               'name': playerName,
                             },
                           ],
@@ -52,6 +55,7 @@ class JoinGameButton extends StatelessWidget {
                       MaterialPageRoute(
                         builder: (BuildContext context) => WaitingToStart(
                           gameID: gameID,
+                          playerID: playerID,
                         ),
                       ),
                     );
