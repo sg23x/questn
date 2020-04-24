@@ -39,14 +39,16 @@ class WaitingToStart extends StatelessWidget {
                 ),
               ),
               playerID == snapshot.data['players'][0]['userID']
-                  ? StartTheGameButton()
+                  ? StartTheGameButton(
+                      gameID: gameID,
+                    )
                   : SizedBox(),
             ],
           ),
         );
       },
       stream:
-          Firestore.instance.collection('test').document(gameID).snapshots(),
+          Firestore.instance.collection('roomDetails').document(gameID).snapshots(),
     );
   }
 }

@@ -24,8 +24,8 @@ class StartAGameButton extends StatelessWidget {
 
     String generateUserCode() {
       Random rnd;
-      int min = 1000;
-      int max = 9999;
+      int min = 100000;
+      int max = 999999;
       rnd = new Random();
       var r = min + rnd.nextInt(max - min);
       return r.toString();
@@ -51,7 +51,7 @@ class StartAGameButton extends StatelessWidget {
         ),
       );
 
-      Firestore.instance.document("test/" + uniqueCode).setData(
+      Firestore.instance.document("roomDetails/" + uniqueCode).setData(
         {
           "players": players,
         },

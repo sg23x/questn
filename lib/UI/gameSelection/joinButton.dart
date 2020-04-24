@@ -11,9 +11,9 @@ class JoinGameButton extends StatelessWidget {
   Widget build(BuildContext context) {
     String generateUserCode() {
       Random rnd;
-      int min = 1000;
-      int max = 9999;
-      rnd = new Random();
+      int min = 100000;
+      int max = 999999;
+      rnd = new Random(); 
       var r = min + rnd.nextInt(max - min);
       return r.toString();
     }
@@ -30,13 +30,13 @@ class JoinGameButton extends StatelessWidget {
               FlatButton(
                 onPressed: () async {
                   final snap = await Firestore.instance
-                      .collection('test')
+                      .collection('roomDetails')
                       .document(gameID)
                       .get();
 
                   if (snap.exists) {
                     Firestore.instance
-                        .collection('test')
+                        .collection('roomDetails')
                         .document(gameID)
                         .updateData(
                       {
