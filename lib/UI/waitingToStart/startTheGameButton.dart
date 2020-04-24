@@ -5,13 +5,19 @@ import 'package:psych/UI/gameStarted/structure.dart';
 class StartTheGameButton extends StatelessWidget {
   StartTheGameButton({
     @required this.gameID,
+    @required this.playerID,
   });
   final String gameID;
+  final String playerID;
   List playerNames = [];
   @override
   Widget build(BuildContext context) {
-    void fetchPlayerNames() async {
-      await Firestore.instance.collection('roomDetails').document(gameID).get().then(
+    void startGame() async {
+      await Firestore.instance
+          .collection('roomDetails')
+          .document(gameID)
+          .get()
+          .then(
         (val) {
           for (int i = 0; i < val.data['players'].length; i++) {
             playerNames.add(
@@ -25,6 +31,22 @@ class StartTheGameButton extends StatelessWidget {
           'playerNames': playerNames,
         },
       );
+      Firestore.instance
+          .collection('roomDetails')
+          .document(gameID)
+          .collection('playerStatus')
+          .getDocuments()
+          .then(
+        (snapshot) {
+          for (DocumentSnapshot ds in snapshot.documents) {
+            ds.reference.setData(
+              {
+                'isReady': true,
+              },
+            );
+          }
+        },
+      );
     }
 
     return RaisedButton(
@@ -32,14 +54,14 @@ class StartTheGameButton extends StatelessWidget {
         "Start Game",
       ),
       onPressed: () {
-        fetchPlayerNames();
+        startGame();
 
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (BuildContext context) => GameStart(),
-          ),
-        );
+        // Navigator.push(
+        //   context,
+        //   MaterialPageRoute(
+        //     builder: (BuildContext context) => GameStart(),
+        //   ),
+        // );
       },
     );
   }

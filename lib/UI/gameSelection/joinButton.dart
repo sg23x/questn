@@ -13,7 +13,7 @@ class JoinGameButton extends StatelessWidget {
       Random rnd;
       int min = 100000;
       int max = 999999;
-      rnd = new Random(); 
+      rnd = new Random();
       var r = min + rnd.nextInt(max - min);
       return r.toString();
     }
@@ -48,6 +48,16 @@ class JoinGameButton extends StatelessWidget {
                             },
                           ],
                         ),
+                      },
+                    );
+                    Firestore.instance
+                        .collection('roomDetails')
+                        .document(gameID)
+                        .collection('playerStatus')
+                        .document(playerID)
+                        .setData(
+                      {
+                        'isReady': false,
                       },
                     );
                     Navigator.push(

@@ -38,7 +38,23 @@ class StartAGameButton extends StatelessWidget {
         {
           'userID': playerID,
           'name': playerName,
+        },
+      );
 
+      Firestore.instance.collection("roomDetails").document(uniqueCode).setData(
+        {
+          "players": players,
+        },
+      );
+
+      Firestore.instance
+          .collection('roomDetails')
+          .document(uniqueCode)
+          .collection('playerStatus')
+          .document(playerID)
+          .setData(
+        {
+          'isReady': false,
         },
       );
       Navigator.push(
@@ -49,12 +65,6 @@ class StartAGameButton extends StatelessWidget {
             playerID: playerID,
           ),
         ),
-      );
-
-      Firestore.instance.document("roomDetails/" + uniqueCode).setData(
-        {
-          "players": players,
-        },
       );
     }
 

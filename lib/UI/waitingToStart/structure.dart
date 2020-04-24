@@ -41,6 +41,7 @@ class WaitingToStart extends StatelessWidget {
               playerID == snapshot.data['players'][0]['userID']
                   ? StartTheGameButton(
                       gameID: gameID,
+                      playerID: playerID,
                     )
                   : SizedBox(),
             ],
