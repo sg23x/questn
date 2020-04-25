@@ -98,7 +98,7 @@ class JoinGameButton extends StatelessWidget {
               )
             ],
             content: Container(
-              height: MediaQuery.of(context).size.height * 0.1,
+              height: MediaQuery.of(context).size.height * 0.12,
               child: Column(
                 children: <Widget>[
                   Text(

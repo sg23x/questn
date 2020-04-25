@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:psych/UI/gameStarted/structure.dart';
 
 class StartTheGameButton extends StatelessWidget {
   StartTheGameButton({
@@ -9,7 +8,9 @@ class StartTheGameButton extends StatelessWidget {
   });
   final String gameID;
   final String playerID;
+
   List playerNames = [];
+
   @override
   Widget build(BuildContext context) {
     void startGame() async {
@@ -55,13 +56,6 @@ class StartTheGameButton extends StatelessWidget {
       ),
       onPressed: () {
         startGame();
-
-        // Navigator.push(
-        //   context,
-        //   MaterialPageRoute(
-        //     builder: (BuildContext context) => GameStart(),
-        //   ),
-        // );
       },
     );
   }
