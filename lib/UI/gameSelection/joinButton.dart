@@ -48,6 +48,9 @@ class JoinGameButton extends StatelessWidget {
                             },
                           ],
                         ),
+                        'playerNames': FieldValue.arrayUnion(
+                          [playerName],
+                        ),
                       },
                     );
                     Firestore.instance

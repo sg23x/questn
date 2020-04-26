@@ -44,6 +44,7 @@ class StartAGameButton extends StatelessWidget {
       Firestore.instance.collection("roomDetails").document(uniqueCode).setData(
         {
           "players": players,
+          "playerNames": [playerName],
         },
       );
 

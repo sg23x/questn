@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'dart:math';
 
 class StartTheGameButton extends StatelessWidget {
   StartTheGameButton({
@@ -13,25 +14,16 @@ class StartTheGameButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    generateRandomIndex(int len) {
+      Random rnd;
+      int min = 0;
+      int max = len;
+      rnd = new Random();
+      var r = min + rnd.nextInt(max - min);
+      return r;
+    }
+
     void startGame() async {
-      await Firestore.instance
-          .collection('roomDetails')
-          .document(gameID)
-          .get()
-          .then(
-        (val) {
-          for (int i = 0; i < val.data['players'].length; i++) {
-            playerNames.add(
-              val.data['players'][i]['name'],
-            );
-          }
-        },
-      );
-      Firestore.instance.collection('roomDetails').document(gameID).updateData(
-        {
-          'playerNames': playerNames,
-        },
-      );
       Firestore.instance
           .collection('roomDetails')
           .document(gameID)
@@ -50,13 +42,45 @@ class StartTheGameButton extends StatelessWidget {
       );
     }
 
-    return RaisedButton(
-      child: Text(
-        "Start Game",
-      ),
-      onPressed: () {
-        startGame();
+    return StreamBuilder(
+      builder: (context, snap) {
+        return StreamBuilder(
+          builder: (context, snapshot) {
+            return RaisedButton(
+              child: Text(
+                "Start Game",
+              ),
+              onPressed: () {
+                startGame();
+
+                String question = snap
+                    .data
+                    .documents[generateRandomIndex(
+                  snap.data.documents.length,
+                )]
+                    .data['question']
+                    .replaceAll(
+                        'xyz',
+                        snapshot.data['playerNames'][generateRandomIndex(
+                            snapshot.data['playerNames'].length)]);
+                Firestore.instance
+                    .collection('roomDetails')
+                    .document(gameID)
+                    .updateData(
+                  {
+                    'currentQuestion': question,
+                  },
+                );
+              },
+            );
+          },
+          stream: Firestore.instance
+              .collection('roomDetails')
+              .document(gameID)
+              .snapshots(),
+        );
       },
+      stream: Firestore.instance.collection('questions').snapshots(),
     );
   }
 }
