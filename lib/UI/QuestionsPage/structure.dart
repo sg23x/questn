@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:psych/UI/QuestionsPage/questionCard.dart';
-import 'dart:math';
 
 import 'package:psych/UI/waitForSubmissions/structure.dart';
 
@@ -24,6 +23,7 @@ class QuestionsPage extends StatelessWidget {
           .setData(
         {
           'response': response,
+          'hasSubmitted': true,
         },
       );
     }
@@ -58,7 +58,7 @@ class QuestionsPage extends StatelessWidget {
               sendResponse(
                 response,
               );
-              Navigator.push(
+              Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
                   builder: (BuildContext context) => WaitForSubmissions(

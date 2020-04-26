@@ -60,9 +60,12 @@ class StartTheGameButton extends StatelessWidget {
                 )]
                     .data['question']
                     .replaceAll(
-                        'xyz',
-                        snapshot.data['playerNames'][generateRandomIndex(
-                            snapshot.data['playerNames'].length)]);
+                  'xyz',
+                  snapshot.data.documents[generateRandomIndex(
+                    snapshot.data.documents.length,
+                  )]['name'],
+                );
+
                 Firestore.instance
                     .collection('roomDetails')
                     .document(gameID)
@@ -77,6 +80,7 @@ class StartTheGameButton extends StatelessWidget {
           stream: Firestore.instance
               .collection('roomDetails')
               .document(gameID)
+              .collection('users')
               .snapshots(),
         );
       },

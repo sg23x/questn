@@ -38,19 +38,14 @@ class JoinGameButton extends StatelessWidget {
                     Firestore.instance
                         .collection('roomDetails')
                         .document(gameID)
-                        .updateData(
+                        .collection('users')
+                        .document(
+                          Timestamp.now().millisecondsSinceEpoch.toString(),
+                        )
+                        .setData(
                       {
-                        'players': FieldValue.arrayUnion(
-                          [
-                            {
-                              'userID': playerID,
-                              'name': playerName,
-                            },
-                          ],
-                        ),
-                        'playerNames': FieldValue.arrayUnion(
-                          [playerName],
-                        ),
+                        'name': playerName,
+                        'userID': playerID,
                       },
                     );
                     Firestore.instance
@@ -63,7 +58,7 @@ class JoinGameButton extends StatelessWidget {
                         'isReady': false,
                       },
                     );
-                    Navigator.push(
+                    Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
                         builder: (BuildContext context) => WaitingToStart(

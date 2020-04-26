@@ -31,10 +31,11 @@ class WaitingToStart extends StatelessWidget {
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
-                    builder: (BuildContext context) => QuestionsPage(
-                          playerID: playerID,
-                          gameID: gameID,
-                        )),
+                  builder: (BuildContext context) => QuestionsPage(
+                    playerID: playerID,
+                    gameID: gameID,
+                  ),
+                ),
               );
             },
           );
@@ -54,6 +55,7 @@ class WaitingToStart extends StatelessWidget {
             if (!snapshot.hasData) {
               return Scaffold();
             }
+
             return Scaffold(
               appBar: AppBar(
                 title: Text(
@@ -67,14 +69,14 @@ class WaitingToStart extends StatelessWidget {
                     child: ListView.builder(
                       itemBuilder: (context, i) {
                         return PlayerWaitingCard(
-                          name: snapshot.data['players'][i]['name'],
+                          name: snapshot.data.documents[i]['name'],
                         );
                       },
                       shrinkWrap: true,
-                      itemCount: snapshot.data['players'].length,
+                      itemCount: snapshot.data.documents.length,
                     ),
                   ),
-                  playerID == snapshot.data['players'][0]['userID']
+                  playerID == snapshot.data.documents[0]['userID']
                       ? StartTheGameButton(
                           gameID: gameID,
                           playerID: playerID,
@@ -87,6 +89,7 @@ class WaitingToStart extends StatelessWidget {
           stream: Firestore.instance
               .collection('roomDetails')
               .document(gameID)
+              .collection('users')
               .snapshots(),
         );
       },

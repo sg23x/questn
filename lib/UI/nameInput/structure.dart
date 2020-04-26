@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:psych/UI/gameSelection/structure.dart';
-import 'package:psych/UI/waitingToStart/structure.dart';
 
 class NameInputPage extends StatelessWidget {
   @override

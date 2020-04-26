@@ -8,7 +8,6 @@ class StartAGameButton extends StatelessWidget {
     @required this.playerName,
   });
   final String playerName;
-  List players = [];
 
   Widget build(BuildContext context) {
     String generateUniqueID() {
@@ -20,7 +19,7 @@ class StartAGameButton extends StatelessWidget {
       return r.toString();
     }
 
-    String uniqueCode = generateUniqueID();
+    String gameID = generateUniqueID();
 
     String generateUserCode() {
       Random rnd;
@@ -33,24 +32,32 @@ class StartAGameButton extends StatelessWidget {
 
     final String playerID = generateUserCode();
 
-    void startGame() {
-      players.add(
-        {
-          'userID': playerID,
-          'name': playerName,
-        },
-      );
+    void startGame() async {
+     
 
-      Firestore.instance.collection("roomDetails").document(uniqueCode).setData(
-        {
-          "players": players,
-          "playerNames": [playerName],
-        },
-      );
-
-      Firestore.instance
+      await Firestore.instance
           .collection('roomDetails')
-          .document(uniqueCode)
+          .document(gameID)
+          .collection('users')
+          .document(
+            Timestamp.now().millisecondsSinceEpoch.toString(),
+          )
+          .setData(
+        {
+          'name': playerName,
+          'userID': playerID,
+        },
+      );
+
+      Firestore.instance.collection('roomDetails').document(gameID).setData(
+        {
+          'lorem': 'ipsum',
+        },
+      );
+
+      await Firestore.instance
+          .collection('roomDetails')
+          .document(gameID)
           .collection('playerStatus')
           .document(playerID)
           .setData(
@@ -58,11 +65,11 @@ class StartAGameButton extends StatelessWidget {
           'isReady': false,
         },
       );
-      Navigator.push(
+      Navigator.pushReplacement(
         context,
         MaterialPageRoute(
           builder: (BuildContext context) => WaitingToStart(
-            gameID: uniqueCode,
+            gameID: gameID,
             playerID: playerID,
           ),
         ),
