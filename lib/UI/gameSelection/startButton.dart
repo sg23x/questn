@@ -33,8 +33,6 @@ class StartAGameButton extends StatelessWidget {
     final String playerID = generateUserCode();
 
     void startGame() async {
-     
-
       await Firestore.instance
           .collection('roomDetails')
           .document(gameID)
@@ -51,7 +49,19 @@ class StartAGameButton extends StatelessWidget {
 
       Firestore.instance.collection('roomDetails').document(gameID).setData(
         {
-          'lorem': 'ipsum',
+          'currentQuestion': '',
+        },
+      );
+
+      await Firestore.instance
+          .collection('roomDetails')
+          .document(gameID)
+          .collection('responses')
+          .document(playerID)
+          .setData(
+        {
+          'hasSubmitted': false,
+          'response': '',
         },
       );
 

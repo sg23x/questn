@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:psych/UI/responseSelection/structure.dart';
 import 'package:psych/UI/waitForSubmissions/waitingForSubmissionPlayerCard.dart';
 
 class WaitForSubmissions extends StatelessWidget {
@@ -19,9 +20,25 @@ class WaitForSubmissions extends StatelessWidget {
                 return Scaffold();
               }
 
-              List l1 = [];
-              for (int k = 0; k < snap.data.documents.length; k++) {
-                l1.add(snap.data.documents[k].documentID);
+              if (snap.data.documents
+                      .where((x) => x['hasSubmitted'] == true)
+                      .toList()
+                      .length ==
+                  snapshot.data.documents.length) {
+                WidgetsBinding.instance.addPostFrameCallback(
+                  (_) async {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (BuildContext context) =>
+                            ResponseSelectionPage(
+                          playerID: playerID,
+                          gameID: gameID,
+                        ),
+                      ),
+                    );
+                  },
+                );
               }
 
               return Scaffold(
@@ -33,9 +50,12 @@ class WaitForSubmissions extends StatelessWidget {
                         itemBuilder: (context, i) {
                           return WaitingForSubmissionPlayerCard(
                             name: snapshot.data.documents[i]['name'],
-                            hasSubmitted: l1.contains(
-                              snapshot.data.documents[i]['userID'],
-                            ),
+                            hasSubmitted: snap.data.documents
+                                .where((no) =>
+                                    no.documentID ==
+                                    snapshot.data.documents[i]['userID'])
+                                .toList()[0]
+                                .data['hasSubmitted'],
                           );
                         },
                         shrinkWrap: true,

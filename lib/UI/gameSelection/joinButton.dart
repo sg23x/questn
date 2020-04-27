@@ -58,6 +58,19 @@ class JoinGameButton extends StatelessWidget {
                         'isReady': false,
                       },
                     );
+
+                    Firestore.instance
+                        .collection('roomDetails')
+                        .document(gameID)
+                        .collection('responses')
+                        .document(playerID)
+                        .setData(
+                      {
+                        'hasSubmitted': false,
+                        'response': '',
+                      },
+                    );
+
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
