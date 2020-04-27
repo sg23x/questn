@@ -20,7 +20,7 @@ class QuestionsPage extends StatelessWidget {
           .document(gameID)
           .collection('responses')
           .document(playerID)
-          .setData(
+          .updateData(
         {
           'response': response,
           'hasSubmitted': true,
