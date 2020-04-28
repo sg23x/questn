@@ -68,6 +68,18 @@ class StartAGameButton extends StatelessWidget {
       await Firestore.instance
           .collection('roomDetails')
           .document(gameID)
+          .collection('selections')
+          .document(playerID)
+          .setData(
+        {
+          'hasSelected': false,
+          'selection': '',
+        },
+      );
+
+      await Firestore.instance
+          .collection('roomDetails')
+          .document(gameID)
           .collection('playerStatus')
           .document(playerID)
           .setData(

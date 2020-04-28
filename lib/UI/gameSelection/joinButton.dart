@@ -62,6 +62,18 @@ class JoinGameButton extends StatelessWidget {
                     Firestore.instance
                         .collection('roomDetails')
                         .document(gameID)
+                        .collection('selections')
+                        .document(playerID)
+                        .setData(
+                      {
+                        'hasSelected': false,
+                        'selection': '',
+                      },
+                    );
+
+                    Firestore.instance
+                        .collection('roomDetails')
+                        .document(gameID)
                         .collection('responses')
                         .document(playerID)
                         .setData(

@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:psych/UI/questionsPage/questionCard.dart';
 import 'package:psych/UI/responseSelection/responseCard.dart';
+import 'package:psych/UI/waitForSelections/structure.dart';
 
 class ResponseSelectionPage extends StatelessWidget {
   ResponseSelectionPage({
@@ -37,8 +38,67 @@ class ResponseSelectionPage extends StatelessWidget {
                   shrinkWrap: true,
                   itemCount: snap.data.documents.length,
                   itemBuilder: (context, i) {
-                    return ResponseCard(
-                      response: snap.data.documents[i]['response'],
+                    return StreamBuilder(
+                      builder: (context, innersnap) {
+                        return GestureDetector(
+                          onTap: () {
+                            if (playerID != snap.data.documents[i].documentID) {
+                              Firestore.instance
+                                  .collection('roomDetails')
+                                  .document(gameID)
+                                  .collection('selections')
+                                  .document(playerID)
+                                  .updateData(
+                                {
+                                  'selection':
+                                      snap.data.documents[i].documentID,
+                                  'hasSelected': true,
+                                },
+                              );
+
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (BuildContext context) =>
+                                      WaitForSelectionsPage(
+                                    gameID: gameID,
+                                    playerID: playerID,
+                                  ),
+                                ),
+                              );
+                            } else {
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    actions: <Widget>[
+                                      FlatButton(
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        },
+                                        child: Text(
+                                          "OK",
+                                        ),
+                                      )
+                                    ],
+                                    content: Text(
+                                      "You can't choose your own answer!",
+                                    ),
+                                  );
+                                },
+                              );
+                            }
+                          },
+                          child: ResponseCard(
+                            response: snap.data.documents[i]['response'],
+                          ),
+                        );
+                      },
+                      stream: Firestore.instance
+                          .collection('roomDetails')
+                          .document(gameID)
+                          .collection('users')
+                          .snapshots(),
                     );
                   },
                 ),
