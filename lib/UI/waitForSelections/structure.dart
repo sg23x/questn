@@ -13,9 +13,7 @@ class WaitForSelectionsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('waitForSelections'),
-      ),
+      appBar: AppBar(),
       body: StreamBuilder(
         builder: (context, snap) {
           if (!snap.hasData) {
@@ -30,20 +28,97 @@ class WaitForSelectionsPage extends StatelessWidget {
                   itemBuilder: (context, i) {
                     return StreamBuilder(
                       builder: (context, innersnap) {
+                        // final int sc = innersnap.data.documents
+                        //         .where((b) =>
+                        //             b['userID'] ==
+                        //             snap.data.documents[i].documentID)
+                        //         .toList()[0]['score'] +
+                        //     snap.data.documents
+                        //         .where(
+                        //           (x) =>
+                        //               x['selection'] ==
+                        //               snap.data.documents[i].documentID,
+                        //         )
+                        //         .toList()
+                        //         .length;
                         if (snap.data.documents
                                 .where((x) => x['hasSelected'] == true)
                                 .toList()
                                 .length ==
                             innersnap.data.documents.length) {
-                          WidgetsBinding.instance.addPostFrameCallback(
-                            (_) async {
-                              Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (BuildContext context) =>
-                                      WaitForReady(),
+                          if (innersnap.data.documents
+                                  .where((b) =>
+                                      b['userID'] ==
+                                      snap.data.documents[i].documentID)
+                                  .toList()[0]['score'] !=
+                              innersnap.data.documents
+                                      .where((b) =>
+                                          b['userID'] ==
+                                          snap.data.documents[i].documentID)
+                                      .toList()[0]['score'] +
+                                  snap.data.documents
+                                      .where(
+                                        (x) =>
+                                            x['selection'] ==
+                                            snap.data.documents[i].documentID,
+                                      )
+                                      .toList()
+                                      .length) {
+                            Firestore.instance
+                                .collection('roomDetails')
+                                .document(gameID)
+                                .collection('users')
+                                .document(innersnap.data.documents
+                                    .where((x) =>
+                                        x['userID'] ==
+                                        snap.data.documents[i].documentID)
+                                    .toList()[0]
+                                    .documentID)
+                                .updateData(
+                              {
+                                'score': FieldValue.increment(
+                                  snap.data.documents
+                                      .where(
+                                        (x) =>
+                                            x['selection'] ==
+                                            snap.data.documents[i].documentID,
+                                      )
+                                      .toList()
+                                      .length,
                                 ),
-                              );
+                              },
+                            );
+                          }
+
+                          WidgetsBinding.instance.addPostFrameCallback(
+                            (_) {
+                              // print(
+                              //   innersnap.data.documents
+                              //           .where((b) =>
+                              //               b['userID'] ==
+                              //               snap.data.documents[i].documentID)
+                              //           .toList()[0]['score'] +
+                              //       snap.data.documents
+                              //           .where(
+                              //             (x) =>
+                              //                 x['selection'] ==
+                              //                 snap.data.documents[i].documentID,
+                              //           )
+                              //           .toList()
+                              //           .length
+                              //           .toString(),
+                              // );
+
+                              // Navigator.pushReplacement(
+                              //   context,
+                              //   MaterialPageRoute(
+                              //     builder: (BuildContext context) =>
+                              //         WaitForReady(
+                              //       gameID: gameID,
+                              //       playerID: playerID,
+                              //     ),
+                              //   ),
+                              // );
                             },
                           );
                         }
