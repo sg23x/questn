@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:psych/UI/QuestionsPage/structure.dart';
+import 'dart:math';
 
 class WaitForReady extends StatelessWidget {
   WaitForReady({
@@ -11,6 +12,15 @@ class WaitForReady extends StatelessWidget {
   final String playerID;
   @override
   Widget build(BuildContext context) {
+    generateRandomIndex(int len) {
+      Random rnd;
+      int min = 0;
+      int max = len;
+      rnd = new Random();
+      var r = min + rnd.nextInt(max - min);
+      return r;
+    }
+
     return Scaffold(
       appBar: AppBar(),
       body: ListView(
@@ -85,7 +95,7 @@ class WaitForReady extends StatelessWidget {
                 .snapshots(),
           ),
           SizedBox(
-            height: 50,
+            height: 30,
           ),
           Row(
             children: <Widget>[
@@ -110,6 +120,7 @@ class WaitForReady extends StatelessWidget {
                   }
 
                   return ListView.builder(
+                    physics: NeverScrollableScrollPhysics(),
                     itemBuilder: (context, i) {
                       return NumberOfSelectionsCard(
                         response: respsnap.data.documents[i]['response'],
@@ -162,24 +173,36 @@ class WaitForReady extends StatelessWidget {
                   if (!selsnap.hasData) {
                     return SizedBox();
                   }
-                  return ListView.builder(
-                    itemBuilder: (context, ind) {
-                      return PlayerScoreCard(
-                        name: usersnap.data.documents[ind]['name'],
-                        score: usersnap.data.documents[ind]['score'].toString(),
-                        scoreAdded: selsnap.data.documents
-                            .where(
-                              (x) =>
-                                  x['selection'] ==
-                                  selsnap.data.documents[ind].documentID,
-                            )
-                            .toList()
-                            .length
-                            .toString(),
+                  return StreamBuilder(
+                    builder: (context, readysnap) {
+                      return ListView.builder(
+                        physics: NeverScrollableScrollPhysics(),
+                        itemBuilder: (context, ind) {
+                          return PlayerScoreCard(
+                            name: usersnap.data.documents[ind]['name'],
+                            score: usersnap.data.documents[ind]['score']
+                                .toString(),
+                            scoreAdded: selsnap.data.documents
+                                .where(
+                                  (x) =>
+                                      x['selection'] ==
+                                      selsnap.data.documents[ind].documentID,
+                                )
+                                .toList()
+                                .length
+                                .toString(),
+                            isReady: readysnap.data.documents[ind]['isReady'],
+                          );
+                        },
+                        itemCount: usersnap.data.documents.length,
+                        shrinkWrap: true,
                       );
                     },
-                    itemCount: usersnap.data.documents.length,
-                    shrinkWrap: true,
+                    stream: Firestore.instance
+                        .collection('roomDetails')
+                        .document(gameID)
+                        .collection('playerStatus')
+                        .snapshots(),
                   );
                 },
                 stream: Firestore.instance
@@ -219,17 +242,81 @@ class WaitForReady extends StatelessWidget {
                     },
                   );
                 }
-                return RaisedButton(
-                  color: Colors.red,
-                  onPressed: () {
-                    changeReadyStateToTrue();
+
+                return StreamBuilder(
+                  builder: (context, usersnap) {
+                    return StreamBuilder(
+                      builder: (context, quessnap) {
+                        return RaisedButton(
+                          color: Colors.red,
+                          onPressed: () {
+                            if (usersnap.data.documents[0].documentID ==
+                                playerID) {
+                              String question = quessnap
+                                  .data
+                                  .documents[generateRandomIndex(
+                                quessnap.data.documents.length,
+                              )]
+                                  .data['question']
+                                  .replaceAll(
+                                'xyz',
+                                usersnap.data.documents[generateRandomIndex(
+                                  usersnap.data.documents.length,
+                                )]['name'],
+                              );
+
+                              Firestore.instance
+                                  .collection('roomDetails')
+                                  .document(gameID)
+                                  .updateData(
+                                {
+                                  'currentQuestion': question,
+                                },
+                              );
+                            }
+
+                            Firestore.instance
+                                .collection('roomDetails')
+                                .document(gameID)
+                                .collection('selections')
+                                .document(playerID)
+                                .updateData(
+                              {
+                                'hasSelected': false,
+                              },
+                            );
+
+                            Firestore.instance
+                                .collection('roomDetails')
+                                .document(gameID)
+                                .collection('responses')
+                                .document(playerID)
+                                .updateData(
+                              {
+                                'hasSubmitted': false,
+                              },
+                            );
+
+                            changeReadyStateToTrue();
+                          },
+                          child: Text(
+                            'ready',
+                            style: TextStyle(
+                              color: Colors.white,
+                            ),
+                          ),
+                        );
+                      },
+                      stream: Firestore.instance
+                          .collection('questions')
+                          .snapshots(),
+                    );
                   },
-                  child: Text(
-                    'ready',
-                    style: TextStyle(
-                      color: Colors.white,
-                    ),
-                  ),
+                  stream: Firestore.instance
+                      .collection('roomDetails')
+                      .document(gameID)
+                      .collection('users')
+                      .snapshots(),
                 );
               },
               stream: Firestore.instance
@@ -305,10 +392,12 @@ class PlayerScoreCard extends StatelessWidget {
     @required this.name,
     @required this.score,
     @required this.scoreAdded,
+    @required this.isReady,
   });
   final String name;
   final String score;
   final String scoreAdded;
+  final bool isReady;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -327,7 +416,7 @@ class PlayerScoreCard extends StatelessWidget {
           Text(
             '$name :',
             style: TextStyle(
-              color: Colors.white,
+              color: isReady ? Colors.green : Colors.red,
               fontSize: 25,
             ),
           ),
