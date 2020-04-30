@@ -10,6 +10,7 @@ class WaitForSelectionsPage extends StatelessWidget {
   });
   final String playerID;
   final String gameID;
+  bool abc = true;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,104 +28,49 @@ class WaitForSelectionsPage extends StatelessWidget {
                   itemCount: snap.data.documents.length,
                   itemBuilder: (context, i) {
                     return StreamBuilder(
-                      builder: (context, innersnap) {
-                        // final int sc = innersnap.data.documents
-                        //         .where((b) =>
-                        //             b['userID'] ==
-                        //             snap.data.documents[i].documentID)
-                        //         .toList()[0]['score'] +
-                        //     snap.data.documents
-                        //         .where(
-                        //           (x) =>
-                        //               x['selection'] ==
-                        //               snap.data.documents[i].documentID,
-                        //         )
-                        //         .toList()
-                        //         .length;
+                      builder: (context, usersnap) {
                         if (snap.data.documents
                                 .where((x) => x['hasSelected'] == true)
                                 .toList()
                                 .length ==
-                            innersnap.data.documents.length) {
-                          if (innersnap.data.documents
-                                  .where((b) =>
-                                      b['userID'] ==
-                                      snap.data.documents[i].documentID)
-                                  .toList()[0]['score'] !=
-                              innersnap.data.documents
-                                      .where((b) =>
-                                          b['userID'] ==
-                                          snap.data.documents[i].documentID)
-                                      .toList()[0]['score'] +
-                                  snap.data.documents
-                                      .where(
-                                        (x) =>
-                                            x['selection'] ==
-                                            snap.data.documents[i].documentID,
-                                      )
-                                      .toList()
-                                      .length) {
+                            usersnap.data.documents.length) {
+                          if (abc) {
                             Firestore.instance
                                 .collection('roomDetails')
                                 .document(gameID)
                                 .collection('users')
-                                .document(innersnap.data.documents
-                                    .where((x) =>
-                                        x['userID'] ==
-                                        snap.data.documents[i].documentID)
-                                    .toList()[0]
-                                    .documentID)
+                                .document(playerID)
                                 .updateData(
                               {
                                 'score': FieldValue.increment(
                                   snap.data.documents
-                                      .where(
-                                        (x) =>
-                                            x['selection'] ==
-                                            snap.data.documents[i].documentID,
-                                      )
+                                      .where((g) => g['selection'] == playerID)
                                       .toList()
                                       .length,
                                 ),
                               },
                             );
+                            abc = !abc;
                           }
 
                           WidgetsBinding.instance.addPostFrameCallback(
                             (_) {
-                              // print(
-                              //   innersnap.data.documents
-                              //           .where((b) =>
-                              //               b['userID'] ==
-                              //               snap.data.documents[i].documentID)
-                              //           .toList()[0]['score'] +
-                              //       snap.data.documents
-                              //           .where(
-                              //             (x) =>
-                              //                 x['selection'] ==
-                              //                 snap.data.documents[i].documentID,
-                              //           )
-                              //           .toList()
-                              //           .length
-                              //           .toString(),
-                              // );
-
-                              // Navigator.pushReplacement(
-                              //   context,
-                              //   MaterialPageRoute(
-                              //     builder: (BuildContext context) =>
-                              //         WaitForReady(
-                              //       gameID: gameID,
-                              //       playerID: playerID,
-                              //     ),
-                              //   ),
-                              // );
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (BuildContext context) =>
+                                      WaitForReady(
+                                    gameID: gameID,
+                                    playerID: playerID,
+                                  ),
+                                ),
+                              );
                             },
                           );
                         }
 
                         return WaitingForSubmissionPlayerCard(
-                          name: innersnap.data.documents
+                          name: usersnap.data.documents
                               .where((n) =>
                                   n['userID'] ==
                                   snap.data.documents[i].documentID)
@@ -132,7 +78,7 @@ class WaitForSelectionsPage extends StatelessWidget {
                           hasSubmitted: snap.data.documents
                               .where((no) =>
                                   no.documentID ==
-                                  innersnap.data.documents[i]['userID'])
+                                  usersnap.data.documents[i]['userID'])
                               .toList()[0]
                               .data['hasSelected'],
                         );

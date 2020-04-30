@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:psych/UI/questionsPage/questionCard.dart';
+import 'package:psych/UI/QuestionsPage/questionCard.dart';
 import 'package:psych/UI/responseSelection/responseCard.dart';
 import 'package:psych/UI/waitForSelections/structure.dart';
 

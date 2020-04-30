@@ -79,6 +79,9 @@ class WaitingToStart extends StatelessWidget {
               .collection('roomDetails')
               .document(gameID)
               .collection('users')
+              .orderBy(
+                'timestamp',
+              )
               .snapshots(),
         );
       },

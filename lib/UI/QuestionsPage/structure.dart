@@ -28,6 +28,19 @@ class QuestionsPage extends StatelessWidget {
       );
     }
 
+    void changeReadyState() {
+      Firestore.instance
+          .collection('roomDetails')
+          .document(gameID)
+          .collection('playerStatus')
+          .document(playerID)
+          .updateData(
+        {
+          'isReady': false,
+        },
+      );
+    }
+
     String response;
 
     return Scaffold(
@@ -58,6 +71,7 @@ class QuestionsPage extends StatelessWidget {
               sendResponse(
                 response,
               );
+              changeReadyState();
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(

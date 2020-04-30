@@ -40,13 +40,16 @@ class JoinGameButton extends StatelessWidget {
                         .document(gameID)
                         .collection('users')
                         .document(
-                          Timestamp.now().millisecondsSinceEpoch.toString(),
+                          // Timestamp.now().millisecondsSinceEpoch.toString(),
+                          playerID,
                         )
                         .setData(
                       {
                         'name': playerName,
                         'userID': playerID,
                         'score': 0,
+                        'timestamp':
+                            Timestamp.now().millisecondsSinceEpoch.toString(),
                       },
                     );
                     Firestore.instance

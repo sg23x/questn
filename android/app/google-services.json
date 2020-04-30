@@ -1,34 +1,34 @@
 {
   "project_info": {
-    "project_number": "329827170317",
-    "firebase_url": "https://psych-4e546.firebaseio.com",
-    "project_id": "psych-4e546",
-    "storage_bucket": "psych-4e546.appspot.com"
+    "project_number": "84423144967",
+    "firebase_url": "https://psych-753c4.firebaseio.com",
+    "project_id": "psych-753c4",
+    "storage_bucket": "psych-753c4.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:329827170317:android:5452c59adcf7857e1ebd44",
+        "mobilesdk_app_id": "1:84423144967:android:92658d3afacb7362f5dca2",
         "android_client_info": {
           "package_name": "com.example.psych"
         }
       },
       "oauth_client": [
         {
-          "client_id": "329827170317-k7agg79lvs9qlc2elcelo3g8cdt5b9at.apps.googleusercontent.com",
+          "client_id": "84423144967-5cr3db4m3jv6m175g6fholactk5880dn.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBhFl_SdHuTx9axWsKSt18CTqhJcwxfGGk"
+          "current_key": "AIzaSyBqGUG4S0GUOkVikUyq1CIgRW0x49Xy4iI"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "329827170317-k7agg79lvs9qlc2elcelo3g8cdt5b9at.apps.googleusercontent.com",
+              "client_id": "84423144967-5cr3db4m3jv6m175g6fholactk5880dn.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

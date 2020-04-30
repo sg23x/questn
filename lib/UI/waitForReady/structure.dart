@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:psych/UI/QuestionsPage/structure.dart';
 
 class WaitForReady extends StatelessWidget {
   WaitForReady({
@@ -14,6 +15,89 @@ class WaitForReady extends StatelessWidget {
       appBar: AppBar(),
       body: ListView(
         children: <Widget>[
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text(
+                "Players who chose your answer:",
+                style: TextStyle(
+                  fontSize: 20,
+                ),
+              ),
+            ],
+          ),
+          StreamBuilder(
+            builder: (context, usersnap) {
+              if (!usersnap.hasData) {
+                return SizedBox();
+              }
+              return StreamBuilder(
+                builder: (context, selsnap) {
+                  if (!selsnap.hasData) {
+                    return SizedBox();
+                  }
+
+                  return ListView.builder(
+                    itemBuilder: (context, i) {
+                      return Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Text(
+                            usersnap.data.documents
+                                .where(
+                                  (c) =>
+                                      c.documentID ==
+                                      selsnap.data.documents
+                                          .where(
+                                            (x) => x['selection'] == playerID,
+                                          )
+                                          .toList()[i]
+                                          .documentID,
+                                )
+                                .toList()[0]['name'],
+                            style: TextStyle(
+                              fontSize: 20,
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                    itemCount: selsnap.data.documents
+                        .where(
+                          (x) => x['selection'] == playerID,
+                        )
+                        .toList()
+                        .length,
+                    shrinkWrap: true,
+                  );
+                },
+                stream: Firestore.instance
+                    .collection('roomDetails')
+                    .document(gameID)
+                    .collection('selections')
+                    .snapshots(),
+              );
+            },
+            stream: Firestore.instance
+                .collection('roomDetails')
+                .document(gameID)
+                .collection('users')
+                .snapshots(),
+          ),
+          SizedBox(
+            height: 50,
+          ),
+          Row(
+            children: <Widget>[
+              Text(
+                "RESPONSES:",
+                style: TextStyle(
+                  fontSize: 30,
+                ),
+              ),
+            ],
+            mainAxisAlignment: MainAxisAlignment.center,
+          ),
           StreamBuilder(
             builder: (context, snap) {
               if (!snap.hasData) {
@@ -68,24 +152,108 @@ class WaitForReady extends StatelessWidget {
             ],
             mainAxisAlignment: MainAxisAlignment.center,
           ),
+          StreamBuilder(
+            builder: (context, usersnap) {
+              if (!usersnap.hasData) {
+                return SizedBox();
+              }
+              return StreamBuilder(
+                builder: (context, selsnap) {
+                  if (!selsnap.hasData) {
+                    return SizedBox();
+                  }
+                  return ListView.builder(
+                    itemBuilder: (context, ind) {
+                      return PlayerScoreCard(
+                        name: usersnap.data.documents[ind]['name'],
+                        score: usersnap.data.documents[ind]['score'].toString(),
+                        scoreAdded: selsnap.data.documents
+                            .where(
+                              (x) =>
+                                  x['selection'] ==
+                                  selsnap.data.documents[ind].documentID,
+                            )
+                            .toList()
+                            .length
+                            .toString(),
+                      );
+                    },
+                    itemCount: usersnap.data.documents.length,
+                    shrinkWrap: true,
+                  );
+                },
+                stream: Firestore.instance
+                    .collection('roomDetails')
+                    .document(gameID)
+                    .collection('selections')
+                    .snapshots(),
+              );
+            },
+            stream: Firestore.instance
+                .collection('roomDetails')
+                .document(gameID)
+                .collection('users')
+                .snapshots(),
+          ),
           Container(
             width: 50,
             margin: EdgeInsets.symmetric(
               horizontal: 100,
             ),
-            child: RaisedButton(
-              color: Colors.black,
-              onPressed: () {},
-              child: Text(
-                'ready',
-                style: TextStyle(
-                  color: Colors.white,
-                ),
-              ),
+            child: StreamBuilder(
+              builder: (context, snap) {
+                if (snap.data.documents.every(
+                  (x) => x['isReady'] == true,
+                )) {
+                  WidgetsBinding.instance.addPostFrameCallback(
+                    (_) async {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (BuildContext context) => QuestionsPage(
+                            playerID: playerID,
+                            gameID: gameID,
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                }
+                return RaisedButton(
+                  color: Colors.red,
+                  onPressed: () {
+                    changeReadyStateToTrue();
+                  },
+                  child: Text(
+                    'ready',
+                    style: TextStyle(
+                      color: Colors.white,
+                    ),
+                  ),
+                );
+              },
+              stream: Firestore.instance
+                  .collection('roomDetails')
+                  .document(gameID)
+                  .collection('playerStatus')
+                  .snapshots(),
             ),
           ),
         ],
       ),
+    );
+  }
+
+  void changeReadyStateToTrue() {
+    Firestore.instance
+        .collection('roomDetails')
+        .document(gameID)
+        .collection('playerStatus')
+        .document(playerID)
+        .updateData(
+      {
+        'isReady': true,
+      },
     );
   }
 }
@@ -136,9 +304,11 @@ class PlayerScoreCard extends StatelessWidget {
   PlayerScoreCard({
     @required this.name,
     @required this.score,
+    @required this.scoreAdded,
   });
   final String name;
   final String score;
+  final String scoreAdded;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -158,11 +328,11 @@ class PlayerScoreCard extends StatelessWidget {
             '$name :',
             style: TextStyle(
               color: Colors.white,
-              fontSize: 18,
+              fontSize: 25,
             ),
           ),
           Text(
-            '$score',
+            '$score (+$scoreAdded)',
             style: TextStyle(
               color: Colors.white,
               fontSize: 25,
