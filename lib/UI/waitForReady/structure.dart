@@ -175,6 +175,9 @@ class WaitForReady extends StatelessWidget {
                   }
                   return StreamBuilder(
                     builder: (context, readysnap) {
+                      if (!readysnap.hasData) {
+                        return SizedBox();
+                      }
                       return ListView.builder(
                         physics: NeverScrollableScrollPhysics(),
                         itemBuilder: (context, ind) {
@@ -225,6 +228,9 @@ class WaitForReady extends StatelessWidget {
             ),
             child: StreamBuilder(
               builder: (context, snap) {
+                if (!snap.hasData) {
+                  return SizedBox();
+                }
                 if (snap.data.documents.every(
                   (x) => x['isReady'] == true,
                 )) {
@@ -245,8 +251,14 @@ class WaitForReady extends StatelessWidget {
 
                 return StreamBuilder(
                   builder: (context, usersnap) {
+                    if (!usersnap.hasData) {
+                      return SizedBox();
+                    }
                     return StreamBuilder(
                       builder: (context, quessnap) {
+                        if (!quessnap.hasData) {
+                          return SizedBox();
+                        }
                         return RaisedButton(
                           color: Colors.red,
                           onPressed: () {

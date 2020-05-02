@@ -25,7 +25,9 @@ class ResponseSelectionPage extends StatelessWidget {
               StreamBuilder(
                 builder: (context, quessnap) {
                   return QuestionCard(
-                    question: quessnap.data['currentQuestion'],
+                    question: quessnap.data != null
+                        ? quessnap.data['currentQuestion']
+                        : '',
                   );
                 },
                 stream: Firestore.instance

@@ -50,12 +50,27 @@ class WaitForSubmissions extends StatelessWidget {
                         itemBuilder: (context, i) {
                           return WaitingForSubmissionPlayerCard(
                             name: snapshot.data.documents[i]['name'],
+
                             hasSubmitted: snap.data.documents
-                                .where((no) =>
-                                    no.documentID ==
-                                    snapshot.data.documents[i]['userID'])
-                                .toList()[0]
-                                .data['hasSubmitted'],
+                                        .where(
+                                          (no) =>
+                                              no.documentID ==
+                                              snapshot.data.documents[i]
+                                                  ['userID'],
+                                        )
+                                        .toList()
+                                        .length !=
+                                    0
+                                ? snap.data.documents
+                                    .where(
+                                      (no) =>
+                                          no.documentID ==
+                                          snapshot.data.documents[i]['userID'],
+                                    )
+                                    .toList()[0]
+                                    .data['hasSubmitted']
+                                : false,
+                            // hasSubmitted: true,
                           );
                         },
                         shrinkWrap: true,

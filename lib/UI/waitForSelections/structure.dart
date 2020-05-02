@@ -29,6 +29,9 @@ class WaitForSelectionsPage extends StatelessWidget {
                   itemBuilder: (context, i) {
                     return StreamBuilder(
                       builder: (context, usersnap) {
+                        if (!usersnap.hasData) {
+                          return SizedBox();
+                        }
                         if (snap.data.documents
                                 .where((x) => x['hasSelected'] == true)
                                 .toList()
@@ -76,11 +79,19 @@ class WaitForSelectionsPage extends StatelessWidget {
                                   snap.data.documents[i].documentID)
                               .toList()[0]['name'],
                           hasSubmitted: snap.data.documents
-                              .where((no) =>
-                                  no.documentID ==
-                                  usersnap.data.documents[i]['userID'])
-                              .toList()[0]
-                              .data['hasSelected'],
+                                      .where((no) =>
+                                          no.documentID ==
+                                          usersnap.data.documents[i]['userID'])
+                                      .toList()
+                                      .length !=
+                                  0
+                              ? snap.data.documents
+                                  .where((no) =>
+                                      no.documentID ==
+                                      usersnap.data.documents[i]['userID'])
+                                  .toList()[0]
+                                  .data['hasSelected']
+                              : false,
                         );
                       },
                       stream: Firestore.instance

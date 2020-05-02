@@ -11,6 +11,7 @@ class WaitingToStart extends StatelessWidget {
   });
   final String gameID;
   final String playerID;
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(

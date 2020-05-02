@@ -68,19 +68,25 @@ class QuestionsPage extends StatelessWidget {
           ),
           RaisedButton(
             onPressed: () {
-              sendResponse(
-                response,
-              );
-              changeReadyState();
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (BuildContext context) => WaitForSubmissions(
-                    gameID: gameID,
-                    playerID: playerID,
-                  ),
-                ),
-              );
+              response != null && response != ''
+                  ? sendResponse(
+                      response,
+                    )
+                  : noResponse(
+                      context,
+                    );
+              response != null && response != '' ? changeReadyState() : null;
+              response != null && response != ''
+                  ? Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (BuildContext context) => WaitForSubmissions(
+                          gameID: gameID,
+                          playerID: playerID,
+                        ),
+                      ),
+                    )
+                  : null;
             },
             child: Text(
               "Submit",
@@ -88,6 +94,30 @@ class QuestionsPage extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  Widget noResponse(context) {
+    //button can be disabled instead
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          actions: <Widget>[
+            FlatButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text(
+                "OK",
+              ),
+            )
+          ],
+          content: Text(
+            "Can't be empty!",
+          ),
+        );
+      },
     );
   }
 }
