@@ -38,7 +38,6 @@ class StartAGameButton extends StatelessWidget {
           .document(gameID)
           .collection('users')
           .document(
-            // Timestamp.now().millisecondsSinceEpoch.toString(),
             playerID,
           )
           .setData(
@@ -90,7 +89,7 @@ class StartAGameButton extends StatelessWidget {
           'isReady': false,
         },
       );
-      Navigator.pushReplacement(
+      Navigator.push(
         context,
         MaterialPageRoute(
           builder: (BuildContext context) => WaitingToStart(

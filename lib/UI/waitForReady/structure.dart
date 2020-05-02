@@ -21,324 +21,359 @@ class WaitForReady extends StatelessWidget {
       return r;
     }
 
-    return Scaffold(
-      appBar: AppBar(),
-      body: ListView(
-        children: <Widget>[
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Text(
-                "Players who chose your answer:",
-                style: TextStyle(
-                  fontSize: 20,
+    Future<bool> _onBackPressed() {
+      return showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                actions: <Widget>[
+                  FlatButton(
+                    onPressed: () {
+                      Navigator.of(context).pop(false);
+                    },
+                    child: Text(
+                      "NO",
+                    ),
+                  ),
+                  FlatButton(
+                    onPressed: () {
+                      Navigator.of(context).pop(true);
+                    },
+                    child: Text(
+                      "YES",
+                    ),
+                  ),
+                ],
+                content: Text(
+                  "You sure you wanna leave the game?",
                 ),
-              ),
-            ],
-          ),
-          StreamBuilder(
-            builder: (context, usersnap) {
-              if (!usersnap.hasData) {
-                return SizedBox();
-              }
-              return StreamBuilder(
-                builder: (context, selsnap) {
-                  if (!selsnap.hasData) {
-                    return SizedBox();
-                  }
+              );
+            },
+          ) ??
+          false;
+    }
 
-                  return ListView.builder(
-                    itemBuilder: (context, i) {
-                      return Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Text(
-                            usersnap.data.documents
-                                .where(
-                                  (c) =>
-                                      c.documentID ==
-                                      selsnap.data.documents
-                                          .where(
-                                            (x) => x['selection'] == playerID,
-                                          )
-                                          .toList()[i]
-                                          .documentID,
-                                )
-                                .toList()[0]['name'],
-                            style: TextStyle(
-                              fontSize: 20,
-                            ),
-                          ),
-                        ],
-                      );
-                    },
-                    itemCount: selsnap.data.documents
-                        .where(
-                          (x) => x['selection'] == playerID,
-                        )
-                        .toList()
-                        .length,
-                    shrinkWrap: true,
-                  );
-                },
-                stream: Firestore.instance
-                    .collection('roomDetails')
-                    .document(gameID)
-                    .collection('selections')
-                    .snapshots(),
-              );
-            },
-            stream: Firestore.instance
-                .collection('roomDetails')
-                .document(gameID)
-                .collection('users')
-                .snapshots(),
-          ),
-          SizedBox(
-            height: 30,
-          ),
-          Row(
-            children: <Widget>[
-              Text(
-                "RESPONSES:",
-                style: TextStyle(
-                  fontSize: 30,
+    return WillPopScope(
+      onWillPop: _onBackPressed,
+      child: Scaffold(
+        appBar: AppBar(),
+        body: ListView(
+          children: <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Text(
+                  "Players who chose your answer:",
+                  style: TextStyle(
+                    fontSize: 20,
+                  ),
                 ),
-              ),
-            ],
-            mainAxisAlignment: MainAxisAlignment.center,
-          ),
-          StreamBuilder(
-            builder: (context, snap) {
-              if (!snap.hasData) {
-                return SizedBox();
-              }
-              return StreamBuilder(
-                builder: (context, respsnap) {
-                  if (!respsnap.hasData) {
-                    return SizedBox();
-                  }
-
-                  return ListView.builder(
-                    physics: NeverScrollableScrollPhysics(),
-                    itemBuilder: (context, i) {
-                      return NumberOfSelectionsCard(
-                        response: respsnap.data.documents[i]['response'],
-                        timesSelected: snap.data.documents
-                            .where(
-                              (x) =>
-                                  x['selection'] ==
-                                  snap.data.documents[i].documentID,
-                            )
-                            .toList()
-                            .length
-                            .toString(),
-                      );
-                    },
-                    shrinkWrap: true,
-                    itemCount: snap.data.documents.length,
-                  );
-                },
-                stream: Firestore.instance
-                    .collection('roomDetails')
-                    .document(gameID)
-                    .collection('responses')
-                    .snapshots(),
-              );
-            },
-            stream: Firestore.instance
-                .collection('roomDetails')
-                .document(gameID)
-                .collection('selections')
-                .snapshots(),
-          ),
-          Row(
-            children: <Widget>[
-              Text(
-                "SCORE:",
-                style: TextStyle(
-                  fontSize: 30,
-                ),
-              ),
-            ],
-            mainAxisAlignment: MainAxisAlignment.center,
-          ),
-          StreamBuilder(
-            builder: (context, usersnap) {
-              if (!usersnap.hasData) {
-                return SizedBox();
-              }
-              return StreamBuilder(
-                builder: (context, selsnap) {
-                  if (!selsnap.hasData) {
-                    return SizedBox();
-                  }
-                  return StreamBuilder(
-                    builder: (context, readysnap) {
-                      if (!readysnap.hasData) {
-                        return SizedBox();
-                      }
-                      return ListView.builder(
-                        physics: NeverScrollableScrollPhysics(),
-                        itemBuilder: (context, ind) {
-                          return PlayerScoreCard(
-                            name: usersnap.data.documents[ind]['name'],
-                            score: usersnap.data.documents[ind]['score']
-                                .toString(),
-                            scoreAdded: selsnap.data.documents
-                                .where(
-                                  (x) =>
-                                      x['selection'] ==
-                                      selsnap.data.documents[ind].documentID,
-                                )
-                                .toList()
-                                .length
-                                .toString(),
-                            isReady: readysnap.data.documents[ind]['isReady'],
-                          );
-                        },
-                        itemCount: usersnap.data.documents.length,
-                        shrinkWrap: true,
-                      );
-                    },
-                    stream: Firestore.instance
-                        .collection('roomDetails')
-                        .document(gameID)
-                        .collection('playerStatus')
-                        .snapshots(),
-                  );
-                },
-                stream: Firestore.instance
-                    .collection('roomDetails')
-                    .document(gameID)
-                    .collection('selections')
-                    .snapshots(),
-              );
-            },
-            stream: Firestore.instance
-                .collection('roomDetails')
-                .document(gameID)
-                .collection('users')
-                .snapshots(),
-          ),
-          Container(
-            width: 50,
-            margin: EdgeInsets.symmetric(
-              horizontal: 100,
+              ],
             ),
-            child: StreamBuilder(
-              builder: (context, snap) {
-                if (!snap.hasData) {
+            StreamBuilder(
+              builder: (context, usersnap) {
+                if (!usersnap.hasData) {
                   return SizedBox();
                 }
-                if (snap.data.documents.every(
-                  (x) => x['isReady'] == true,
-                )) {
-                  WidgetsBinding.instance.addPostFrameCallback(
-                    (_) async {
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (BuildContext context) => QuestionsPage(
-                            playerID: playerID,
-                            gameID: gameID,
-                          ),
-                        ),
-                      );
-                    },
-                  );
-                }
-
                 return StreamBuilder(
-                  builder: (context, usersnap) {
-                    if (!usersnap.hasData) {
+                  builder: (context, selsnap) {
+                    if (!selsnap.hasData) {
                       return SizedBox();
                     }
-                    return StreamBuilder(
-                      builder: (context, quessnap) {
-                        if (!quessnap.hasData) {
-                          return SizedBox();
-                        }
-                        return RaisedButton(
-                          color: Colors.red,
-                          onPressed: () {
-                            if (usersnap.data.documents[0].documentID ==
-                                playerID) {
-                              String question = quessnap
-                                  .data
-                                  .documents[generateRandomIndex(
-                                quessnap.data.documents.length,
-                              )]
-                                  .data['question']
-                                  .replaceAll(
-                                'xyz',
-                                usersnap.data.documents[generateRandomIndex(
-                                  usersnap.data.documents.length,
-                                )]['name'],
-                              );
 
-                              Firestore.instance
-                                  .collection('roomDetails')
-                                  .document(gameID)
-                                  .updateData(
-                                {
-                                  'currentQuestion': question,
-                                },
-                              );
-                            }
-
-                            Firestore.instance
-                                .collection('roomDetails')
-                                .document(gameID)
-                                .collection('selections')
-                                .document(playerID)
-                                .updateData(
-                              {
-                                'hasSelected': false,
-                              },
-                            );
-
-                            Firestore.instance
-                                .collection('roomDetails')
-                                .document(gameID)
-                                .collection('responses')
-                                .document(playerID)
-                                .updateData(
-                              {
-                                'hasSubmitted': false,
-                              },
-                            );
-
-                            changeReadyStateToTrue();
-                          },
-                          child: Text(
-                            'ready',
-                            style: TextStyle(
-                              color: Colors.white,
+                    return ListView.builder(
+                      itemBuilder: (context, i) {
+                        return Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Text(
+                              usersnap.data.documents
+                                  .where(
+                                    (c) =>
+                                        c.documentID ==
+                                        selsnap.data.documents
+                                            .where(
+                                              (x) => x['selection'] == playerID,
+                                            )
+                                            .toList()[i]
+                                            .documentID,
+                                  )
+                                  .toList()[0]['name'],
+                              style: TextStyle(
+                                fontSize: 20,
+                              ),
                             ),
-                          ),
+                          ],
                         );
                       },
-                      stream: Firestore.instance
-                          .collection('questions')
-                          .snapshots(),
+                      itemCount: selsnap.data.documents
+                          .where(
+                            (x) => x['selection'] == playerID,
+                          )
+                          .toList()
+                          .length,
+                      shrinkWrap: true,
                     );
                   },
                   stream: Firestore.instance
                       .collection('roomDetails')
                       .document(gameID)
-                      .collection('users')
+                      .collection('selections')
                       .snapshots(),
                 );
               },
               stream: Firestore.instance
                   .collection('roomDetails')
                   .document(gameID)
-                  .collection('playerStatus')
+                  .collection('users')
                   .snapshots(),
             ),
-          ),
-        ],
+            SizedBox(
+              height: 30,
+            ),
+            Row(
+              children: <Widget>[
+                Text(
+                  "RESPONSES:",
+                  style: TextStyle(
+                    fontSize: 30,
+                  ),
+                ),
+              ],
+              mainAxisAlignment: MainAxisAlignment.center,
+            ),
+            StreamBuilder(
+              builder: (context, snap) {
+                if (!snap.hasData) {
+                  return SizedBox();
+                }
+                return StreamBuilder(
+                  builder: (context, respsnap) {
+                    if (!respsnap.hasData) {
+                      return SizedBox();
+                    }
+
+                    return ListView.builder(
+                      physics: NeverScrollableScrollPhysics(),
+                      itemBuilder: (context, i) {
+                        return NumberOfSelectionsCard(
+                          response: respsnap.data.documents[i]['response'],
+                          timesSelected: snap.data.documents
+                              .where(
+                                (x) =>
+                                    x['selection'] ==
+                                    snap.data.documents[i].documentID,
+                              )
+                              .toList()
+                              .length
+                              .toString(),
+                        );
+                      },
+                      shrinkWrap: true,
+                      itemCount: snap.data.documents.length,
+                    );
+                  },
+                  stream: Firestore.instance
+                      .collection('roomDetails')
+                      .document(gameID)
+                      .collection('responses')
+                      .snapshots(),
+                );
+              },
+              stream: Firestore.instance
+                  .collection('roomDetails')
+                  .document(gameID)
+                  .collection('selections')
+                  .snapshots(),
+            ),
+            Row(
+              children: <Widget>[
+                Text(
+                  "SCORE:",
+                  style: TextStyle(
+                    fontSize: 30,
+                  ),
+                ),
+              ],
+              mainAxisAlignment: MainAxisAlignment.center,
+            ),
+            StreamBuilder(
+              builder: (context, usersnap) {
+                if (!usersnap.hasData) {
+                  return SizedBox();
+                }
+                return StreamBuilder(
+                  builder: (context, selsnap) {
+                    if (!selsnap.hasData) {
+                      return SizedBox();
+                    }
+                    return StreamBuilder(
+                      builder: (context, readysnap) {
+                        if (!readysnap.hasData) {
+                          return SizedBox();
+                        }
+                        return ListView.builder(
+                          physics: NeverScrollableScrollPhysics(),
+                          itemBuilder: (context, ind) {
+                            return PlayerScoreCard(
+                              name: usersnap.data.documents[ind]['name'],
+                              score: usersnap.data.documents[ind]['score']
+                                  .toString(),
+                              scoreAdded: selsnap.data.documents
+                                  .where(
+                                    (x) =>
+                                        x['selection'] ==
+                                        selsnap.data.documents[ind].documentID,
+                                  )
+                                  .toList()
+                                  .length
+                                  .toString(),
+                              isReady: readysnap.data.documents[ind]['isReady'],
+                            );
+                          },
+                          itemCount: usersnap.data.documents.length,
+                          shrinkWrap: true,
+                        );
+                      },
+                      stream: Firestore.instance
+                          .collection('roomDetails')
+                          .document(gameID)
+                          .collection('playerStatus')
+                          .snapshots(),
+                    );
+                  },
+                  stream: Firestore.instance
+                      .collection('roomDetails')
+                      .document(gameID)
+                      .collection('selections')
+                      .snapshots(),
+                );
+              },
+              stream: Firestore.instance
+                  .collection('roomDetails')
+                  .document(gameID)
+                  .collection('users')
+                  .snapshots(),
+            ),
+            Container(
+              width: 50,
+              margin: EdgeInsets.symmetric(
+                horizontal: 100,
+              ),
+              child: StreamBuilder(
+                builder: (context, snap) {
+                  if (!snap.hasData) {
+                    return SizedBox();
+                  }
+                  if (snap.data.documents.every(
+                    (x) => x['isReady'] == true,
+                  )) {
+                    WidgetsBinding.instance.addPostFrameCallback(
+                      (_) async {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (BuildContext context) => QuestionsPage(
+                              playerID: playerID,
+                              gameID: gameID,
+                            ),
+                          ),
+                        );
+                      },
+                    );
+                  }
+
+                  return StreamBuilder(
+                    builder: (context, usersnap) {
+                      if (!usersnap.hasData) {
+                        return SizedBox();
+                      }
+                      return StreamBuilder(
+                        builder: (context, quessnap) {
+                          if (!quessnap.hasData) {
+                            return SizedBox();
+                          }
+                          return RaisedButton(
+                            color: Colors.red,
+                            onPressed: () {
+                              if (usersnap.data.documents[0].documentID ==
+                                  playerID) {
+                                String question = quessnap
+                                    .data
+                                    .documents[generateRandomIndex(
+                                  quessnap.data.documents.length,
+                                )]
+                                    .data['question']
+                                    .replaceAll(
+                                  'xyz',
+                                  usersnap.data.documents[generateRandomIndex(
+                                    usersnap.data.documents.length,
+                                  )]['name'],
+                                );
+
+                                Firestore.instance
+                                    .collection('roomDetails')
+                                    .document(gameID)
+                                    .updateData(
+                                  {
+                                    'currentQuestion': question,
+                                  },
+                                );
+                              }
+
+                              Firestore.instance
+                                  .collection('roomDetails')
+                                  .document(gameID)
+                                  .collection('selections')
+                                  .document(playerID)
+                                  .updateData(
+                                {
+                                  'hasSelected': false,
+                                },
+                              );
+
+                              Firestore.instance
+                                  .collection('roomDetails')
+                                  .document(gameID)
+                                  .collection('responses')
+                                  .document(playerID)
+                                  .updateData(
+                                {
+                                  'hasSubmitted': false,
+                                },
+                              );
+
+                              changeReadyStateToTrue();
+                            },
+                            child: Text(
+                              'ready',
+                              style: TextStyle(
+                                color: Colors.white,
+                              ),
+                            ),
+                          );
+                        },
+                        stream: Firestore.instance
+                            .collection('questions')
+                            .snapshots(),
+                      );
+                    },
+                    stream: Firestore.instance
+                        .collection('roomDetails')
+                        .document(gameID)
+                        .collection('users')
+                        .snapshots(),
+                  );
+                },
+                stream: Firestore.instance
+                    .collection('roomDetails')
+                    .document(gameID)
+                    .collection('playerStatus')
+                    .snapshots(),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

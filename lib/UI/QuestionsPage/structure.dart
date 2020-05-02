@@ -43,56 +43,91 @@ class QuestionsPage extends StatelessWidget {
 
     String response;
 
-    return Scaffold(
-      appBar: AppBar(),
-      body: Column(
-        children: <Widget>[
-          StreamBuilder(
-            builder: (context, snap) {
-              if (!snap.hasData) {
-                return SizedBox();
-              }
-              return QuestionCard(
-                question: snap.data['currentQuestion'],
+    Future<bool> _onBackPressed() {
+      return showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                actions: <Widget>[
+                  FlatButton(
+                    onPressed: () {
+                      Navigator.of(context).pop(false);
+                    },
+                    child: Text(
+                      "NO",
+                    ),
+                  ),
+                  FlatButton(
+                    onPressed: () {
+                      Navigator.of(context).pop(true);
+                    },
+                    child: Text(
+                      "YES",
+                    ),
+                  ),
+                ],
+                content: Text(
+                  "You sure you wanna leave the game?",
+                ),
               );
             },
-            stream: Firestore.instance
-                .collection('roomDetails')
-                .document(gameID)
-                .snapshots(),
-          ),
-          TextField(
-            onChanged: (val) {
-              response = val;
-            },
-          ),
-          RaisedButton(
-            onPressed: () {
-              response != null && response != ''
-                  ? sendResponse(
-                      response,
-                    )
-                  : noResponse(
-                      context,
-                    );
-              response != null && response != '' ? changeReadyState() : null;
-              response != null && response != ''
-                  ? Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (BuildContext context) => WaitForSubmissions(
-                          gameID: gameID,
-                          playerID: playerID,
-                        ),
-                      ),
-                    )
-                  : null;
-            },
-            child: Text(
-              "Submit",
+          ) ??
+          false;
+    }
+
+    return WillPopScope(
+      onWillPop: _onBackPressed,
+      child: Scaffold(
+        appBar: AppBar(),
+        body: Column(
+          children: <Widget>[
+            StreamBuilder(
+              builder: (context, snap) {
+                if (!snap.hasData) {
+                  return SizedBox();
+                }
+                return QuestionCard(
+                  question: snap.data['currentQuestion'],
+                );
+              },
+              stream: Firestore.instance
+                  .collection('roomDetails')
+                  .document(gameID)
+                  .snapshots(),
             ),
-          ),
-        ],
+            TextField(
+              onChanged: (val) {
+                response = val;
+              },
+            ),
+            RaisedButton(
+              onPressed: () {
+                response != null && response != ''
+                    ? sendResponse(
+                        response,
+                      )
+                    : noResponse(
+                        context,
+                      );
+                response != null && response != '' ? changeReadyState() : null;
+                response != null && response != ''
+                    ? Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (BuildContext context) => WaitForSubmissions(
+                            gameID: gameID,
+                            playerID: playerID,
+                          ),
+                        ),
+                      )
+                    : null;
+              },
+              child: Text(
+                "Submit",
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -40,7 +40,6 @@ class JoinGameButton extends StatelessWidget {
                         .document(gameID)
                         .collection('users')
                         .document(
-                          // Timestamp.now().millisecondsSinceEpoch.toString(),
                           playerID,
                         )
                         .setData(
@@ -87,7 +86,7 @@ class JoinGameButton extends StatelessWidget {
                       },
                     );
 
-                    Navigator.pushReplacement(
+                    Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (BuildContext context) => WaitingToStart(

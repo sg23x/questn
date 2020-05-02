@@ -7,7 +7,7 @@ class NameInputPage extends StatelessWidget {
     String playerName;
 
     void submitName() async {
-      Navigator.pushReplacement(
+      Navigator.push(
         context,
         MaterialPageRoute(
           builder: (BuildContext context) => GameSelection(
