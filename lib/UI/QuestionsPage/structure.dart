@@ -4,7 +4,7 @@ import 'package:psych/UI/QuestionsPage/questionCard.dart';
 
 import 'package:psych/UI/waitForSubmissions/structure.dart';
 
-class QuestionsPage extends StatelessWidget {
+class QuestionsPage extends StatefulWidget {
   QuestionsPage({
     @required this.playerID,
     @required this.gameID,
@@ -13,13 +13,18 @@ class QuestionsPage extends StatelessWidget {
   final String gameID;
 
   @override
+  _QuestionsPageState createState() => _QuestionsPageState();
+}
+
+class _QuestionsPageState extends State<QuestionsPage> {
+  @override
   Widget build(BuildContext context) {
     void sendResponse(String response) {
       Firestore.instance
           .collection('roomDetails')
-          .document(gameID)
+          .document(widget.gameID)
           .collection('responses')
-          .document(playerID)
+          .document(widget.playerID)
           .updateData(
         {
           'response': response,
@@ -31,9 +36,9 @@ class QuestionsPage extends StatelessWidget {
     void changeReadyState() {
       Firestore.instance
           .collection('roomDetails')
-          .document(gameID)
+          .document(widget.gameID)
           .collection('playerStatus')
-          .document(playerID)
+          .document(widget.playerID)
           .updateData(
         {
           'isReady': false,
@@ -41,7 +46,7 @@ class QuestionsPage extends StatelessWidget {
       );
     }
 
-    String response;
+    String response = '';
 
     Future<bool> _onBackPressed() {
       return showDialog(
@@ -92,7 +97,7 @@ class QuestionsPage extends StatelessWidget {
               },
               stream: Firestore.instance
                   .collection('roomDetails')
-                  .document(gameID)
+                  .document(widget.gameID)
                   .snapshots(),
             ),
             TextField(
@@ -115,8 +120,8 @@ class QuestionsPage extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                           builder: (BuildContext context) => WaitForSubmissions(
-                            gameID: gameID,
-                            playerID: playerID,
+                            gameID: widget.gameID,
+                            playerID: widget.playerID,
                           ),
                         ),
                       )

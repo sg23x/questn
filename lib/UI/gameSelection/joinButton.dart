@@ -29,12 +29,30 @@ class JoinGameButton extends StatelessWidget {
             actions: <Widget>[
               FlatButton(
                 onPressed: () async {
+                  showDialog(
+                    context: context,
+                    barrierDismissible: false,
+                    builder: (BuildContext context) {
+                      return Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          CircularProgressIndicator(
+                            backgroundColor: Colors.pink,
+                            strokeWidth: 8,
+                          ),
+                        ],
+                      );
+                    },
+                  );
+
                   final snap = await Firestore.instance
                       .collection('roomDetails')
                       .document(gameID)
                       .get();
 
                   if (snap.exists) {
+                    Navigator.of(context).pop();
+
                     Firestore.instance
                         .collection('roomDetails')
                         .document(gameID)
@@ -85,6 +103,7 @@ class JoinGameButton extends StatelessWidget {
                         'response': '',
                       },
                     );
+                    Navigator.of(context).pop();
 
                     Navigator.push(
                       context,
@@ -96,6 +115,7 @@ class JoinGameButton extends StatelessWidget {
                       ),
                     );
                   } else {
+                    Navigator.of(context).pop();
                     showDialog(
                       context: context,
                       builder: (BuildContext context) {

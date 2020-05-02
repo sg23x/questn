@@ -4,7 +4,7 @@ import 'package:psych/UI/QuestionsPage/structure.dart';
 import 'package:psych/UI/waitingToStart/playerCard.dart';
 import 'package:psych/UI/waitingToStart/startTheGameButton.dart';
 
-class WaitingToStart extends StatelessWidget {
+class WaitingToStart extends StatefulWidget {
   WaitingToStart({
     @required this.gameID,
     @required this.playerID,
@@ -13,7 +13,13 @@ class WaitingToStart extends StatelessWidget {
   final String playerID;
 
   @override
+  _WaitingToStartState createState() => _WaitingToStartState();
+}
+
+class _WaitingToStartState extends State<WaitingToStart> {
+  @override
   Widget build(BuildContext context) {
+    bool isPlayerPlural = false;
     Future<bool> _onBackPressed() {
       return showDialog(
             context: context,
@@ -53,6 +59,7 @@ class WaitingToStart extends StatelessWidget {
           if (!snap.hasData) {
             return Scaffold();
           }
+
           List playerStatusList = [];
           for (int j = 0; j < snap.data.documents.length; j++) {
             playerStatusList.add(
@@ -66,8 +73,8 @@ class WaitingToStart extends StatelessWidget {
                   context,
                   MaterialPageRoute(
                     builder: (BuildContext context) => QuestionsPage(
-                      playerID: playerID,
-                      gameID: gameID,
+                      playerID: widget.playerID,
+                      gameID: widget.gameID,
                     ),
                   ),
                 );
@@ -83,7 +90,7 @@ class WaitingToStart extends StatelessWidget {
               return Scaffold(
                 appBar: AppBar(
                   title: Text(
-                    'Game id: $gameID',
+                    'Game id: ${widget.gameID}',
                   ),
                   centerTitle: true,
                 ),
@@ -100,10 +107,12 @@ class WaitingToStart extends StatelessWidget {
                         itemCount: snapshot.data.documents.length,
                       ),
                     ),
-                    playerID == snapshot.data.documents[0]['userID']
+                    widget.playerID == snapshot.data.documents[0]['userID']
                         ? StartTheGameButton(
-                            gameID: gameID,
-                            playerID: playerID,
+                            gameID: widget.gameID,
+                            playerID: widget.playerID,
+                            isPlayerPlural:
+                                snap.data.documents.length > 1 ? true : false,
                           )
                         : SizedBox(),
                   ],
@@ -112,7 +121,7 @@ class WaitingToStart extends StatelessWidget {
             },
             stream: Firestore.instance
                 .collection('roomDetails')
-                .document(gameID)
+                .document(widget.gameID)
                 .collection('users')
                 .orderBy(
                   'timestamp',
@@ -122,7 +131,7 @@ class WaitingToStart extends StatelessWidget {
         },
         stream: Firestore.instance
             .collection('roomDetails')
-            .document(gameID)
+            .document(widget.gameID)
             .collection('playerStatus')
             .snapshots(),
       ),

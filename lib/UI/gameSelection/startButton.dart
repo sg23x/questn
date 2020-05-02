@@ -3,12 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:psych/UI/waitingToStart/structure.dart';
 import 'dart:math';
 
-class StartAGameButton extends StatelessWidget {
+class StartAGameButton extends StatefulWidget {
   StartAGameButton({
     @required this.playerName,
   });
   final String playerName;
 
+  @override
+  _StartAGameButtonState createState() => _StartAGameButtonState();
+}
+
+class _StartAGameButtonState extends State<StartAGameButton> {
   Widget build(BuildContext context) {
     String generateUniqueID() {
       Random rnd;
@@ -42,7 +47,7 @@ class StartAGameButton extends StatelessWidget {
           )
           .setData(
         {
-          'name': playerName,
+          'name': widget.playerName,
           'userID': playerID,
           'score': 0,
           'timestamp': Timestamp.now().millisecondsSinceEpoch.toString(),
@@ -89,6 +94,9 @@ class StartAGameButton extends StatelessWidget {
           'isReady': false,
         },
       );
+
+      Navigator.of(context).pop();
+
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -105,6 +113,22 @@ class StartAGameButton extends StatelessWidget {
         "Start a Game",
       ),
       onPressed: () {
+        showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            return Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                CircularProgressIndicator(
+                  backgroundColor: Colors.pink,
+                  strokeWidth: 8,
+                ),
+              ],
+            );
+          },
+        );
+
         startGame();
       },
     );
