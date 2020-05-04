@@ -212,6 +212,7 @@ class WaitForReady extends StatelessWidget {
                         if (!readysnap.hasData) {
                           return SizedBox();
                         }
+
                         return ListView.builder(
                           physics: NeverScrollableScrollPhysics(),
                           itemBuilder: (context, ind) {
@@ -219,16 +220,26 @@ class WaitForReady extends StatelessWidget {
                               name: usersnap.data.documents[ind]['name'],
                               score: usersnap.data.documents[ind]['score']
                                   .toString(),
-                              scoreAdded: selsnap.data.documents
+                              isReady: readysnap.data.documents
                                   .where(
                                     (x) =>
-                                        x['selection'] ==
-                                        selsnap.data.documents[ind].documentID,
+                                        x.documentID ==
+                                        usersnap.data.documents[ind]['userID'],
                                   )
+                                  .toList()[0]['isReady'],
+                              scoreAdded: selsnap.data.documents
+                                  .where((x) =>
+                                      x['selection'] ==
+                                      usersnap.data.documents
+                                          .where((y) =>
+                                              y['userID'] ==
+                                              usersnap.data.documents[ind]
+                                                  ['userID'])
+                                          .toList()[0]
+                                          .documentID)
                                   .toList()
                                   .length
                                   .toString(),
-                              isReady: readysnap.data.documents[ind]['isReady'],
                             );
                           },
                           itemCount: usersnap.data.documents.length,
@@ -250,9 +261,12 @@ class WaitForReady extends StatelessWidget {
                 );
               },
               stream: Firestore.instance
-                  .collection('roomDetails')
+                  .collection(
+                    'roomDetails',
+                  )
                   .document(gameID)
                   .collection('users')
+                  .orderBy('score', descending: true)
                   .snapshots(),
             ),
             Container(
@@ -295,7 +309,7 @@ class WaitForReady extends StatelessWidget {
                           }
                           return RaisedButton(
                             color: Colors.red,
-                            onPressed: () {
+                            onPressed: () async {
                               if (usersnap.data.documents[0].documentID ==
                                   playerID) {
                                 String question = quessnap
@@ -311,7 +325,7 @@ class WaitForReady extends StatelessWidget {
                                   )]['name'],
                                 );
 
-                                Firestore.instance
+                                await Firestore.instance
                                     .collection('roomDetails')
                                     .document(gameID)
                                     .updateData(
