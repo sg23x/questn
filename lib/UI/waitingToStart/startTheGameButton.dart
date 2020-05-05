@@ -49,6 +49,36 @@ class _StartTheGameButtonState extends State<StartTheGameButton> {
       );
     }
 
+    List getIndexes(int len, int n) {
+      if (n == 1) {
+        return [
+          generateRandomIndex(
+            len,
+          ),
+        ];
+      } else if (n == 2) {
+        List x = [];
+        x.add(
+          generateRandomIndex(
+            len,
+          ),
+        );
+        void test() {
+          int newIndex = generateRandomIndex(
+            len,
+          );
+          if (x.contains(newIndex)) {
+            test();
+          } else {
+            x.add(newIndex);
+          }
+        }
+
+        test();
+        return x;
+      }
+    }
+
     return StreamBuilder(
       builder: (context, snap) {
         return StreamBuilder(
@@ -61,18 +91,27 @@ class _StartTheGameButtonState extends State<StartTheGameButton> {
                   ? () {
                       startGame();
 
-                      String question = snap
-                          .data
-                          .documents[generateRandomIndex(
+                      DocumentSnapshot questionRaw =
+                          snap.data.documents[generateRandomIndex(
                         snap.data.documents.length,
-                      )]
-                          .data['question']
-                          .replaceAll(
-                        'xyz',
-                        snapshot.data.documents[generateRandomIndex(
-                          snapshot.data.documents.length,
-                        )]['name'],
-                      );
+                      )];
+
+                      List indexes =
+                          getIndexes(snapshot.data.documents.length, 2);
+
+                      String question = !questionRaw.data['question']
+                              .contains('abc')
+                          ? questionRaw.data['question'].replaceAll(
+                              'xyz',
+                              snapshot.data.documents[indexes[0]]['name'],
+                            )
+                          : questionRaw.data['question']
+                              .replaceAll('xyz',
+                                  snapshot.data.documents[indexes[0]]['name'])
+                              .replaceAll(
+                                'abc',
+                                snapshot.data.documents[indexes[1]]['name'],
+                              );
 
                       Firestore.instance
                           .collection('roomDetails')

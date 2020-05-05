@@ -304,6 +304,36 @@ class WaitForReady extends StatelessWidget {
                       }
                       return StreamBuilder(
                         builder: (context, quessnap) {
+                          List getIndexes(int len, int n) {
+                            if (n == 1) {
+                              return [
+                                generateRandomIndex(
+                                  len,
+                                ),
+                              ];
+                            } else if (n == 2) {
+                              List x = [];
+                              x.add(
+                                generateRandomIndex(
+                                  len,
+                                ),
+                              );
+                              void test() {
+                                int newIndex = generateRandomIndex(
+                                  len,
+                                );
+                                if (x.contains(newIndex)) {
+                                  test();
+                                } else {
+                                  x.add(newIndex);
+                                }
+                              }
+
+                              test();
+                              return x;
+                            }
+                          }
+
                           if (!quessnap.hasData) {
                             return SizedBox();
                           }
@@ -312,18 +342,31 @@ class WaitForReady extends StatelessWidget {
                             onPressed: () async {
                               if (usersnap.data.documents[0].documentID ==
                                   playerID) {
-                                String question = quessnap
-                                    .data
-                                    .documents[generateRandomIndex(
+                                DocumentSnapshot questionRaw =
+                                    quessnap.data.documents[generateRandomIndex(
                                   quessnap.data.documents.length,
-                                )]
-                                    .data['question']
-                                    .replaceAll(
-                                  'xyz',
-                                  usersnap.data.documents[generateRandomIndex(
-                                    usersnap.data.documents.length,
-                                  )]['name'],
-                                );
+                                )];
+
+                                List indexes = getIndexes(
+                                    usersnap.data.documents.length, 2);
+
+                                String question = !questionRaw.data['question']
+                                        .contains('abc')
+                                    ? questionRaw.data['question'].replaceAll(
+                                        'xyz',
+                                        usersnap.data.documents[indexes[0]]
+                                            ['name'],
+                                      )
+                                    : questionRaw.data['question']
+                                        .replaceAll(
+                                            'xyz',
+                                            usersnap.data.documents[indexes[0]]
+                                                ['name'])
+                                        .replaceAll(
+                                          'abc',
+                                          usersnap.data.documents[indexes[1]]
+                                              ['name'],
+                                        );
 
                                 await Firestore.instance
                                     .collection('roomDetails')
