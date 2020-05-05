@@ -17,8 +17,8 @@ class _StartAGameButtonState extends State<StartAGameButton> {
   Widget build(BuildContext context) {
     String generateUniqueID() {
       Random rnd;
-      int min = 100000;
-      int max = 999999;
+      int min = 100000000;
+      int max = 999999999;
       rnd = new Random();
       var r = min + rnd.nextInt(max - min);
       return r.toString();

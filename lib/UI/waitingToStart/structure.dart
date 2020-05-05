@@ -19,7 +19,6 @@ class WaitingToStart extends StatefulWidget {
 class _WaitingToStartState extends State<WaitingToStart> {
   @override
   Widget build(BuildContext context) {
-    bool isPlayerPlural = false;
     Future<bool> _onBackPressed() {
       return showDialog(
             context: context,
@@ -60,13 +59,9 @@ class _WaitingToStartState extends State<WaitingToStart> {
             return Scaffold();
           }
 
-          List playerStatusList = [];
-          for (int j = 0; j < snap.data.documents.length; j++) {
-            playerStatusList.add(
-              snap.data.documents[j].data['isReady'],
-            );
-          }
-          if (playerStatusList.every((test) => test == true)) {
+          if (snap.data.documents.every(
+            (x) => x['isReady'] == true,
+          )) {
             WidgetsBinding.instance.addPostFrameCallback(
               (_) async {
                 Navigator.pushReplacement(

@@ -93,6 +93,26 @@ class WaitForSelectionsPage extends StatelessWidget {
 
                             WidgetsBinding.instance.addPostFrameCallback(
                               (_) {
+                                Firestore.instance
+                                    .collection('roomDetails')
+                                    .document(gameID)
+                                    .collection('users')
+                                    .orderBy('timestamp')
+                                    .getDocuments()
+                                    .then(
+                                  (onValue) {
+                                    if (onValue.documents[0].documentID ==
+                                        playerID) {
+                                      Firestore.instance
+                                          .collection('roomDetails')
+                                          .document(gameID)
+                                          .updateData(
+                                        {'currentQuestion': ''},
+                                      );
+                                    }
+                                  },
+                                );
+
                                 Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(
