@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:psych/UI/QuestionsPage/structure.dart';
 import 'dart:math';
 
+import 'package:psych/UI/nameInput/structure.dart';
+
 class WaitForReady extends StatelessWidget {
   WaitForReady({
     @required this.gameID,
@@ -37,7 +39,12 @@ class WaitForReady extends StatelessWidget {
                   ),
                   FlatButton(
                     onPressed: () {
-                      Navigator.of(context).pop(true);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (BuildContext context) => NameInputPage(),
+                        ),
+                      );
                     },
                     child: Text(
                       "YES",

@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:psych/UI/QuestionsPage/questionCard.dart';
+import 'package:psych/UI/nameInput/structure.dart';
 import 'package:psych/UI/responseSelection/responseCard.dart';
 import 'package:psych/UI/waitForSelections/structure.dart';
 
@@ -29,7 +30,12 @@ class ResponseSelectionPage extends StatelessWidget {
                   ),
                   FlatButton(
                     onPressed: () {
-                      Navigator.of(context).pop(true);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (BuildContext context) => NameInputPage(),
+                        ),
+                      );
                     },
                     child: Text(
                       "YES",

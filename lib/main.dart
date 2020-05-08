@@ -8,8 +8,12 @@ main() => runApp(
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    Map<String, WidgetBuilder> appRoutes = {
+      '/nameInput': (context) => NameInputPage(),
+    };
     return MaterialApp(
       home: NameInputPage(),
+      routes: appRoutes,
     );
   }
 }

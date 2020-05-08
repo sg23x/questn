@@ -1,13 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:psych/UI/nameInput/structure.dart';
 import 'package:psych/UI/waitingToStart/structure.dart';
 import 'dart:math';
 
 class StartAGameButton extends StatefulWidget {
-  StartAGameButton({
-    @required this.playerName,
-  });
+  StartAGameButton({@required this.playerName, @required this.gameID});
   final String playerName;
+  final String gameID;
 
   @override
   _StartAGameButtonState createState() => _StartAGameButtonState();
@@ -15,21 +15,10 @@ class StartAGameButton extends StatefulWidget {
 
 class _StartAGameButtonState extends State<StartAGameButton> {
   Widget build(BuildContext context) {
-    String generateUniqueID() {
+    String generateUserCode() {
       Random rnd;
       int min = 100000000;
       int max = 999999999;
-      rnd = new Random();
-      var r = min + rnd.nextInt(max - min);
-      return r.toString();
-    }
-
-    String gameID = generateUniqueID();
-
-    String generateUserCode() {
-      Random rnd;
-      int min = 100000;
-      int max = 999999;
       rnd = new Random();
       var r = min + rnd.nextInt(max - min);
       return r.toString();
@@ -40,7 +29,7 @@ class _StartAGameButtonState extends State<StartAGameButton> {
     void startGame() async {
       await Firestore.instance
           .collection('roomDetails')
-          .document(gameID)
+          .document(widget.gameID)
           .collection('users')
           .document(
             playerID,
@@ -54,7 +43,10 @@ class _StartAGameButtonState extends State<StartAGameButton> {
         },
       );
 
-      Firestore.instance.collection('roomDetails').document(gameID).setData(
+      await Firestore.instance
+          .collection('roomDetails')
+          .document(widget.gameID)
+          .setData(
         {
           'currentQuestion': '',
         },
@@ -62,7 +54,7 @@ class _StartAGameButtonState extends State<StartAGameButton> {
 
       await Firestore.instance
           .collection('roomDetails')
-          .document(gameID)
+          .document(widget.gameID)
           .collection('responses')
           .document(playerID)
           .setData(
@@ -74,7 +66,7 @@ class _StartAGameButtonState extends State<StartAGameButton> {
 
       await Firestore.instance
           .collection('roomDetails')
-          .document(gameID)
+          .document(widget.gameID)
           .collection('selections')
           .document(playerID)
           .setData(
@@ -86,7 +78,7 @@ class _StartAGameButtonState extends State<StartAGameButton> {
 
       await Firestore.instance
           .collection('roomDetails')
-          .document(gameID)
+          .document(widget.gameID)
           .collection('playerStatus')
           .document(playerID)
           .setData(
@@ -95,13 +87,13 @@ class _StartAGameButtonState extends State<StartAGameButton> {
         },
       );
 
-      Navigator.of(context).pop();
+      Navigator.pop(context);
 
       Navigator.push(
         context,
         MaterialPageRoute(
           builder: (BuildContext context) => WaitingToStart(
-            gameID: gameID,
+            gameID: widget.gameID,
             playerID: playerID,
           ),
         ),
@@ -128,7 +120,7 @@ class _StartAGameButtonState extends State<StartAGameButton> {
             );
           },
         );
-
+        // del();
         startGame();
       },
     );

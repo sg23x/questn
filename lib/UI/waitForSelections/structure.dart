@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:psych/UI/nameInput/structure.dart';
 import 'package:psych/UI/waitForReady/structure.dart';
 import 'package:psych/UI/waitForSubmissions/waitingForSubmissionPlayerCard.dart';
 
@@ -29,7 +30,12 @@ class WaitForSelectionsPage extends StatelessWidget {
                   ),
                   FlatButton(
                     onPressed: () {
-                      Navigator.of(context).pop(true);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (BuildContext context) => NameInputPage(),
+                        ),
+                      );
                     },
                     child: Text(
                       "YES",

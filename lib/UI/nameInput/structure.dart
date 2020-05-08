@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:psych/UI/gameSelection/structure.dart';
 
@@ -6,13 +7,21 @@ class NameInputPage extends StatefulWidget {
   _NameInputPageState createState() => _NameInputPageState();
 }
 
-bool isButtonEnabled = false;
 String playerName;
+bool isButtonEnabled = false;
 Alignment align = Alignment.center;
+String gameID;
 
 FocusNode focus = new FocusNode();
 
 class _NameInputPageState extends State<NameInputPage> {
+  // @override
+  // void initState() {
+  //   isButtonEnabled = false;
+  //   align = Alignment.center;
+  //   super.initState();
+  // }
+
   Widget build(BuildContext context) {
     void submitName() async {
       Navigator.push(
@@ -20,8 +29,70 @@ class _NameInputPageState extends State<NameInputPage> {
         MaterialPageRoute(
           builder: (BuildContext context) => GameSelection(
             playerName: playerName,
+            gameID: gameID,
           ),
         ),
+      );
+    }
+
+    Firestore.instance
+        .collection(
+          'roomDetails',
+        )
+        .getDocuments()
+        .then(
+      (onValue) {
+        setState(
+          () {
+            gameID = onValue.documents.length != 0
+                ? ((int.parse(onValue.documents[onValue.documents.length - 1]
+                                .documentID) %
+                            9999) +
+                        1)
+                    .toString()
+                : '1000';
+          },
+        );
+      },
+    );
+
+    void del() async {
+      await Firestore.instance
+          .collection('roomDetails')
+          .document(gameID)
+          .get()
+          .then(
+        (onValue) {
+          onValue.reference.collection('users').getDocuments().then(
+            (userval) {
+              for (DocumentSnapshot ds in userval.documents) {
+                ds.reference.delete();
+              }
+            },
+          );
+          onValue.reference.collection('playerStatus').getDocuments().then(
+            (userval) {
+              for (DocumentSnapshot ds in userval.documents) {
+                ds.reference.delete();
+              }
+            },
+          );
+          onValue.reference.collection('responses').getDocuments().then(
+            (userval) {
+              for (DocumentSnapshot ds in userval.documents) {
+                ds.reference.delete();
+              }
+            },
+          );
+          onValue.reference.collection('selections').getDocuments().then(
+            (userval) {
+              for (DocumentSnapshot ds in userval.documents) {
+                ds.reference.delete();
+              }
+            },
+          );
+          onValue.reference.delete();
+        },
       );
     }
 
@@ -119,13 +190,14 @@ class _NameInputPageState extends State<NameInputPage> {
                   isButtonEnabled
                       ? AnimatedAlign(
                           onEnd: submitName,
-                          curve: Curves.fastOutSlowIn,                                                        
+                          curve: Curves.fastOutSlowIn,
                           alignment: align,
                           duration: Duration(seconds: 1),
                           child: FlatButton(
                             splashColor: Colors.transparent,
                             highlightColor: Colors.transparent,
                             onPressed: () {
+                              del();
                               setState(
                                 () {
                                   align = Alignment.bottomRight;
