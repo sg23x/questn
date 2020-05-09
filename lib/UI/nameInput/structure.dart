@@ -7,23 +7,25 @@ class NameInputPage extends StatefulWidget {
   _NameInputPageState createState() => _NameInputPageState();
 }
 
-String playerName;
-bool isButtonEnabled = false;
-Alignment align = Alignment.center;
-String gameID;
-
-FocusNode focus = new FocusNode();
-
 class _NameInputPageState extends State<NameInputPage> {
-  // @override
-  // void initState() {
-  //   isButtonEnabled = false;
-  //   align = Alignment.center;
-  //   super.initState();
-  // }
+  String playerName;
+  bool isButtonEnabled;
+  Alignment align;
+  String gameID;
+  FocusNode focus;
 
+  @override
+  void initState() {
+    isButtonEnabled = false;
+    align = Alignment.center;
+    focus = new FocusNode();
+
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    void submitName() async {
+    void submitName() {
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -35,63 +37,67 @@ class _NameInputPageState extends State<NameInputPage> {
       );
     }
 
-    Firestore.instance
-        .collection(
-          'roomDetails',
-        )
-        .getDocuments()
-        .then(
-      (onValue) {
-        setState(
-          () {
-            gameID = onValue.documents.length != 0
-                ? ((int.parse(onValue.documents[onValue.documents.length - 1]
-                                .documentID) %
-                            9999) +
-                        1)
-                    .toString()
-                : '1000';
-          },
-        );
-      },
-    );
-
-    void del() async {
+    void createRoomID() async {
       await Firestore.instance
-          .collection('roomDetails')
-          .document(gameID)
-          .get()
+          .collection(
+            'roomDetails',
+          )
+          .getDocuments()
           .then(
         (onValue) {
-          onValue.reference.collection('users').getDocuments().then(
-            (userval) {
-              for (DocumentSnapshot ds in userval.documents) {
-                ds.reference.delete();
-              }
+          setState(
+            () {
+              gameID = onValue.documents.length != 0
+                  ? ((int.parse(onValue.documents[onValue.documents.length - 1]
+                                  .documentID) %
+                              9) +
+                          1)
+                      .toString()
+                  : '0';
             },
           );
-          onValue.reference.collection('playerStatus').getDocuments().then(
-            (userval) {
-              for (DocumentSnapshot ds in userval.documents) {
-                ds.reference.delete();
-              }
-            },
-          );
-          onValue.reference.collection('responses').getDocuments().then(
-            (userval) {
-              for (DocumentSnapshot ds in userval.documents) {
-                ds.reference.delete();
-              }
-            },
-          );
-          onValue.reference.collection('selections').getDocuments().then(
-            (userval) {
-              for (DocumentSnapshot ds in userval.documents) {
-                ds.reference.delete();
-              }
-            },
-          );
-          onValue.reference.delete();
+        },
+      );
+    }
+
+    createRoomID();
+
+    void del() async {
+      Future<DocumentSnapshot> query =
+          Firestore.instance.collection('roomDetails').document(gameID).get();
+      await query.then(
+        (onValue) {
+          if (!onValue.exists) {
+            onValue.reference.collection('users').getDocuments().then(
+              (userval) {
+                for (DocumentSnapshot ds in userval.documents) {
+                  ds.reference.delete();
+                }
+              },
+            );
+            onValue.reference.collection('playerStatus').getDocuments().then(
+              (userval) {
+                for (DocumentSnapshot ds in userval.documents) {
+                  ds.reference.delete();
+                }
+              },
+            );
+            onValue.reference.collection('responses').getDocuments().then(
+              (userval) {
+                for (DocumentSnapshot ds in userval.documents) {
+                  ds.reference.delete();
+                }
+              },
+            );
+            onValue.reference.collection('selections').getDocuments().then(
+              (userval) {
+                for (DocumentSnapshot ds in userval.documents) {
+                  ds.reference.delete();
+                }
+              },
+            );
+            onValue.reference.delete();
+          }
         },
       );
     }
@@ -197,7 +203,7 @@ class _NameInputPageState extends State<NameInputPage> {
                             splashColor: Colors.transparent,
                             highlightColor: Colors.transparent,
                             onPressed: () {
-                              del();
+                              // del();
                               setState(
                                 () {
                                   align = Alignment.bottomRight;

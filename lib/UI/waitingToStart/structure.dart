@@ -36,7 +36,7 @@ class _WaitingToStartState extends State<WaitingToStart> {
                   ),
                   FlatButton(
                     onPressed: () {
-                      Navigator.push(
+                      Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
                           builder: (BuildContext context) => NameInputPage(),
