@@ -1,11 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:psych/UI/nameInput/structure.dart';
 import 'package:psych/UI/waitingToStart/structure.dart';
 import 'dart:math';
 
 class StartAGameButton extends StatefulWidget {
-  StartAGameButton({@required this.playerName, @required this.gameID});
+  StartAGameButton({
+    @required this.playerName,
+    @required this.gameID,
+  });
   final String playerName;
   final String gameID;
 
@@ -53,7 +55,7 @@ class _StartAGameButtonState extends State<StartAGameButton> {
         },
       );
 
-      await Firestore.instance
+      Firestore.instance
           .collection('roomDetails')
           .document(widget.gameID)
           .collection('responses')
@@ -65,7 +67,7 @@ class _StartAGameButtonState extends State<StartAGameButton> {
         },
       );
 
-      await Firestore.instance
+      Firestore.instance
           .collection('roomDetails')
           .document(widget.gameID)
           .collection('selections')
@@ -141,29 +143,66 @@ class _StartAGameButtonState extends State<StartAGameButton> {
       startGame();
     }
 
-    return RaisedButton(
-      child: Text(
-        "Start a Game",
-      ),
-      onPressed: () {
-        showDialog(
-          context: context,
-          barrierDismissible: false,
-          builder: (BuildContext context) {
-            return Row(
+    return Row(
+      children: <Widget>[
+        SizedBox(
+          width: MediaQuery.of(context).size.width * 0.2,
+        ),
+        RaisedButton(
+          elevation: 15,
+          color: Colors.transparent,
+          padding: EdgeInsets.all(
+            0,
+          ),
+          onPressed: () {},
+          child: Container(
+            width: MediaQuery.of(context).size.width * 0.6,
+            height: MediaQuery.of(context).size.height * 0.07,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(
+                10,
+              ),
+              color: Colors.pink,
+              border: Border.all(
+                width: 3,
+                color: Colors.white,
+              ),
+            ),
+            child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                CircularProgressIndicator(
-                  backgroundColor: Colors.pink,
-                  strokeWidth: 8,
+                Text(
+                  'Start Game',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontFamily: 'Indie-Flower',
+                    fontWeight: FontWeight.w900,
+                    fontSize: MediaQuery.of(context).size.height * 0.03,
+                  ),
                 ),
               ],
-            );
-          },
-        );
-        del();
-
-      },
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
+
+// showDialog(
+//   context: context,
+//   barrierDismissible: false,
+//   builder: (BuildContext context) {
+//     return Row(
+//       mainAxisAlignment: MainAxisAlignment.center,
+//       children: <Widget>[
+//         CircularProgressIndicator(
+//           backgroundColor: Colors.pink,
+//           strokeWidth: 8,
+//         ),
+//       ],
+//     );
+//   },
+// );
+// del();

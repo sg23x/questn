@@ -51,22 +51,39 @@ class GameSelection extends StatelessWidget {
     return WillPopScope(
       onWillPop: _onBackPressed,
       child: Scaffold(
-        body: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                JoinGameButton(
-                  playerName: playerName,
-                ),
-                StartAGameButton(
-                  playerName: playerName,
-                  gameID: gameID,
-                ),
+        resizeToAvoidBottomInset: false,
+        resizeToAvoidBottomPadding: false,
+        body: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                Colors.blue,
+                Colors.cyan,
               ],
             ),
-          ],
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  JoinGameButton(
+                    playerName: playerName,
+                  ),
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.03,
+                  ),
+                  StartAGameButton(
+                    playerName: playerName,
+                    gameID: gameID,
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

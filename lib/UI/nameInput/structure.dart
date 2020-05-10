@@ -48,16 +48,19 @@ class _NameInputPageState extends State<NameInputPage> {
             () {
               gameID = onValue.documents.length != 0
                   ? onValue.documents.length.toString() ==
-                          onValue.documents[onValue.documents.length - 1]
-                              .documentID
+                          (int.parse(onValue
+                                      .documents[onValue.documents.length - 1]
+                                      .documentID) -
+                                  1000)
+                              .toString()
                       ? ((int.parse(onValue
                                       .documents[onValue.documents.length - 1]
                                       .documentID) %
-                                  9) +
+                                  9999) +
                               1)
                           .toString()
                       : onValue.documents[0].documentID
-                  : '1';
+                  : '1001';
             },
           );
         },

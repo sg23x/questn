@@ -1,13 +1,22 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:pin_entry_text_field/pin_entry_text_field.dart';
 import 'package:psych/UI/waitingToStart/structure.dart';
 import 'dart:math';
 
-class JoinGameButton extends StatelessWidget {
+class JoinGameButton extends StatefulWidget {
   JoinGameButton({
     @required this.playerName,
   });
   final String playerName;
+
+  @override
+  _JoinGameButtonState createState() => _JoinGameButtonState();
+}
+
+class _JoinGameButtonState extends State<JoinGameButton> {
+  String gameID;
+
   Widget build(BuildContext context) {
     String generateUserCode() {
       Random rnd;
@@ -24,8 +33,14 @@ class JoinGameButton extends StatelessWidget {
       showDialog(
         context: context,
         builder: (BuildContext context) {
-          String gameID;
           return AlertDialog(
+            backgroundColor: Colors.white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(
+                12,
+              ),
+            ),
+            elevation: 20,
             actions: <Widget>[
               FlatButton(
                 onPressed: () async {
@@ -62,7 +77,7 @@ class JoinGameButton extends StatelessWidget {
                         )
                         .setData(
                       {
-                        'name': playerName,
+                        'name': widget.playerName,
                         'userID': playerID,
                         'score': 0,
                         'timestamp':
@@ -140,6 +155,12 @@ class JoinGameButton extends StatelessWidget {
                 },
                 child: Text(
                   "Go!",
+                  style: TextStyle(
+                    color: Colors.pink,
+                    fontFamily: 'Indie-Flower',
+                    fontSize: MediaQuery.of(context).size.height * 0.03,
+                    fontWeight: FontWeight.w900,
+                  ),
                 ),
               )
             ],
@@ -149,12 +170,28 @@ class JoinGameButton extends StatelessWidget {
                 children: <Widget>[
                   Text(
                     "Enter Game ID",
+                    style: TextStyle(
+                      fontFamily: 'Indie-Flower',
+                      fontSize: MediaQuery.of(context).size.height * 0.03,
+                      color: Colors.pink,
+                      fontWeight: FontWeight.w900,
+                    ),
                   ),
-                  TextField(
-                    keyboardType: TextInputType.numberWithOptions(),
-                    onChanged: (val) {
-                      gameID = val;
-                    },
+                  Theme(
+                    data: ThemeData(
+                      primaryColor: Colors.pink,
+                      cursorColor: Colors.pink,
+                    ),
+                    child: PinEntryTextField(
+                      fields: 4,
+                      onSubmit: (String pin) {
+                        setState(
+                          () {
+                            gameID = pin;
+                          },
+                        );
+                      },
+                    ),
                   ),
                 ],
               ),
@@ -164,13 +201,51 @@ class JoinGameButton extends StatelessWidget {
       );
     }
 
-    return RaisedButton(
-      child: Text(
-        "Join Game",
-      ),
-      onPressed: () {
-        joinGame();
-      },
+    return Row(
+      children: <Widget>[
+        RaisedButton(
+          elevation: 15,
+          color: Colors.transparent,
+          padding: EdgeInsets.all(
+            0,
+          ),
+          onPressed: () {
+            joinGame();
+          },
+          child: Container(
+            width: MediaQuery.of(context).size.width * 0.6,
+            height: MediaQuery.of(context).size.height * 0.07,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(
+                10,
+              ),
+              color: Colors.pink,
+              border: Border.all(
+                width: 3,
+                color: Colors.white,
+              ),
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Text(
+                  'Join Game',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontFamily: 'Indie-Flower',
+                    fontWeight: FontWeight.w900,
+                    fontSize: MediaQuery.of(context).size.height * 0.03,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        SizedBox(
+          width: MediaQuery.of(context).size.width * 0.2,
+        ),
+      ],
     );
   }
 }
