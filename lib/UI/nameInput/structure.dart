@@ -37,23 +37,27 @@ class _NameInputPageState extends State<NameInputPage> {
       );
     }
 
-    void createRoomID() async {
-      await Firestore.instance
-          .collection(
-            'roomDetails',
-          )
-          .getDocuments()
-          .then(
+    void createRoomID() {
+      Future<QuerySnapshot> query = Firestore.instance
+          .collection('roomDetails')
+          .orderBy('timestamp')
+          .getDocuments();
+      query.then(
         (onValue) {
           setState(
             () {
               gameID = onValue.documents.length != 0
-                  ? ((int.parse(onValue.documents[onValue.documents.length - 1]
-                                  .documentID) %
-                              9) +
-                          1)
-                      .toString()
-                  : '0';
+                  ? onValue.documents.length.toString() ==
+                          onValue.documents[onValue.documents.length - 1]
+                              .documentID
+                      ? ((int.parse(onValue
+                                      .documents[onValue.documents.length - 1]
+                                      .documentID) %
+                                  9) +
+                              1)
+                          .toString()
+                      : onValue.documents[0].documentID
+                  : '1';
             },
           );
         },
@@ -61,46 +65,6 @@ class _NameInputPageState extends State<NameInputPage> {
     }
 
     createRoomID();
-
-    void del() async {
-      Future<DocumentSnapshot> query =
-          Firestore.instance.collection('roomDetails').document(gameID).get();
-      await query.then(
-        (onValue) {
-          if (!onValue.exists) {
-            onValue.reference.collection('users').getDocuments().then(
-              (userval) {
-                for (DocumentSnapshot ds in userval.documents) {
-                  ds.reference.delete();
-                }
-              },
-            );
-            onValue.reference.collection('playerStatus').getDocuments().then(
-              (userval) {
-                for (DocumentSnapshot ds in userval.documents) {
-                  ds.reference.delete();
-                }
-              },
-            );
-            onValue.reference.collection('responses').getDocuments().then(
-              (userval) {
-                for (DocumentSnapshot ds in userval.documents) {
-                  ds.reference.delete();
-                }
-              },
-            );
-            onValue.reference.collection('selections').getDocuments().then(
-              (userval) {
-                for (DocumentSnapshot ds in userval.documents) {
-                  ds.reference.delete();
-                }
-              },
-            );
-            onValue.reference.delete();
-          }
-        },
-      );
-    }
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -203,7 +167,6 @@ class _NameInputPageState extends State<NameInputPage> {
                             splashColor: Colors.transparent,
                             highlightColor: Colors.transparent,
                             onPressed: () {
-                              // del();
                               setState(
                                 () {
                                   align = Alignment.bottomRight;

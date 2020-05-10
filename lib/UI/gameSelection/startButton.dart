@@ -49,6 +49,7 @@ class _StartAGameButtonState extends State<StartAGameButton> {
           .setData(
         {
           'currentQuestion': '',
+          'timestamp': Timestamp.now().millisecondsSinceEpoch,
         },
       );
 
@@ -100,6 +101,46 @@ class _StartAGameButtonState extends State<StartAGameButton> {
       );
     }
 
+    void del() async {
+      DocumentSnapshot query = await Firestore.instance
+          .collection('roomDetails')
+          .document(widget.gameID)
+          .get();
+
+      if (query.exists) {
+        await query.reference.collection('users').getDocuments().then(
+          (onValue) {
+            for (DocumentSnapshot ds in onValue.documents) {
+              ds.reference.delete();
+            }
+          },
+        );
+        await query.reference.collection('playerStatus').getDocuments().then(
+          (onValue) {
+            for (DocumentSnapshot ds in onValue.documents) {
+              ds.reference.delete();
+            }
+          },
+        );
+        await query.reference.collection('responses').getDocuments().then(
+          (onValue) {
+            for (DocumentSnapshot ds in onValue.documents) {
+              ds.reference.delete();
+            }
+          },
+        );
+        await query.reference.collection('selections').getDocuments().then(
+          (onValue) {
+            for (DocumentSnapshot ds in onValue.documents) {
+              ds.reference.delete();
+            }
+          },
+        );
+        await query.reference.delete();
+      }
+      startGame();
+    }
+
     return RaisedButton(
       child: Text(
         "Start a Game",
@@ -120,8 +161,8 @@ class _StartAGameButtonState extends State<StartAGameButton> {
             );
           },
         );
-        // del();
-        startGame();
+        del();
+
       },
     );
   }
