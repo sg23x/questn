@@ -133,6 +133,7 @@ class WaitForReady extends StatelessWidget {
                   .collection('roomDetails')
                   .document(gameID)
                   .collection('users')
+                  .orderBy('timestamp')
                   .snapshots(),
             ),
             SizedBox(
@@ -378,7 +379,7 @@ class WaitForReady extends StatelessWidget {
                                 await Firestore.instance
                                     .collection('roomDetails')
                                     .document(gameID)
-                                    .updateData(
+                                    .setData(
                                   {
                                     'currentQuestion': question,
                                   },

@@ -25,6 +25,11 @@ class _WaitingToStartState extends State<WaitingToStart> {
             context: context,
             builder: (BuildContext context) {
               return AlertDialog(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(
+                    10,
+                  ),
+                ),
                 actions: <Widget>[
                   FlatButton(
                     onPressed: () {
@@ -32,6 +37,11 @@ class _WaitingToStartState extends State<WaitingToStart> {
                     },
                     child: Text(
                       "NO",
+                      style: TextStyle(
+                        fontFamily: 'Indie-Flower',
+                        fontWeight: FontWeight.w900,
+                        fontSize: MediaQuery.of(context).size.width * 0.05,
+                      ),
                     ),
                   ),
                   FlatButton(
@@ -45,11 +55,22 @@ class _WaitingToStartState extends State<WaitingToStart> {
                     },
                     child: Text(
                       "YES",
+                      style: TextStyle(
+                        fontFamily: 'Indie-Flower',
+                        fontWeight: FontWeight.w900,
+                        fontSize: MediaQuery.of(context).size.width * 0.05,
+                        color: Colors.pink,
+                      ),
                     ),
                   ),
                 ],
                 content: Text(
                   "You sure you wanna leave the game?",
+                  style: TextStyle(
+                    fontFamily: 'Indie-Flower',
+                    fontWeight: FontWeight.w400,
+                    fontSize: MediaQuery.of(context).size.width * 0.06,
+                  ),
                 ),
               );
             },
@@ -90,17 +111,43 @@ class _WaitingToStartState extends State<WaitingToStart> {
 
               return Scaffold(
                 appBar: AppBar(
+                  flexibleSpace: Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          Colors.blue,
+                          Colors.cyan,
+                        ],
+                      ),
+                    ),
+                  ),
                   title: Text(
-                    'Game id: ${widget.gameID}',
+                    'GAME ID: ${widget.gameID}',
+                    style: TextStyle(
+                      fontSize: MediaQuery.of(context).size.height * 0.03,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
                   centerTitle: true,
                 ),
                 body: Column(
                   children: <Widget>[
+                    SizedBox(
+                      height: 5,
+                    ),
                     Expanded(
                       child: ListView.builder(
                         itemBuilder: (context, i) {
                           return PlayerWaitingCard(
+                            colorList: i % 2 == 0
+                                ? [
+                                    Colors.cyan,
+                                    Colors.blue,
+                                  ]
+                                : [
+                                    Colors.blue,
+                                    Colors.cyan,
+                                  ],
                             name: snapshot.data.documents[i]['name'],
                           );
                         },
@@ -115,7 +162,33 @@ class _WaitingToStartState extends State<WaitingToStart> {
                             isPlayerPlural:
                                 snap.data.documents.length > 1 ? true : false,
                           )
-                        : SizedBox(),
+                        : Container(
+                            alignment: Alignment.center,
+                            child: Text(
+                              "Waiting to start...",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontFamily: 'Indie-Flower',
+                                fontWeight: FontWeight.w900,
+                                fontSize:
+                                    MediaQuery.of(context).size.height * 0.03,
+                              ),
+                            ),
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                colors: [
+                                  Colors.black,
+                                  Colors.grey,
+                                ],
+                              ),
+                            ),
+                            height: MediaQuery.of(context).size.height * 0.1,
+                            margin: EdgeInsets.only(
+                              bottom: MediaQuery.of(context).size.height * 0.01,
+                              top: MediaQuery.of(context).size.height * 0.01,
+                            ),
+                            width: MediaQuery.of(context).size.width * 0.96,
+                          ),
                   ],
                 ),
               );

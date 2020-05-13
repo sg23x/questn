@@ -247,7 +247,9 @@ class _JoinGameButtonState extends State<JoinGameButton> {
     }
 
     return AnimatedAlign(
-      duration: Duration(seconds: 1),
+      duration: Duration(
+        milliseconds: 600,
+      ),
       alignment: axis,
       child: RaisedButton(
         color: Colors.transparent,

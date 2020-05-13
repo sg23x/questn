@@ -165,7 +165,9 @@ class _NameInputPageState extends State<NameInputPage> {
                           onEnd: submitName,
                           curve: Curves.fastOutSlowIn,
                           alignment: align,
-                          duration: Duration(seconds: 1),
+                          duration: Duration(
+                            milliseconds: 600,
+                          ),
                           child: FlatButton(
                             splashColor: Colors.transparent,
                             highlightColor: Colors.transparent,

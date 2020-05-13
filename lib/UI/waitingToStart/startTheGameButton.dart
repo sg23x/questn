@@ -17,7 +17,14 @@ class StartTheGameButton extends StatefulWidget {
 }
 
 class _StartTheGameButtonState extends State<StartTheGameButton> {
+  Alignment align;
+
   List playerNames = [];
+  @override
+  void initState() {
+    align = Alignment.center;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -84,41 +91,93 @@ class _StartTheGameButtonState extends State<StartTheGameButton> {
         return StreamBuilder(
           builder: (context, snapshot) {
             return RaisedButton(
-              child: Text(
-                "Start Game",
+              highlightColor: Colors.transparent,
+              disabledColor: Colors.transparent,
+              elevation: 0,
+              color: Colors.transparent,
+              padding: EdgeInsets.all(
+                0,
+              ),
+              child: Container(
+                child: AnimatedAlign(
+                  curve: Curves.fastOutSlowIn,
+                  onEnd: () {
+                    startGame();
+                    DocumentSnapshot questionRaw =
+                        snap.data.documents[generateRandomIndex(
+                      snap.data.documents.length,
+                    )];
+
+                    List indexes =
+                        getIndexes(snapshot.data.documents.length, 2);
+
+                    String question =
+                        !questionRaw.data['question'].contains('abc')
+                            ? questionRaw.data['question'].replaceAll(
+                                'xyz',
+                                snapshot.data.documents[indexes[0]]['name'],
+                              )
+                            : questionRaw.data['question']
+                                .replaceAll('xyz',
+                                    snapshot.data.documents[indexes[0]]['name'])
+                                .replaceAll(
+                                  'abc',
+                                  snapshot.data.documents[indexes[1]]['name'],
+                                );
+
+                    Firestore.instance
+                        .collection('roomDetails')
+                        .document(widget.gameID)
+                        .updateData(
+                      {
+                        'currentQuestion': question,
+                      },
+                    );
+                  },
+                  duration: Duration(
+                    seconds: 1,
+                  ),
+                  alignment: align,
+                  child: widget.isPlayerPlural
+                      ? Icon(
+                          Icons.arrow_forward,
+                          color: Colors.white,
+                          size: MediaQuery.of(context).size.height * 0.07,
+                        )
+                      : Text(
+                          "Waiting for players...",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontFamily: 'Indie-Flower',
+                            fontWeight: FontWeight.w900,
+                            fontSize: MediaQuery.of(context).size.height * 0.03,
+                          ),
+                        ),
+                ),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      Colors.black,
+                      Colors.grey,
+                    ],
+                  ),
+                ),
+                height: MediaQuery.of(context).size.height * 0.1,
+                margin: EdgeInsets.only(
+                  bottom: MediaQuery.of(context).size.height * 0.01,
+                  top: MediaQuery.of(context).size.height * 0.01,
+                ),
+                width: MediaQuery.of(context).size.width * 0.96,
               ),
               onPressed: widget.isPlayerPlural
                   ? () {
-                      startGame();
-
-                      DocumentSnapshot questionRaw =
-                          snap.data.documents[generateRandomIndex(
-                        snap.data.documents.length,
-                      )];
-
-                      List indexes =
-                          getIndexes(snapshot.data.documents.length, 2);
-
-                      String question = !questionRaw.data['question']
-                              .contains('abc')
-                          ? questionRaw.data['question'].replaceAll(
-                              'xyz',
-                              snapshot.data.documents[indexes[0]]['name'],
-                            )
-                          : questionRaw.data['question']
-                              .replaceAll('xyz',
-                                  snapshot.data.documents[indexes[0]]['name'])
-                              .replaceAll(
-                                'abc',
-                                snapshot.data.documents[indexes[1]]['name'],
-                              );
-
-                      Firestore.instance
-                          .collection('roomDetails')
-                          .document(widget.gameID)
-                          .updateData(
-                        {
-                          'currentQuestion': question,
+                      setState(
+                        () {
+                          align = Alignment.lerp(
+                            Alignment.center,
+                            Alignment.centerRight,
+                            1.5,
+                          );
                         },
                       );
                     }
