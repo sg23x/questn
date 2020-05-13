@@ -64,23 +64,18 @@ class GameSelection extends StatelessWidget {
               ],
             ),
           ),
-          child: Row(
+          child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  JoinGameButton(
-                    playerName: playerName,
-                  ),
-                  SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.03,
-                  ),
-                  StartAGameButton(
-                    playerName: playerName,
-                    gameID: gameID,
-                  ),
-                ],
+              JoinGameButton(
+                playerName: playerName,
+              ),
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.03,
+              ),
+              StartAGameButton(
+                playerName: playerName,
+                gameID: gameID,
               ),
             ],
           ),

@@ -16,7 +16,19 @@ class JoinGameButton extends StatefulWidget {
 
 class _JoinGameButtonState extends State<JoinGameButton> {
   String gameID;
+  Alignment axis;
 
+  @override
+  void initState() {
+    axis = Alignment.lerp(
+      Alignment.bottomCenter,
+      Alignment.bottomRight,
+      1,
+    );
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     String generateUserCode() {
       Random rnd;
@@ -26,6 +38,20 @@ class _JoinGameButtonState extends State<JoinGameButton> {
       var r = min + rnd.nextInt(max - min);
       return r.toString();
     }
+
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) {
+        setState(
+          () {
+            axis = Alignment.lerp(
+              Alignment.bottomCenter,
+              Alignment.bottomLeft,
+              0.5,
+            );
+          },
+        );
+      },
+    );
 
     final String playerID = generateUserCode();
 
@@ -220,51 +246,48 @@ class _JoinGameButtonState extends State<JoinGameButton> {
       );
     }
 
-    return Row(
-      children: <Widget>[
-        RaisedButton(
-          elevation: 15,
-          color: Colors.transparent,
-          padding: EdgeInsets.all(
-            0,
-          ),
-          onPressed: () {
-            joinGame();
-          },
-          child: Container(
-            width: MediaQuery.of(context).size.width * 0.6,
-            height: MediaQuery.of(context).size.height * 0.07,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(
-                10,
-              ),
-              color: Colors.pink,
-              border: Border.all(
-                width: 3,
-                color: Colors.white,
-              ),
+    return AnimatedAlign(
+      duration: Duration(seconds: 1),
+      alignment: axis,
+      child: RaisedButton(
+        color: Colors.transparent,
+        padding: EdgeInsets.all(
+          0,
+        ),
+        elevation: 15,
+        onPressed: () {
+          joinGame();
+        },
+        child: Container(
+          width: MediaQuery.of(context).size.width * 0.6,
+          height: MediaQuery.of(context).size.height * 0.07,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(
+              10,
             ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Text(
-                  'Join Game',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontFamily: 'Indie-Flower',
-                    fontWeight: FontWeight.w900,
-                    fontSize: MediaQuery.of(context).size.height * 0.03,
-                  ),
+            color: Colors.pink,
+            border: Border.all(
+              width: 3,
+              color: Colors.white,
+            ),
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text(
+                'Join Game',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontFamily: 'Indie-Flower',
+                  fontWeight: FontWeight.w900,
+                  fontSize: MediaQuery.of(context).size.height * 0.03,
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
-        SizedBox(
-          width: MediaQuery.of(context).size.width * 0.2,
-        ),
-      ],
+      ),
     );
   }
 }
