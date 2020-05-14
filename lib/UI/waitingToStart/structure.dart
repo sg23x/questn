@@ -139,6 +139,7 @@ class _WaitingToStartState extends State<WaitingToStart> {
                       child: ListView.builder(
                         itemBuilder: (context, i) {
                           return PlayerWaitingCard(
+                            animationIndex: i,
                             colorList: i % 2 == 0
                                 ? [
                                     Colors.cyan,
