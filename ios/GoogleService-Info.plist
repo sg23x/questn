@@ -3,9 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>84423144967-rsm2eavau8ih1t7kgc39cu0kt6j9rkeh.apps.googleusercontent.com</string>
+	<string>84423144967-ubee0glicg05cohmq16a06g4t13hnfh2.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.84423144967-rsm2eavau8ih1t7kgc39cu0kt6j9rkeh</string>
+	<string>com.googleusercontent.apps.84423144967-ubee0glicg05cohmq16a06g4t13hnfh2</string>
 	<key>API_KEY</key>
 	<string>AIzaSyDuvVyYFEmmzSlTidf-9kDcHfb0UcXfFy8</string>
 	<key>GCM_SENDER_ID</key>
@@ -13,7 +13,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.example.psych</string>
+	<string>soumyagupta2307.com.psych</string>
 	<key>PROJECT_ID</key>
 	<string>psych-753c4</string>
 	<key>STORAGE_BUCKET</key>
@@ -29,7 +29,7 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:84423144967:ios:b03bbc2a9e28622ff5dca2</string>
+	<string>1:84423144967:ios:5327a77fa4c7db2af5dca2</string>
 	<key>DATABASE_URL</key>
 	<string>https://psych-753c4.firebaseio.com</string>
 </dict>
