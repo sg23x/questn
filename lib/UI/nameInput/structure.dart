@@ -166,7 +166,7 @@ class _NameInputPageState extends State<NameInputPage> {
                           curve: Curves.fastOutSlowIn,
                           alignment: align,
                           duration: Duration(
-                            milliseconds: 600,
+                            milliseconds: 400,
                           ),
                           child: FlatButton(
                             splashColor: Colors.transparent,

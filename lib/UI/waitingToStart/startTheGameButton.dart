@@ -135,7 +135,7 @@ class _StartTheGameButtonState extends State<StartTheGameButton> {
                     );
                   },
                   duration: Duration(
-                    seconds: 1,
+                    milliseconds: 400,
                   ),
                   alignment: align,
                   child: widget.isPlayerPlural

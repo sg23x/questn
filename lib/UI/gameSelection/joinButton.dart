@@ -210,7 +210,7 @@ class _JoinGameButtonState extends State<JoinGameButton> {
               )
             ],
             content: Container(
-              height: MediaQuery.of(context).size.height * 0.12,
+              height: MediaQuery.of(context).size.height * 0.14,
               child: Column(
                 children: <Widget>[
                   Text(
@@ -248,7 +248,7 @@ class _JoinGameButtonState extends State<JoinGameButton> {
 
     return AnimatedAlign(
       duration: Duration(
-        milliseconds: 600,
+        milliseconds: 400,
       ),
       alignment: axis,
       child: RaisedButton(

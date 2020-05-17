@@ -171,7 +171,7 @@ class _StartAGameButtonState extends State<StartAGameButton> {
 
     return AnimatedAlign(
       duration: Duration(
-        milliseconds: 600,
+        milliseconds: 400,
       ),
       alignment: axis,
       child: RaisedButton(

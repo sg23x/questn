@@ -20,6 +20,7 @@ class QuestionsPage extends StatefulWidget {
 class _QuestionsPageState extends State<QuestionsPage> {
   Alignment align;
   bool isButtonEnabled;
+  String response = '';
   @override
   void initState() {
     align = Alignment.lerp(
@@ -59,8 +60,6 @@ class _QuestionsPageState extends State<QuestionsPage> {
         },
       );
     }
-
-    String response = '';
 
     Future<bool> _onBackPressed() {
       return showDialog(
