@@ -15,6 +15,11 @@ class WaitForSubmissions extends StatelessWidget {
             context: context,
             builder: (BuildContext context) {
               return AlertDialog(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(
+                    10,
+                  ),
+                ),
                 actions: <Widget>[
                   FlatButton(
                     onPressed: () {
@@ -22,11 +27,16 @@ class WaitForSubmissions extends StatelessWidget {
                     },
                     child: Text(
                       "NO",
+                      style: TextStyle(
+                        fontFamily: 'Indie-Flower',
+                        fontWeight: FontWeight.w900,
+                        fontSize: MediaQuery.of(context).size.width * 0.05,
+                      ),
                     ),
                   ),
                   FlatButton(
                     onPressed: () {
-                      Navigator.push(
+                      Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
                           builder: (BuildContext context) => NameInputPage(),
@@ -35,11 +45,22 @@ class WaitForSubmissions extends StatelessWidget {
                     },
                     child: Text(
                       "YES",
+                      style: TextStyle(
+                        fontFamily: 'Indie-Flower',
+                        fontWeight: FontWeight.w900,
+                        fontSize: MediaQuery.of(context).size.width * 0.05,
+                        color: Colors.pink,
+                      ),
                     ),
                   ),
                 ],
                 content: Text(
                   "You sure you wanna leave the game?",
+                  style: TextStyle(
+                    fontFamily: 'Indie-Flower',
+                    fontWeight: FontWeight.w400,
+                    fontSize: MediaQuery.of(context).size.width * 0.06,
+                  ),
                 ),
               );
             },
@@ -82,15 +103,38 @@ class WaitForSubmissions extends StatelessWidget {
                 }
 
                 return Scaffold(
-                  appBar: AppBar(),
+                  appBar: AppBar(
+                    flexibleSpace: Container(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            Colors.blue,
+                            Colors.cyan,
+                          ],
+                        ),
+                      ),
+                    ),
+                    centerTitle: true,
+                    title: Text(
+                      'Waiting for submissions...',
+                      style: TextStyle(
+                        fontFamily: 'Indie-Flower',
+                        fontSize: MediaQuery.of(context).size.width * 0.058,
+                        fontWeight: FontWeight.w100,
+                      ),
+                    ),
+                  ),
                   body: Column(
                     children: <Widget>[
+                      SizedBox(
+                        height: MediaQuery.of(context).size.width * 0.0075,
+                      ),
                       Expanded(
                         child: ListView.builder(
                           itemBuilder: (context, i) {
                             return WaitingForSubmissionPlayerCard(
+                              animationIndex: i,
                               name: snapshot.data.documents[i]['name'],
-
                               hasSubmitted: snap.data.documents
                                           .where(
                                             (no) =>
@@ -111,7 +155,6 @@ class WaitForSubmissions extends StatelessWidget {
                                       .toList()[0]
                                       .data['hasSubmitted']
                                   : false,
-                              // hasSubmitted: true,
                             );
                           },
                           shrinkWrap: true,

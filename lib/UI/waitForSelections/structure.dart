@@ -134,6 +134,7 @@ class WaitForSelectionsPage extends StatelessWidget {
                           }
 
                           return WaitingForSubmissionPlayerCard(
+                            animationIndex: i,
                             name: usersnap.data.documents
                                 .where((n) =>
                                     n['userID'] ==
