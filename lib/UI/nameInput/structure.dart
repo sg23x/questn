@@ -17,7 +17,11 @@ class _NameInputPageState extends State<NameInputPage> {
   @override
   void initState() {
     isButtonEnabled = false;
-    align = Alignment.center;
+    align = Alignment.lerp(
+      Alignment.center,
+      Alignment.centerLeft,
+      2,
+    );
     focus = new FocusNode();
 
     super.initState();
@@ -145,12 +149,18 @@ class _NameInputPageState extends State<NameInputPage> {
                                 setState(
                                   () {
                                     isButtonEnabled = true;
+                                    align = Alignment.center;
                                   },
                                 );
                               } else {
                                 setState(
                                   () {
                                     isButtonEnabled = false;
+                                    align = Alignment.lerp(
+                                      Alignment.center,
+                                      Alignment.centerLeft,
+                                      2,
+                                    );
                                   },
                                 );
                               }
@@ -160,34 +170,43 @@ class _NameInputPageState extends State<NameInputPage> {
                       ),
                     ],
                   ),
-                  isButtonEnabled
-                      ? AnimatedAlign(
-                          onEnd: submitName,
-                          curve: Curves.fastOutSlowIn,
-                          alignment: align,
-                          duration: Duration(
-                            milliseconds: 400,
-                          ),
-                          child: FlatButton(
-                            splashColor: Colors.transparent,
-                            highlightColor: Colors.transparent,
-                            onPressed: () {
+                  AnimatedAlign(
+                    onEnd: align ==
+                            Alignment.lerp(
+                              Alignment.center,
+                              Alignment.centerRight,
+                              2,
+                            )
+                        ? submitName
+                        : null,
+                    curve: Curves.fastOutSlowIn,
+                    alignment: align,
+                    duration: Duration(
+                      milliseconds: 250,
+                    ),
+                    child: FlatButton(
+                      splashColor: Colors.transparent,
+                      highlightColor: Colors.transparent,
+                      onPressed: isButtonEnabled
+                          ? () {
                               setState(
                                 () {
-                                  align = Alignment.bottomRight;
+                                  align = Alignment.lerp(
+                                    Alignment.center,
+                                    Alignment.centerRight,
+                                    2,
+                                  );
                                 },
                               );
-                            },
-                            child: Icon(
-                              Icons.arrow_forward,
-                              size: MediaQuery.of(context).size.height * 0.14,
-                              color: Colors.yellow,
-                            ),
-                          ),
-                        )
-                      : SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.14,
-                        ),
+                            }
+                          : null,
+                      child: Icon(
+                        Icons.arrow_forward,
+                        size: MediaQuery.of(context).size.height * 0.14,
+                        color: Colors.yellow,
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
