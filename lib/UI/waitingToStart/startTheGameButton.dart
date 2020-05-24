@@ -54,6 +54,14 @@ class _StartTheGameButtonState extends State<StartTheGameButton> {
           }
         },
       );
+      Firestore.instance
+          .collection('roomDetails')
+          .document(widget.gameID)
+          .updateData(
+        {
+          'isGameStarted': true,
+        },
+      );
     }
 
     List getIndexes(int len, int n) {

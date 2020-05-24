@@ -92,69 +92,113 @@ class _JoinGameButtonState extends State<JoinGameButton> {
                       .get();
 
                   if (snap.exists) {
-                    Navigator.of(context).pop();
+                    if (snap.data['isGameStarted'] == false) {
+                      Navigator.of(context).pop();
 
-                    Firestore.instance
-                        .collection('roomDetails')
-                        .document(gameID)
-                        .collection('users')
-                        .document(
-                          playerID,
-                        )
-                        .setData(
-                      {
-                        'name': widget.playerName,
-                        'userID': playerID,
-                        'score': 0,
-                        'timestamp':
-                            Timestamp.now().millisecondsSinceEpoch.toString(),
-                      },
-                    );
-                    Firestore.instance
-                        .collection('roomDetails')
-                        .document(gameID)
-                        .collection('playerStatus')
-                        .document(playerID)
-                        .setData(
-                      {
-                        'isReady': false,
-                      },
-                    );
+                      Firestore.instance
+                          .collection('roomDetails')
+                          .document(gameID)
+                          .collection('users')
+                          .document(
+                            playerID,
+                          )
+                          .setData(
+                        {
+                          'name': widget.playerName,
+                          'userID': playerID,
+                          'score': 0,
+                          'timestamp':
+                              Timestamp.now().millisecondsSinceEpoch.toString(),
+                        },
+                      );
+                      Firestore.instance
+                          .collection('roomDetails')
+                          .document(gameID)
+                          .collection('playerStatus')
+                          .document(playerID)
+                          .setData(
+                        {
+                          'isReady': false,
+                        },
+                      );
 
-                    Firestore.instance
-                        .collection('roomDetails')
-                        .document(gameID)
-                        .collection('selections')
-                        .document(playerID)
-                        .setData(
-                      {
-                        'hasSelected': false,
-                        'selection': '',
-                      },
-                    );
+                      Firestore.instance
+                          .collection('roomDetails')
+                          .document(gameID)
+                          .collection('selections')
+                          .document(playerID)
+                          .setData(
+                        {
+                          'hasSelected': false,
+                          'selection': '',
+                        },
+                      );
 
-                    Firestore.instance
-                        .collection('roomDetails')
-                        .document(gameID)
-                        .collection('responses')
-                        .document(playerID)
-                        .setData(
-                      {
-                        'hasSubmitted': false,
-                        'response': '',
-                      },
-                    );
-                    Navigator.of(context).pop();
+                      Firestore.instance
+                          .collection('roomDetails')
+                          .document(gameID)
+                          .collection('responses')
+                          .document(playerID)
+                          .setData(
+                        {
+                          'hasSubmitted': false,
+                          'response': '',
+                        },
+                      );
+                      Navigator.of(context).pop();
 
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (BuildContext context) => WaitingToStart(
-                          gameID: gameID,
-                          playerID: playerID,
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (BuildContext context) => WaitingToStart(
+                            gameID: gameID,
+                            playerID: playerID,
+                          ),
                         ),
-                      ),
-                    );
+                      );
+                    } else {
+                      Navigator.of(context).pop();
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            contentTextStyle: TextStyle(
+                              fontFamily: 'Indie-Flower',
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                              fontSize:
+                                  MediaQuery.of(context).size.height * 0.025,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(
+                                12,
+                              ),
+                            ),
+                            actions: <Widget>[
+                              FlatButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                child: Text(
+                                  "OK",
+                                  style: TextStyle(
+                                    fontFamily: 'Indie-Flower',
+                                    color: Colors.pink,
+                                    fontWeight: FontWeight.w900,
+                                    fontSize:
+                                        MediaQuery.of(context).size.height *
+                                            0.03,
+                                  ),
+                                ),
+                              )
+                            ],
+                            content: Text(
+                              "Sorry, The game has started!",
+                            ),
+                          );
+                        },
+                      );
+                    }
                   } else {
                     Navigator.of(context).pop();
                     showDialog(
