@@ -20,6 +20,33 @@ class WaitingToStart extends StatefulWidget {
 class _WaitingToStartState extends State<WaitingToStart> {
   @override
   Widget build(BuildContext context) {
+    void deletePlayer() async {
+      await Firestore.instance
+          .collection('roomDetails')
+          .document(widget.gameID)
+          .collection('users')
+          .document(widget.playerID)
+          .delete();
+      await Firestore.instance
+          .collection('roomDetails')
+          .document(widget.gameID)
+          .collection('responses')
+          .document(widget.playerID)
+          .delete();
+      await Firestore.instance
+          .collection('roomDetails')
+          .document(widget.gameID)
+          .collection('playerStatus')
+          .document(widget.playerID)
+          .delete();
+      await Firestore.instance
+          .collection('roomDetails')
+          .document(widget.gameID)
+          .collection('selections')
+          .document(widget.playerID)
+          .delete();
+    }
+
     Future<bool> _onBackPressed() {
       return showDialog(
             context: context,
@@ -46,6 +73,7 @@ class _WaitingToStartState extends State<WaitingToStart> {
                   ),
                   FlatButton(
                     onPressed: () {
+                      deletePlayer();
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
@@ -149,47 +177,57 @@ class _WaitingToStartState extends State<WaitingToStart> {
                                     Colors.blue,
                                     Colors.cyan,
                                   ],
-                            name: snapshot.data.documents[i]['name'],
+                            name: snapshot.data.documents.length != 0
+                                ? snapshot.data.documents[i]['name']
+                                : '',
                           );
                         },
                         shrinkWrap: true,
                         itemCount: snapshot.data.documents.length,
                       ),
                     ),
-                    widget.playerID == snapshot.data.documents[0]['userID']
-                        ? StartTheGameButton(
-                            gameID: widget.gameID,
-                            playerID: widget.playerID,
-                            isPlayerPlural:
-                                snap.data.documents.length > 1 ? true : false,
-                          )
-                        : Container(
-                            alignment: Alignment.center,
-                            child: Text(
-                              "Waiting to start...",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontFamily: 'Indie-Flower',
-                                fontWeight: FontWeight.w900,
-                                fontSize:
-                                    MediaQuery.of(context).size.height * 0.03,
-                              ),
-                            ),
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                colors: [
-                                  Colors.black,
-                                  Colors.grey,
-                                ],
-                              ),
-                            ),
-                            height: MediaQuery.of(context).size.height * 0.1,
-                            margin: EdgeInsets.only(
-                              bottom: MediaQuery.of(context).size.height * 0.01,
-                              top: MediaQuery.of(context).size.height * 0.01,
-                            ),
-                            width: MediaQuery.of(context).size.width * 0.96,
-                          ),
+                    snapshot.data.documents.length != 0
+                        ? widget.playerID ==
+                                snapshot.data.documents[0]['userID']
+                            ? StartTheGameButton(
+                                gameID: widget.gameID,
+                                playerID: widget.playerID,
+                                isPlayerPlural: snap.data.documents.length > 1
+                                    ? true
+                                    : false,
+                              )
+                            : Container(
+                                alignment: Alignment.center,
+                                child: Text(
+                                  "Waiting to start...",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontFamily: 'Indie-Flower',
+                                    fontWeight: FontWeight.w900,
+                                    fontSize:
+                                        MediaQuery.of(context).size.height *
+                                            0.03,
+                                  ),
+                                ),
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    colors: [
+                                      Colors.black,
+                                      Colors.grey,
+                                    ],
+                                  ),
+                                ),
+                                height:
+                                    MediaQuery.of(context).size.height * 0.1,
+                                margin: EdgeInsets.only(
+                                  bottom:
+                                      MediaQuery.of(context).size.height * 0.01,
+                                  top:
+                                      MediaQuery.of(context).size.height * 0.01,
+                                ),
+                                width: MediaQuery.of(context).size.width * 0.96,
+                              )
+                        : SizedBox(),
                   ],
                 ),
               );

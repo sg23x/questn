@@ -68,6 +68,7 @@ class _StartAGameButtonState extends State<StartAGameButton> {
           'userID': playerID,
           'score': 0,
           'timestamp': Timestamp.now().millisecondsSinceEpoch.toString(),
+          'isPlaying': true,
         },
       );
 
