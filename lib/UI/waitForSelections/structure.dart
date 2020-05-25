@@ -14,6 +14,33 @@ class WaitForSelectionsPage extends StatelessWidget {
   bool abc = true;
   @override
   Widget build(BuildContext context) {
+    void deletePlayer() async {
+      await Firestore.instance
+          .collection('roomDetails')
+          .document(gameID)
+          .collection('users')
+          .document(playerID)
+          .delete();
+      await Firestore.instance
+          .collection('roomDetails')
+          .document(gameID)
+          .collection('responses')
+          .document(playerID)
+          .delete();
+      await Firestore.instance
+          .collection('roomDetails')
+          .document(gameID)
+          .collection('playerStatus')
+          .document(playerID)
+          .delete();
+      await Firestore.instance
+          .collection('roomDetails')
+          .document(gameID)
+          .collection('selections')
+          .document(playerID)
+          .delete();
+    }
+
     Future<bool> _onBackPressed() {
       return showDialog(
             context: context,
@@ -30,6 +57,7 @@ class WaitForSelectionsPage extends StatelessWidget {
                   ),
                   FlatButton(
                     onPressed: () {
+                      deletePlayer();
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -72,11 +100,23 @@ class WaitForSelectionsPage extends StatelessWidget {
                           if (!usersnap.hasData) {
                             return SizedBox();
                           }
+                          List _users = [];
+                          for (int index = 0;
+                              index < usersnap.data.documents.length;
+                              index++) {
+                            _users.add(
+                              usersnap.data.documents[index]['userID'],
+                            );
+                          }
+
                           if (snap.data.documents
-                                  .where((x) => x['hasSelected'] == true)
-                                  .toList()
-                                  .length ==
-                              usersnap.data.documents.length) {
+                                      .where((x) => x['hasSelected'] == true)
+                                      .toList()
+                                      .length ==
+                                  usersnap.data.documents.length &&
+                              _users.contains(
+                                playerID,
+                              )) {
                             if (abc) {
                               Firestore.instance
                                   .collection('roomDetails')
@@ -99,26 +139,6 @@ class WaitForSelectionsPage extends StatelessWidget {
 
                             WidgetsBinding.instance.addPostFrameCallback(
                               (_) {
-                                Firestore.instance
-                                    .collection('roomDetails')
-                                    .document(gameID)
-                                    .collection('users')
-                                    .orderBy('timestamp')
-                                    .getDocuments()
-                                    .then(
-                                  (onValue) {
-                                    if (onValue.documents[0].documentID ==
-                                        playerID) {
-                                      Firestore.instance
-                                          .collection('roomDetails')
-                                          .document(gameID)
-                                          .updateData(
-                                        {'currentQuestion': ''},
-                                      );
-                                    }
-                                  },
-                                );
-
                                 Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(
@@ -134,6 +154,7 @@ class WaitForSelectionsPage extends StatelessWidget {
                           }
 
                           return WaitingForSubmissionPlayerCard(
+                            //TODO: causing error when other player leaves
                             animationIndex: i,
                             name: usersnap.data.documents
                                 .where((n) =>

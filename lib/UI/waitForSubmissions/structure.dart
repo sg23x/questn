@@ -10,6 +10,33 @@ class WaitForSubmissions extends StatelessWidget {
   final String playerID;
   @override
   Widget build(BuildContext context) {
+    void deletePlayer() async {
+      await Firestore.instance
+          .collection('roomDetails')
+          .document(gameID)
+          .collection('users')
+          .document(playerID)
+          .delete();
+      await Firestore.instance
+          .collection('roomDetails')
+          .document(gameID)
+          .collection('responses')
+          .document(playerID)
+          .delete();
+      await Firestore.instance
+          .collection('roomDetails')
+          .document(gameID)
+          .collection('playerStatus')
+          .document(playerID)
+          .delete();
+      await Firestore.instance
+          .collection('roomDetails')
+          .document(gameID)
+          .collection('selections')
+          .document(playerID)
+          .delete();
+    }
+
     Future<bool> _onBackPressed() {
       return showDialog(
             context: context,
@@ -36,6 +63,7 @@ class WaitForSubmissions extends StatelessWidget {
                   ),
                   FlatButton(
                     onPressed: () {
+                      deletePlayer();
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
@@ -81,11 +109,22 @@ class WaitForSubmissions extends StatelessWidget {
                   return Scaffold();
                 }
 
+                List _users = [];
+                for (int index = 0;
+                    index < snapshot.data.documents.length;
+                    index++) {
+                  _users.add(
+                    snapshot.data.documents[index]['userID'],
+                  );
+                }
                 if (snap.data.documents
-                        .where((x) => x['hasSubmitted'] == true)
-                        .toList()
-                        .length ==
-                    snapshot.data.documents.length) {
+                            .where((x) => x['hasSubmitted'] == true)
+                            .toList()
+                            .length ==
+                        snapshot.data.documents.length &&
+                    _users.contains(
+                      playerID,
+                    )) {
                   WidgetsBinding.instance.addPostFrameCallback(
                     (_) async {
                       Navigator.pushReplacement(

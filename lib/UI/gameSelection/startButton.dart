@@ -18,6 +18,7 @@ class _StartAGameButtonState extends State<StartAGameButton> {
   Alignment axis;
   @override
   void initState() {
+    gameID = '';
     axis = Alignment.lerp(
       Alignment.bottomCenter,
       Alignment.bottomLeft,

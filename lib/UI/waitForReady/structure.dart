@@ -14,6 +14,33 @@ class WaitForReady extends StatelessWidget {
   final String playerID;
   @override
   Widget build(BuildContext context) {
+    void deletePlayer() async {
+      await Firestore.instance
+          .collection('roomDetails')
+          .document(gameID)
+          .collection('users')
+          .document(playerID)
+          .delete();
+      await Firestore.instance
+          .collection('roomDetails')
+          .document(gameID)
+          .collection('responses')
+          .document(playerID)
+          .delete();
+      await Firestore.instance
+          .collection('roomDetails')
+          .document(gameID)
+          .collection('playerStatus')
+          .document(playerID)
+          .delete();
+      await Firestore.instance
+          .collection('roomDetails')
+          .document(gameID)
+          .collection('selections')
+          .document(playerID)
+          .delete();
+    }
+
     generateRandomIndex(int len) {
       Random rnd;
       int min = 0;
@@ -39,6 +66,7 @@ class WaitForReady extends StatelessWidget {
                   ),
                   FlatButton(
                     onPressed: () {
+                      deletePlayer();
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -287,9 +315,17 @@ class WaitForReady extends StatelessWidget {
                   if (!snap.hasData) {
                     return SizedBox();
                   }
-                  if (snap.data.documents.every(
-                    (x) => x['isReady'] == true,
-                  )) {
+
+                  List _users = [];
+                  for (int index = 0;
+                      index < snap.data.documents.length;
+                      index++) {
+                    _users.add(snap.data.documents[index].documentID);
+                  }
+                  if (snap.data.documents.every((x) => x['isReady'] == true) &&
+                      _users.contains(
+                        playerID,
+                      )) {
                     WidgetsBinding.instance.addPostFrameCallback(
                       (_) async {
                         Navigator.pushReplacement(
