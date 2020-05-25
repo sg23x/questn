@@ -11,7 +11,7 @@ class _NameInputPageState extends State<NameInputPage> {
   String playerName;
   bool isButtonEnabled;
   Alignment align;
-  String gameID;
+
   FocusNode focus;
 
   @override
@@ -35,43 +35,42 @@ class _NameInputPageState extends State<NameInputPage> {
         MaterialPageRoute(
           builder: (BuildContext context) => GameSelection(
             playerName: playerName,
-            gameID: gameID,
           ),
         ),
       );
     }
 
-    void createRoomID() {
-      Future<QuerySnapshot> query = Firestore.instance
-          .collection('roomDetails')
-          .orderBy('timestamp')
-          .getDocuments();
-      query.then(
-        (onValue) {
-          setState(
-            () {
-              gameID = onValue.documents.length != 0
-                  ? onValue.documents.length.toString() ==
-                          (int.parse(onValue
-                                      .documents[onValue.documents.length - 1]
-                                      .documentID) -
-                                  1000)
-                              .toString()
-                      ? ((int.parse(onValue
-                                      .documents[onValue.documents.length - 1]
-                                      .documentID) %
-                                  9999) +
-                              1)
-                          .toString()
-                      : onValue.documents[0].documentID
-                  : '1001';
-            },
-          );
-        },
-      );
-    }
+    // void createRoomID() {
+    //   Future<QuerySnapshot> query = Firestore.instance
+    //       .collection('roomDetails')
+    //       .orderBy('timestamp')
+    //       .getDocuments();
+    //   query.then(
+    //     (onValue) {
+    //       setState(
+    //         () {
+    //           gameID = onValue.documents.length != 0
+    //               ? onValue.documents.length.toString() ==
+    //                       (int.parse(onValue
+    //                                   .documents[onValue.documents.length - 1]
+    //                                   .documentID) -
+    //                               1000)
+    //                           .toString()
+    //                   ? ((int.parse(onValue
+    //                                   .documents[onValue.documents.length - 1]
+    //                                   .documentID) %
+    //                               9999) +
+    //                           1)
+    //                       .toString()
+    //                   : onValue.documents[0].documentID
+    //               : '1001';
+    //         },
+    //       );
+    //     },
+    //   );
+    // }
 
-    createRoomID();
+    // createRoomID();
 
     return Scaffold(
       resizeToAvoidBottomInset: false,

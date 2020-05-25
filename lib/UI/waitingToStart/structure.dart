@@ -115,8 +115,9 @@ class _WaitingToStartState extends State<WaitingToStart> {
           }
 
           if (snap.data.documents.every(
-            (x) => x['isReady'] == true,
-          )) {
+                (x) => x['isReady'] == true,
+              ) &&
+              snap.data.documents.length != 0) {
             WidgetsBinding.instance.addPostFrameCallback(
               (_) async {
                 Navigator.pushReplacement(

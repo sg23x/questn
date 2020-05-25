@@ -6,16 +6,15 @@ import 'dart:math';
 class StartAGameButton extends StatefulWidget {
   StartAGameButton({
     @required this.playerName,
-    @required this.gameID,
   });
   final String playerName;
-  final String gameID;
 
   @override
   _StartAGameButtonState createState() => _StartAGameButtonState();
 }
 
 class _StartAGameButtonState extends State<StartAGameButton> {
+  String gameID;
   Alignment axis;
   @override
   void initState() {
@@ -57,7 +56,7 @@ class _StartAGameButtonState extends State<StartAGameButton> {
     void startGame() async {
       await Firestore.instance
           .collection('roomDetails')
-          .document(widget.gameID)
+          .document(gameID)
           .collection('users')
           .document(
             playerID,
@@ -74,7 +73,7 @@ class _StartAGameButtonState extends State<StartAGameButton> {
 
       await Firestore.instance
           .collection('roomDetails')
-          .document(widget.gameID)
+          .document(gameID)
           .setData(
         {
           'currentQuestion': '',
@@ -85,7 +84,7 @@ class _StartAGameButtonState extends State<StartAGameButton> {
 
       Firestore.instance
           .collection('roomDetails')
-          .document(widget.gameID)
+          .document(gameID)
           .collection('responses')
           .document(playerID)
           .setData(
@@ -97,7 +96,7 @@ class _StartAGameButtonState extends State<StartAGameButton> {
 
       Firestore.instance
           .collection('roomDetails')
-          .document(widget.gameID)
+          .document(gameID)
           .collection('selections')
           .document(playerID)
           .setData(
@@ -109,7 +108,7 @@ class _StartAGameButtonState extends State<StartAGameButton> {
 
       await Firestore.instance
           .collection('roomDetails')
-          .document(widget.gameID)
+          .document(gameID)
           .collection('playerStatus')
           .document(playerID)
           .setData(
@@ -124,7 +123,7 @@ class _StartAGameButtonState extends State<StartAGameButton> {
         context,
         MaterialPageRoute(
           builder: (BuildContext context) => WaitingToStart(
-            gameID: widget.gameID,
+            gameID: gameID,
             playerID: playerID,
           ),
         ),
@@ -134,7 +133,7 @@ class _StartAGameButtonState extends State<StartAGameButton> {
     void del() async {
       DocumentSnapshot query = await Firestore.instance
           .collection('roomDetails')
-          .document(widget.gameID)
+          .document(gameID)
           .get();
 
       if (query.exists) {
@@ -171,6 +170,33 @@ class _StartAGameButtonState extends State<StartAGameButton> {
       startGame();
     }
 
+    void createRoomID() async {
+      QuerySnapshot query = await Firestore.instance
+          .collection('roomDetails')
+          .orderBy('timestamp')
+          .getDocuments();
+
+      setState(
+        () {
+          gameID = query.documents.length != 0
+              ? query.documents.length.toString() ==
+                      (int.parse(query.documents[query.documents.length - 1]
+                                  .documentID) -
+                              1000)
+                          .toString()
+                  ? ((int.parse(query.documents[query.documents.length - 1]
+                                  .documentID) %
+                              9999) +
+                          1)
+                      .toString()
+                  : query.documents[0].documentID
+              : '1001';
+        },
+      );
+
+      del();
+    }
+
     return AnimatedAlign(
       duration: Duration(
         milliseconds: 400,
@@ -198,7 +224,7 @@ class _StartAGameButtonState extends State<StartAGameButton> {
               );
             },
           );
-          del();
+          createRoomID();
         },
         child: Container(
           width: MediaQuery.of(context).size.width * 0.6,

@@ -6,10 +6,9 @@ import 'package:psych/UI/nameInput/structure.dart';
 class GameSelection extends StatelessWidget {
   GameSelection({
     @required this.playerName,
-    @required this.gameID,
   });
   final String playerName;
-  final String gameID;
+
   Widget build(BuildContext context) {
     Future<bool> _onBackPressed() {
       return showDialog(
@@ -75,7 +74,6 @@ class GameSelection extends StatelessWidget {
               ),
               StartAGameButton(
                 playerName: playerName,
-                gameID: gameID,
               ),
             ],
           ),
