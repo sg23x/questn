@@ -109,7 +109,6 @@ class _JoinGameButtonState extends State<JoinGameButton> {
                           'score': 0,
                           'timestamp':
                               Timestamp.now().millisecondsSinceEpoch.toString(),
-                          'isPlaying': true,
                         },
                       );
                       Firestore.instance

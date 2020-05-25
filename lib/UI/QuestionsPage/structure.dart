@@ -61,6 +61,33 @@ class _QuestionsPageState extends State<QuestionsPage> {
       );
     }
 
+    void deletePlayer() async {
+      await Firestore.instance
+          .collection('roomDetails')
+          .document(widget.gameID)
+          .collection('users')
+          .document(widget.playerID)
+          .delete();
+      await Firestore.instance
+          .collection('roomDetails')
+          .document(widget.gameID)
+          .collection('responses')
+          .document(widget.playerID)
+          .delete();
+      await Firestore.instance
+          .collection('roomDetails')
+          .document(widget.gameID)
+          .collection('playerStatus')
+          .document(widget.playerID)
+          .delete();
+      await Firestore.instance
+          .collection('roomDetails')
+          .document(widget.gameID)
+          .collection('selections')
+          .document(widget.playerID)
+          .delete();
+    }
+
     Future<bool> _onBackPressed() {
       return showDialog(
             context: context,
@@ -87,6 +114,7 @@ class _QuestionsPageState extends State<QuestionsPage> {
                   ),
                   FlatButton(
                     onPressed: () {
+                      deletePlayer();
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
