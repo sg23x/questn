@@ -40,38 +40,6 @@ class _NameInputPageState extends State<NameInputPage> {
       );
     }
 
-    // void createRoomID() {
-    //   Future<QuerySnapshot> query = Firestore.instance
-    //       .collection('roomDetails')
-    //       .orderBy('timestamp')
-    //       .getDocuments();
-    //   query.then(
-    //     (onValue) {
-    //       setState(
-    //         () {
-    //           gameID = onValue.documents.length != 0
-    //               ? onValue.documents.length.toString() ==
-    //                       (int.parse(onValue
-    //                                   .documents[onValue.documents.length - 1]
-    //                                   .documentID) -
-    //                               1000)
-    //                           .toString()
-    //                   ? ((int.parse(onValue
-    //                                   .documents[onValue.documents.length - 1]
-    //                                   .documentID) %
-    //                               9999) +
-    //                           1)
-    //                       .toString()
-    //                   : onValue.documents[0].documentID
-    //               : '1001';
-    //         },
-    //       );
-    //     },
-    //   );
-    // }
-
-    // createRoomID();
-
     return Scaffold(
       resizeToAvoidBottomInset: false,
       resizeToAvoidBottomPadding: false,

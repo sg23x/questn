@@ -61,30 +61,30 @@ class _QuestionsPageState extends State<QuestionsPage> {
       );
     }
 
-    void deletePlayer() async {
+    void deletePlayer(String id) async {
       await Firestore.instance
           .collection('roomDetails')
           .document(widget.gameID)
           .collection('users')
-          .document(widget.playerID)
+          .document(id)
           .delete();
       await Firestore.instance
           .collection('roomDetails')
           .document(widget.gameID)
           .collection('responses')
-          .document(widget.playerID)
+          .document(id)
           .delete();
       await Firestore.instance
           .collection('roomDetails')
           .document(widget.gameID)
           .collection('playerStatus')
-          .document(widget.playerID)
+          .document(id)
           .delete();
       await Firestore.instance
           .collection('roomDetails')
           .document(widget.gameID)
           .collection('selections')
-          .document(widget.playerID)
+          .document(id)
           .delete();
     }
 
@@ -114,7 +114,7 @@ class _QuestionsPageState extends State<QuestionsPage> {
                   ),
                   FlatButton(
                     onPressed: () {
-                      deletePlayer();
+                      deletePlayer(widget.playerID);
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(

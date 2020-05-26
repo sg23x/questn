@@ -14,30 +14,30 @@ class WaitForSelectionsPage extends StatelessWidget {
   bool abc = true;
   @override
   Widget build(BuildContext context) {
-    void deletePlayer() async {
+    void deletePlayer(String id) async {
       await Firestore.instance
           .collection('roomDetails')
           .document(gameID)
           .collection('users')
-          .document(playerID)
+          .document(id)
           .delete();
       await Firestore.instance
           .collection('roomDetails')
           .document(gameID)
           .collection('responses')
-          .document(playerID)
+          .document(id)
           .delete();
       await Firestore.instance
           .collection('roomDetails')
           .document(gameID)
           .collection('playerStatus')
-          .document(playerID)
+          .document(id)
           .delete();
       await Firestore.instance
           .collection('roomDetails')
           .document(gameID)
           .collection('selections')
-          .document(playerID)
+          .document(id)
           .delete();
     }
 
@@ -57,7 +57,7 @@ class WaitForSelectionsPage extends StatelessWidget {
                   ),
                   FlatButton(
                     onPressed: () {
-                      deletePlayer();
+                      deletePlayer(playerID);
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -89,106 +89,110 @@ class WaitForSelectionsPage extends StatelessWidget {
               return SizedBox();
             }
 
-            return Column(
-              children: <Widget>[
-                Expanded(
-                  child: ListView.builder(
-                    itemCount: snap.data.documents.length,
-                    itemBuilder: (context, i) {
-                      return StreamBuilder(
-                        builder: (context, usersnap) {
-                          if (!usersnap.hasData) {
-                            return SizedBox();
-                          }
-                          List _users = [];
-                          for (int index = 0;
-                              index < usersnap.data.documents.length;
-                              index++) {
-                            _users.add(
-                              usersnap.data.documents[index]['userID'],
-                            );
-                          }
+            return StreamBuilder(
+              builder: (context, usersnap) {
+                if (!usersnap.hasData) {
+                  return SizedBox();
+                }
+                List _users = [];
+                for (int index = 0;
+                    index < usersnap.data.documents.length;
+                    index++) {
+                  _users.add(
+                    usersnap.data.documents[index]['userID'],
+                  );
+                }
 
-                          if (snap.data.documents
-                                      .where((x) => x['hasSelected'] == true)
-                                      .toList()
-                                      .length ==
-                                  usersnap.data.documents.length &&
-                              _users.contains(
-                                playerID,
-                              )) {
-                            if (abc) {
-                              Firestore.instance
-                                  .collection('roomDetails')
-                                  .document(gameID)
-                                  .collection('users')
-                                  .document(playerID)
-                                  .updateData(
-                                {
-                                  'score': FieldValue.increment(
-                                    snap.data.documents
-                                        .where(
-                                            (g) => g['selection'] == playerID)
-                                        .toList()
-                                        .length,
-                                  ),
-                                },
-                              );
-                              abc = !abc;
-                            }
+                if (snap.data.documents
+                            .where((x) => x['hasSelected'] == true)
+                            .toList()
+                            .length ==
+                        usersnap.data.documents.length &&
+                    _users.contains(
+                      playerID,
+                    )) {
+                  if (abc) {
+                    Firestore.instance
+                        .collection('roomDetails')
+                        .document(gameID)
+                        .collection('users')
+                        .document(playerID)
+                        .updateData(
+                      {
+                        'score': FieldValue.increment(
+                          snap.data.documents
+                              .where((g) => g['selection'] == playerID)
+                              .toList()
+                              .length,
+                        ),
+                      },
+                    );
+                    abc = !abc;
+                  }
 
-                            WidgetsBinding.instance.addPostFrameCallback(
-                              (_) {
-                                Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (BuildContext context) =>
-                                        WaitForReady(
-                                      gameID: gameID,
-                                      playerID: playerID,
-                                    ),
-                                  ),
-                                );
-                              },
-                            );
-                          }
-
-                          return WaitingForSubmissionPlayerCard(
-                            //TODO: causing error when other player leaves
-                            animationIndex: i,
-                            name: usersnap.data.documents
-                                .where((n) =>
-                                    n['userID'] ==
-                                    snap.data.documents[i].documentID)
-                                .toList()[0]['name'],
-                            hasSubmitted: snap.data.documents
-                                        .where((no) =>
-                                            no.documentID ==
-                                            usersnap.data.documents[i]
-                                                ['userID'])
-                                        .toList()
-                                        .length !=
-                                    0
-                                ? snap.data.documents
-                                    .where((no) =>
-                                        no.documentID ==
-                                        usersnap.data.documents[i]['userID'])
-                                    .toList()[0]
-                                    .data['hasSelected']
-                                : false,
-                          );
-                        },
-                        stream: Firestore.instance
-                            .collection('roomDetails')
-                            .document(gameID)
-                            .collection('users')
-                            .snapshots(),
+                  WidgetsBinding.instance.addPostFrameCallback(
+                    (_) {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (BuildContext context) => WaitForReady(
+                            gameID: gameID,
+                            playerID: playerID,
+                          ),
+                        ),
                       );
                     },
-                    shrinkWrap: true,
-                  ),
-                ),
-              ],
+                  );
+                }
+
+                return Column(
+                  children: <Widget>[
+                    Expanded(
+                      child: ListView.builder(
+                        // itemCount: snap.data.documents.length,
+                        itemCount: 1,
+                        itemBuilder: (context, i) {
+                          return WaitingForSubmissionPlayerCard(
+                              //TODO: causing error when other player leaves
+                              animationIndex: i,
+                              name: snap.data.documents.length != 0
+                                  ? usersnap.data.documents
+                                      .where((n) =>
+                                          n['userID'] ==
+                                          snap.data.documents[i].documentID)
+                                      .toList()[0]['name']
+                                  : '',
+                              // name: 'Soumya',
+                              hasSubmitted: snap.data.documents
+                                          .where((no) =>
+                                              no.documentID ==
+                                              usersnap.data.documents[i]
+                                                  ['userID'])
+                                          .toList()
+                                          .length !=
+                                      0
+                                  ? snap.data.documents
+                                      .where((no) =>
+                                          no.documentID ==
+                                          usersnap.data.documents[i]['userID'])
+                                      .toList()[0]
+                                      .data['hasSelected']
+                                  : false
+
+                              // hasSubmitted: false,
+                              );
+                        },
+                        shrinkWrap: true,
+                      ),
+                    ),
+                  ],
+                );
+              },
+              stream: Firestore.instance
+                  .collection('roomDetails')
+                  .document(gameID)
+                  .collection('users')
+                  .snapshots(),
             );
           },
           stream: Firestore.instance

@@ -20,30 +20,30 @@ class WaitingToStart extends StatefulWidget {
 class _WaitingToStartState extends State<WaitingToStart> {
   @override
   Widget build(BuildContext context) {
-    void deletePlayer() async {
+    void deletePlayer(String id) async {
       await Firestore.instance
           .collection('roomDetails')
           .document(widget.gameID)
           .collection('users')
-          .document(widget.playerID)
+          .document(id)
           .delete();
       await Firestore.instance
           .collection('roomDetails')
           .document(widget.gameID)
           .collection('responses')
-          .document(widget.playerID)
+          .document(id)
           .delete();
       await Firestore.instance
           .collection('roomDetails')
           .document(widget.gameID)
           .collection('playerStatus')
-          .document(widget.playerID)
+          .document(id)
           .delete();
       await Firestore.instance
           .collection('roomDetails')
           .document(widget.gameID)
           .collection('selections')
-          .document(widget.playerID)
+          .document(id)
           .delete();
     }
 
@@ -73,7 +73,7 @@ class _WaitingToStartState extends State<WaitingToStart> {
                   ),
                   FlatButton(
                     onPressed: () {
-                      deletePlayer();
+                      deletePlayer(widget.playerID);
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(

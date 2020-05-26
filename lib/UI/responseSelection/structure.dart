@@ -14,30 +14,30 @@ class ResponseSelectionPage extends StatelessWidget {
   final String playerID;
   @override
   Widget build(BuildContext context) {
-    void deletePlayer() async {
+    void deletePlayer(String id) async {
       await Firestore.instance
           .collection('roomDetails')
           .document(gameID)
           .collection('users')
-          .document(playerID)
+          .document(id)
           .delete();
       await Firestore.instance
           .collection('roomDetails')
           .document(gameID)
           .collection('responses')
-          .document(playerID)
+          .document(id)
           .delete();
       await Firestore.instance
           .collection('roomDetails')
           .document(gameID)
           .collection('playerStatus')
-          .document(playerID)
+          .document(id)
           .delete();
       await Firestore.instance
           .collection('roomDetails')
           .document(gameID)
           .collection('selections')
-          .document(playerID)
+          .document(id)
           .delete();
     }
 
@@ -57,7 +57,7 @@ class ResponseSelectionPage extends StatelessWidget {
                   ),
                   FlatButton(
                     onPressed: () {
-                      deletePlayer();
+                      deletePlayer(playerID);
 
                       Navigator.push(
                         context,
