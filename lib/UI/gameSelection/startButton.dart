@@ -130,14 +130,9 @@ class _StartAGameButtonState extends State<StartAGameButton> {
         () {
           gameID = query.documents.length != 0
               ? query.documents.length.toString() ==
-                      (int.parse(query.documents[query.documents.length - 1]
-                                  .documentID) -
-                              1000)
+                      (int.parse(query.documents.last.documentID) - 1000)
                           .toString()
-                  ? ((int.parse(query.documents[query.documents.length - 1]
-                                  .documentID) %
-                              9999) +
-                          1)
+                  ? ((int.parse(query.documents.last.documentID) % 9999) + 1)
                       .toString()
                   : query.documents[0].documentID
               : '1001';
