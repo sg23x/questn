@@ -17,24 +17,6 @@ class WaitForSubmissions extends StatelessWidget {
           .collection('users')
           .document(id)
           .delete();
-      await Firestore.instance
-          .collection('roomDetails')
-          .document(gameID)
-          .collection('responses')
-          .document(id)
-          .delete();
-      await Firestore.instance
-          .collection('roomDetails')
-          .document(gameID)
-          .collection('playerStatus')
-          .document(id)
-          .delete();
-      await Firestore.instance
-          .collection('roomDetails')
-          .document(gameID)
-          .collection('selections')
-          .document(id)
-          .delete();
     }
 
     Future<bool> _onBackPressed() {
@@ -207,7 +189,7 @@ class WaitForSubmissions extends StatelessWidget {
               stream: Firestore.instance
                   .collection('roomDetails')
                   .document(gameID)
-                  .collection('responses')
+                  .collection('users')
                   .snapshots(),
             );
           },

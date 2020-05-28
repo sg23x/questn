@@ -41,12 +41,12 @@ class _StartTheGameButtonState extends State<StartTheGameButton> {
       Firestore.instance
           .collection('roomDetails')
           .document(widget.gameID)
-          .collection('playerStatus')
+          .collection('users')
           .getDocuments()
           .then(
         (snapshot) {
           for (DocumentSnapshot ds in snapshot.documents) {
-            ds.reference.setData(
+            ds.reference.updateData(
               {
                 'isReady': true,
               },

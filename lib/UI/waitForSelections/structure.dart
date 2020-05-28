@@ -21,24 +21,6 @@ class WaitForSelectionsPage extends StatelessWidget {
           .collection('users')
           .document(id)
           .delete();
-      await Firestore.instance
-          .collection('roomDetails')
-          .document(gameID)
-          .collection('responses')
-          .document(id)
-          .delete();
-      await Firestore.instance
-          .collection('roomDetails')
-          .document(gameID)
-          .collection('playerStatus')
-          .document(id)
-          .delete();
-      await Firestore.instance
-          .collection('roomDetails')
-          .document(gameID)
-          .collection('selections')
-          .document(id)
-          .delete();
     }
 
     Future<bool> _onBackPressed() {
@@ -149,8 +131,7 @@ class WaitForSelectionsPage extends StatelessWidget {
                   children: <Widget>[
                     Expanded(
                       child: ListView.builder(
-                        // itemCount: snap.data.documents.length,
-                        itemCount: 1,
+                        itemCount: snap.data.documents.length,
                         itemBuilder: (context, i) {
                           return WaitingForSubmissionPlayerCard(
                               //TODO: causing error when other player leaves
@@ -198,7 +179,7 @@ class WaitForSelectionsPage extends StatelessWidget {
           stream: Firestore.instance
               .collection('roomDetails')
               .document(gameID)
-              .collection('selections')
+              .collection('users')
               .snapshots(),
         ),
       ),

@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:psych/UI/QuestionsPage/questionCard.dart';
 import 'package:psych/UI/nameInput/structure.dart';
-
 import 'package:psych/UI/waitForSubmissions/structure.dart';
 
 class QuestionsPage extends StatefulWidget {
@@ -38,24 +37,12 @@ class _QuestionsPageState extends State<QuestionsPage> {
       Firestore.instance
           .collection('roomDetails')
           .document(widget.gameID)
-          .collection('responses')
+          .collection('users')
           .document(widget.playerID)
           .updateData(
         {
           'response': response,
           'hasSubmitted': true,
-        },
-      );
-    }
-
-    void changeReadyState() {
-      Firestore.instance
-          .collection('roomDetails')
-          .document(widget.gameID)
-          .collection('playerStatus')
-          .document(widget.playerID)
-          .updateData(
-        {
           'isReady': false,
         },
       );
@@ -66,24 +53,6 @@ class _QuestionsPageState extends State<QuestionsPage> {
           .collection('roomDetails')
           .document(widget.gameID)
           .collection('users')
-          .document(id)
-          .delete();
-      await Firestore.instance
-          .collection('roomDetails')
-          .document(widget.gameID)
-          .collection('responses')
-          .document(id)
-          .delete();
-      await Firestore.instance
-          .collection('roomDetails')
-          .document(widget.gameID)
-          .collection('playerStatus')
-          .document(id)
-          .delete();
-      await Firestore.instance
-          .collection('roomDetails')
-          .document(widget.gameID)
-          .collection('selections')
           .document(id)
           .delete();
     }
@@ -115,12 +84,6 @@ class _QuestionsPageState extends State<QuestionsPage> {
                   FlatButton(
                     onPressed: () {
                       deletePlayer(widget.playerID);
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (BuildContext context) => NameInputPage(),
-                        ),
-                      );
                     },
                     child: Text(
                       "YES",
@@ -157,6 +120,33 @@ class _QuestionsPageState extends State<QuestionsPage> {
         return x.floor();
       }
     }
+
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) async {
+        Firestore.instance
+            .collection('roomDetails')
+            .document(widget.gameID)
+            .collection('users')
+            .reference()
+            .snapshots()
+            .listen(
+          (event) {
+            if (event.documents
+                    .where((element) => element.documentID == widget.playerID)
+                    .toList()
+                    .length !=
+                1) {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (BuildContext context) => NameInputPage(),
+                ),
+              );
+            }
+          },
+        );
+      },
+    );
 
     return WillPopScope(
       onWillPop: _onBackPressed,
@@ -277,7 +267,6 @@ class _QuestionsPageState extends State<QuestionsPage> {
                           sendResponse(
                             response,
                           );
-                          changeReadyState();
 
                           Navigator.pushReplacement(
                             context,

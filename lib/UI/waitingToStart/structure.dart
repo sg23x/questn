@@ -27,24 +27,6 @@ class _WaitingToStartState extends State<WaitingToStart> {
           .collection('users')
           .document(id)
           .delete();
-      await Firestore.instance
-          .collection('roomDetails')
-          .document(widget.gameID)
-          .collection('responses')
-          .document(id)
-          .delete();
-      await Firestore.instance
-          .collection('roomDetails')
-          .document(widget.gameID)
-          .collection('playerStatus')
-          .document(id)
-          .delete();
-      await Firestore.instance
-          .collection('roomDetails')
-          .document(widget.gameID)
-          .collection('selections')
-          .document(id)
-          .delete();
     }
 
     Future<bool> _onBackPressed() {
@@ -246,7 +228,10 @@ class _WaitingToStartState extends State<WaitingToStart> {
         stream: Firestore.instance
             .collection('roomDetails')
             .document(widget.gameID)
-            .collection('playerStatus')
+            .collection('users')
+            .orderBy(
+              'timestamp',
+            )
             .snapshots(),
       ),
     );

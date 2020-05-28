@@ -21,24 +21,6 @@ class ResponseSelectionPage extends StatelessWidget {
           .collection('users')
           .document(id)
           .delete();
-      await Firestore.instance
-          .collection('roomDetails')
-          .document(gameID)
-          .collection('responses')
-          .document(id)
-          .delete();
-      await Firestore.instance
-          .collection('roomDetails')
-          .document(gameID)
-          .collection('playerStatus')
-          .document(id)
-          .delete();
-      await Firestore.instance
-          .collection('roomDetails')
-          .document(gameID)
-          .collection('selections')
-          .document(id)
-          .delete();
     }
 
     Future<bool> _onBackPressed() {
@@ -118,7 +100,7 @@ class ResponseSelectionPage extends StatelessWidget {
                                 Firestore.instance
                                     .collection('roomDetails')
                                     .document(gameID)
-                                    .collection('selections')
+                                    .collection('users')
                                     .document(playerID)
                                     .updateData(
                                   {
@@ -181,7 +163,7 @@ class ResponseSelectionPage extends StatelessWidget {
           stream: Firestore.instance
               .collection('roomDetails')
               .document(gameID)
-              .collection('responses')
+              .collection('users')
               .snapshots(),
         ),
       ),

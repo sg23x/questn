@@ -21,24 +21,6 @@ class WaitForReady extends StatelessWidget {
           .collection('users')
           .document(id)
           .delete();
-      await Firestore.instance
-          .collection('roomDetails')
-          .document(gameID)
-          .collection('responses')
-          .document(id)
-          .delete();
-      await Firestore.instance
-          .collection('roomDetails')
-          .document(gameID)
-          .collection('playerStatus')
-          .document(id)
-          .delete();
-      await Firestore.instance
-          .collection('roomDetails')
-          .document(gameID)
-          .collection('selections')
-          .document(id)
-          .delete();
     }
 
     generateRandomIndex(int len) {
@@ -153,7 +135,8 @@ class WaitForReady extends StatelessWidget {
                   stream: Firestore.instance
                       .collection('roomDetails')
                       .document(gameID)
-                      .collection('selections')
+                      .collection('users')
+                      .orderBy('timestamp')
                       .snapshots(),
                 );
               },
@@ -212,14 +195,14 @@ class WaitForReady extends StatelessWidget {
                   stream: Firestore.instance
                       .collection('roomDetails')
                       .document(gameID)
-                      .collection('responses')
+                      .collection('users')
                       .snapshots(),
                 );
               },
               stream: Firestore.instance
                   .collection('roomDetails')
                   .document(gameID)
-                  .collection('selections')
+                  .collection('users')
                   .snapshots(),
             ),
             Row(
@@ -285,14 +268,22 @@ class WaitForReady extends StatelessWidget {
                       stream: Firestore.instance
                           .collection('roomDetails')
                           .document(gameID)
-                          .collection('playerStatus')
+                          .collection('users')
+                          .orderBy(
+                            'score',
+                            descending: true,
+                          )
                           .snapshots(),
                     );
                   },
                   stream: Firestore.instance
                       .collection('roomDetails')
                       .document(gameID)
-                      .collection('selections')
+                      .collection('users')
+                      .orderBy(
+                        'score',
+                        descending: true,
+                      )
                       .snapshots(),
                 );
               },
@@ -302,7 +293,10 @@ class WaitForReady extends StatelessWidget {
                   )
                   .document(gameID)
                   .collection('users')
-                  .orderBy('score', descending: true)
+                  .orderBy(
+                    'score',
+                    descending: true,
+                  )
                   .snapshots(),
             ),
             Container(
@@ -392,7 +386,9 @@ class WaitForReady extends StatelessWidget {
                                 )];
 
                                 List indexes = getIndexes(
-                                    usersnap.data.documents.length, 2);
+                                  usersnap.data.documents.length,
+                                  usersnap.data.documents.length == 1 ? 1 : 2,
+                                );
 
                                 String question = !questionRaw.data['question']
                                         .contains('abc')
@@ -415,7 +411,7 @@ class WaitForReady extends StatelessWidget {
                                 await Firestore.instance
                                     .collection('roomDetails')
                                     .document(gameID)
-                                    .setData(
+                                    .updateData(
                                   {
                                     'currentQuestion': question,
                                   },
@@ -425,7 +421,7 @@ class WaitForReady extends StatelessWidget {
                               Firestore.instance
                                   .collection('roomDetails')
                                   .document(gameID)
-                                  .collection('selections')
+                                  .collection('users')
                                   .document(playerID)
                                   .updateData(
                                 {
@@ -436,7 +432,7 @@ class WaitForReady extends StatelessWidget {
                               Firestore.instance
                                   .collection('roomDetails')
                                   .document(gameID)
-                                  .collection('responses')
+                                  .collection('users')
                                   .document(playerID)
                                   .updateData(
                                 {
@@ -470,7 +466,7 @@ class WaitForReady extends StatelessWidget {
                 stream: Firestore.instance
                     .collection('roomDetails')
                     .document(gameID)
-                    .collection('playerStatus')
+                    .collection('users')
                     .snapshots(),
               ),
             ),
@@ -484,7 +480,7 @@ class WaitForReady extends StatelessWidget {
     Firestore.instance
         .collection('roomDetails')
         .document(gameID)
-        .collection('playerStatus')
+        .collection('users')
         .document(playerID)
         .updateData(
       {

@@ -109,42 +109,14 @@ class _JoinGameButtonState extends State<JoinGameButton> {
                           'score': 0,
                           'timestamp':
                               Timestamp.now().millisecondsSinceEpoch.toString(),
-                        },
-                      );
-                      Firestore.instance
-                          .collection('roomDetails')
-                          .document(gameID)
-                          .collection('playerStatus')
-                          .document(playerID)
-                          .setData(
-                        {
                           'isReady': false,
-                        },
-                      );
-
-                      Firestore.instance
-                          .collection('roomDetails')
-                          .document(gameID)
-                          .collection('selections')
-                          .document(playerID)
-                          .setData(
-                        {
                           'hasSelected': false,
                           'selection': '',
-                        },
-                      );
-
-                      Firestore.instance
-                          .collection('roomDetails')
-                          .document(gameID)
-                          .collection('responses')
-                          .document(playerID)
-                          .setData(
-                        {
                           'hasSubmitted': false,
                           'response': '',
                         },
                       );
+
                       Navigator.of(context).pop();
 
                       Navigator.push(

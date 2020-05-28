@@ -58,6 +58,17 @@ class _StartAGameButtonState extends State<StartAGameButton> {
       await Firestore.instance
           .collection('roomDetails')
           .document(gameID)
+          .setData(
+        {
+          'currentQuestion': '',
+          'timestamp': Timestamp.now().millisecondsSinceEpoch,
+          'isGameStarted': false,
+        },
+      );
+
+      await Firestore.instance
+          .collection('roomDetails')
+          .document(gameID)
           .collection('users')
           .document(
             playerID,
@@ -68,51 +79,10 @@ class _StartAGameButtonState extends State<StartAGameButton> {
           'userID': playerID,
           'score': 0,
           'timestamp': Timestamp.now().millisecondsSinceEpoch.toString(),
-        },
-      );
-
-      await Firestore.instance
-          .collection('roomDetails')
-          .document(gameID)
-          .setData(
-        {
-          'currentQuestion': '',
-          'timestamp': Timestamp.now().millisecondsSinceEpoch,
-          'isGameStarted': false,
-        },
-      );
-
-      Firestore.instance
-          .collection('roomDetails')
-          .document(gameID)
-          .collection('responses')
-          .document(playerID)
-          .setData(
-        {
           'hasSubmitted': false,
           'response': '',
-        },
-      );
-
-      Firestore.instance
-          .collection('roomDetails')
-          .document(gameID)
-          .collection('selections')
-          .document(playerID)
-          .setData(
-        {
           'hasSelected': false,
           'selection': '',
-        },
-      );
-
-      await Firestore.instance
-          .collection('roomDetails')
-          .document(gameID)
-          .collection('playerStatus')
-          .document(playerID)
-          .setData(
-        {
           'isReady': false,
         },
       );
@@ -144,27 +114,7 @@ class _StartAGameButtonState extends State<StartAGameButton> {
             }
           },
         );
-        await query.reference.collection('playerStatus').getDocuments().then(
-          (onValue) {
-            for (DocumentSnapshot ds in onValue.documents) {
-              ds.reference.delete();
-            }
-          },
-        );
-        await query.reference.collection('responses').getDocuments().then(
-          (onValue) {
-            for (DocumentSnapshot ds in onValue.documents) {
-              ds.reference.delete();
-            }
-          },
-        );
-        await query.reference.collection('selections').getDocuments().then(
-          (onValue) {
-            for (DocumentSnapshot ds in onValue.documents) {
-              ds.reference.delete();
-            }
-          },
-        );
+
         await query.reference.delete();
       }
       startGame();
