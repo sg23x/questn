@@ -40,6 +40,29 @@ class WaitForSelectionsPage extends StatelessWidget {
                   ),
                   FlatButton(
                     onPressed: () {
+                      Firestore.instance
+                          .collection('roomDetails')
+                          .document(gameID)
+                          .snapshots()
+                          .listen(
+                        (event) {
+                          event.data['admin'] == playerID
+                              ? Firestore.instance
+                                  .collection('roomDetails')
+                                  .document(gameID)
+                                  .collection('users')
+                                  .getDocuments()
+                                  .then(
+                                  (snapshot) {
+                                    for (DocumentSnapshot ds
+                                        in snapshot.documents) {
+                                      ds.reference.delete();
+                                    }
+                                  },
+                                )
+                              : deletePlayer(playerID);
+                        },
+                      );
                       deletePlayer(playerID);
                     },
                     child: Text(

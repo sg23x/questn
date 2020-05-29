@@ -56,6 +56,29 @@ class _WaitingToStartState extends State<WaitingToStart> {
                   ),
                   FlatButton(
                     onPressed: () {
+                      Firestore.instance
+                          .collection('roomDetails')
+                          .document(widget.gameID)
+                          .snapshots()
+                          .listen(
+                        (event) {
+                          event.data['admin'] == widget.playerID
+                              ? Firestore.instance
+                                  .collection('roomDetails')
+                                  .document(widget.gameID)
+                                  .collection('users')
+                                  .getDocuments()
+                                  .then(
+                                  (snapshot) {
+                                    for (DocumentSnapshot ds
+                                        in snapshot.documents) {
+                                      ds.reference.delete();
+                                    }
+                                  },
+                                )
+                              : deletePlayer(widget.playerID);
+                        },
+                      );
                       deletePlayer(widget.playerID);
                     },
                     child: Text(
