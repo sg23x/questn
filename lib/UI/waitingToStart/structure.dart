@@ -220,18 +220,17 @@ class _WaitingToStartState extends State<WaitingToStart> {
                                     Colors.blue,
                                     Colors.cyan,
                                   ],
-                            name: snapshot.data.documents.length != 0
-                                ? snapshot.data.documents[i]['name']
+                            name: snap.data.documents.length != 0
+                                ? snap.data.documents[i]['name']
                                 : '',
                           );
                         },
                         shrinkWrap: true,
-                        itemCount: snapshot.data.documents.length,
+                        itemCount: snap.data.documents.length,
                       ),
                     ),
-                    snapshot.data.documents.length != 0
-                        ? widget.playerID ==
-                                snapshot.data.documents[0]['userID']
+                    snap.data.documents.length != 0
+                        ? widget.playerID == snapshot.data['admin']
                             ? StartTheGameButton(
                                 gameID: widget.gameID,
                                 playerID: widget.playerID,
@@ -278,10 +277,6 @@ class _WaitingToStartState extends State<WaitingToStart> {
             stream: Firestore.instance
                 .collection('roomDetails')
                 .document(widget.gameID)
-                .collection('users')
-                .orderBy(
-                  'timestamp',
-                )
                 .snapshots(),
           );
         },

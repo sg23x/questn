@@ -63,6 +63,7 @@ class _StartAGameButtonState extends State<StartAGameButton> {
           'currentQuestion': '',
           'timestamp': Timestamp.now().millisecondsSinceEpoch,
           'isGameStarted': false,
+          'admin': playerID,
         },
       );
 

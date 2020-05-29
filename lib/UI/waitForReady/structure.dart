@@ -395,8 +395,8 @@ class WaitForReady extends StatelessWidget {
                   }
 
                   return StreamBuilder(
-                    builder: (context, usersnap) {
-                      if (!usersnap.hasData) {
+                    builder: (context, roomsnap) {
+                      if (!roomsnap.hasData) {
                         return SizedBox();
                       }
                       return StreamBuilder(
@@ -437,33 +437,31 @@ class WaitForReady extends StatelessWidget {
                           return RaisedButton(
                             color: Colors.red,
                             onPressed: () async {
-                              if (usersnap.data.documents[0].documentID ==
-                                  playerID) {
+                              if (roomsnap.data['admin'] == playerID) {
                                 DocumentSnapshot questionRaw =
                                     quessnap.data.documents[generateRandomIndex(
                                   quessnap.data.documents.length,
                                 )];
 
                                 List indexes = getIndexes(
-                                  usersnap.data.documents.length,
-                                  usersnap.data.documents.length == 1 ? 1 : 2,
+                                  snap.data.documents.length,
+                                  snap.data.documents.length == 1 ? 1 : 2,
                                 );
 
                                 String question = !questionRaw.data['question']
                                         .contains('abc')
                                     ? questionRaw.data['question'].replaceAll(
                                         'xyz',
-                                        usersnap.data.documents[indexes[0]]
-                                            ['name'],
+                                        snap.data.documents[indexes[0]]['name'],
                                       )
                                     : questionRaw.data['question']
                                         .replaceAll(
                                             'xyz',
-                                            usersnap.data.documents[indexes[0]]
+                                            snap.data.documents[indexes[0]]
                                                 ['name'])
                                         .replaceAll(
                                           'abc',
-                                          usersnap.data.documents[indexes[1]]
+                                          snap.data.documents[indexes[1]]
                                               ['name'],
                                         );
 
@@ -517,8 +515,6 @@ class WaitForReady extends StatelessWidget {
                     stream: Firestore.instance
                         .collection('roomDetails')
                         .document(gameID)
-                        .collection('users')
-                        .orderBy('timestamp')
                         .snapshots(),
                   );
                 },
@@ -526,6 +522,7 @@ class WaitForReady extends StatelessWidget {
                     .collection('roomDetails')
                     .document(gameID)
                     .collection('users')
+                    .orderBy('timestamp')
                     .snapshots(),
               ),
             ),
