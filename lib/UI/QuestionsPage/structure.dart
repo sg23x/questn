@@ -132,15 +132,54 @@ class _QuestionsPageState extends State<QuestionsPage> {
             .listen(
           (event) {
             if (event.documents
-                    .where((element) => element.documentID == widget.playerID)
-                    .toList()
-                    .length !=
-                1) {
+                        .where(
+                            (element) => element.documentID == widget.playerID)
+                        .toList()
+                        .length !=
+                    1 ||
+                event.documents.length < 2) {
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
                   builder: (BuildContext context) => NameInputPage(),
                 ),
+              );
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    contentTextStyle: TextStyle(
+                      fontFamily: 'Indie-Flower',
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                      fontSize: MediaQuery.of(context).size.height * 0.025,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(
+                        12,
+                      ),
+                    ),
+                    actions: <Widget>[
+                      FlatButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        child: Text(
+                          "OK",
+                          style: TextStyle(
+                            fontFamily: 'Indie-Flower',
+                            color: Colors.pink,
+                            fontWeight: FontWeight.w900,
+                            fontSize: MediaQuery.of(context).size.height * 0.03,
+                          ),
+                        ),
+                      )
+                    ],
+                    content: Text(
+                      "The game has ended!",
+                    ),
+                  );
+                },
               );
             }
           },
