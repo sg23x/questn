@@ -164,108 +164,92 @@ class WaitForSubmissions extends StatelessWidget {
     return WillPopScope(
       onWillPop: _onBackPressed,
       child: StreamBuilder(
-          builder: (context, snapshot) {
-            if (!snapshot.hasData) {
-              return Scaffold();
-            }
-            return StreamBuilder(
-              builder: (context, snap) {
-                if (!snap.hasData) {
-                  return Scaffold();
-                }
+        builder: (context, snap) {
+          if (!snap.hasData) {
+            return Scaffold();
+          }
 
-                List _users = [];
-                for (int index = 0;
-                    index < snapshot.data.documents.length;
-                    index++) {
-                  _users.add(
-                    snapshot.data.documents[index]['userID'],
-                  );
-                }
-                if (snap.data.documents
-                            .where((x) => x['hasSubmitted'] == true)
-                            .toList()
-                            .length ==
-                        snapshot.data.documents.length &&
-                    _users.contains(
-                      playerID,
-                    )) {
-                  WidgetsBinding.instance.addPostFrameCallback(
-                    (_) async {
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (BuildContext context) =>
-                              ResponseSelectionPage(
-                            playerID: playerID,
-                            gameID: gameID,
-                          ),
-                        ),
-                      );
-                    },
-                  );
-                }
-
-                return Scaffold(
-                  appBar: customAppBar(
-                    gameID,
-                    playerID,
-                    context,
-                    '',
-                  ),
-                  body: Column(
-                    children: <Widget>[
-                      SizedBox(
-                        height: MediaQuery.of(context).size.width * 0.0075,
-                      ),
-                      Expanded(
-                        child: ListView.builder(
-                          itemBuilder: (context, i) {
-                            return WaitingForSubmissionPlayerCard(
-                              animationIndex: i,
-                              name: snapshot.data.documents[i]['name'],
-                              hasSubmitted: snap.data.documents
-                                          .where(
-                                            (no) =>
-                                                no.documentID ==
-                                                snapshot.data.documents[i]
-                                                    ['userID'],
-                                          )
-                                          .toList()
-                                          .length !=
-                                      0
-                                  ? snap.data.documents
-                                      .where(
-                                        (no) =>
-                                            no.documentID ==
-                                            snapshot.data.documents[i]
-                                                ['userID'],
-                                      )
-                                      .toList()[0]
-                                      .data['hasSubmitted']
-                                  : false,
-                            );
-                          },
-                          shrinkWrap: true,
-                          itemCount: snapshot.data.documents.length,
-                        ),
-                      ),
-                    ],
+          List _users = [];
+          for (int index = 0; index < snap.data.documents.length; index++) {
+            _users.add(
+              snap.data.documents[index]['userID'],
+            );
+          }
+          if (snap.data.documents
+                      .where((x) => x['hasSubmitted'] == true)
+                      .toList()
+                      .length ==
+                  snap.data.documents.length &&
+              _users.contains(
+                playerID,
+              )) {
+            WidgetsBinding.instance.addPostFrameCallback(
+              (_) async {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (BuildContext context) => ResponseSelectionPage(
+                      playerID: playerID,
+                      gameID: gameID,
+                    ),
                   ),
                 );
               },
-              stream: Firestore.instance
-                  .collection('roomDetails')
-                  .document(gameID)
-                  .collection('users')
-                  .snapshots(),
             );
-          },
-          stream: Firestore.instance
-              .collection('roomDetails')
-              .document(gameID)
-              .collection('users')
-              .snapshots()),
+          }
+
+          return Scaffold(
+            appBar: customAppBar(
+              gameID,
+              playerID,
+              context,
+              '',
+            ),
+            body: Column(
+              children: <Widget>[
+                SizedBox(
+                  height: MediaQuery.of(context).size.width * 0.0075,
+                ),
+                Expanded(
+                  child: ListView.builder(
+                    itemBuilder: (context, i) {
+                      return WaitingForSubmissionPlayerCard(
+                        animationIndex: i,
+                        name: snap.data.documents[i]['name'],
+                        hasSubmitted: snap.data.documents
+                                    .where(
+                                      (no) =>
+                                          no.documentID ==
+                                          snap.data.documents[i]['userID'],
+                                    )
+                                    .toList()
+                                    .length !=
+                                0
+                            ? snap.data.documents
+                                .where(
+                                  (no) =>
+                                      no.documentID ==
+                                      snap.data.documents[i]['userID'],
+                                )
+                                .toList()[0]
+                                .data['hasSubmitted']
+                            : false,
+                      );
+                    },
+                    shrinkWrap: true,
+                    itemCount: snap.data.documents.length,
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+        stream: Firestore.instance
+            .collection('roomDetails')
+            .document(gameID)
+            .collection('users')
+            .snapshots(),
+      ),
     );
   }
 }

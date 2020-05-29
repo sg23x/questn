@@ -180,52 +180,39 @@ class WaitForReady extends StatelessWidget {
                 if (!usersnap.hasData) {
                   return SizedBox();
                 }
-                return StreamBuilder(
-                  builder: (context, selsnap) {
-                    if (!selsnap.hasData) {
-                      return SizedBox();
-                    }
 
-                    return ListView.builder(
-                      itemBuilder: (context, i) {
-                        return Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Text(
-                              usersnap.data.documents
-                                  .where(
-                                    (c) =>
-                                        c.documentID ==
-                                        selsnap.data.documents
-                                            .where(
-                                              (x) => x['selection'] == playerID,
-                                            )
-                                            .toList()[i]
-                                            .documentID,
-                                  )
-                                  .toList()[0]['name'],
-                              style: TextStyle(
-                                fontSize: 20,
-                              ),
-                            ),
-                          ],
-                        );
-                      },
-                      itemCount: selsnap.data.documents
-                          .where(
-                            (x) => x['selection'] == playerID,
-                          )
-                          .toList()
-                          .length,
-                      shrinkWrap: true,
+                return ListView.builder(
+                  itemBuilder: (context, i) {
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Text(
+                          usersnap.data.documents
+                              .where(
+                                (c) =>
+                                    c.documentID ==
+                                    usersnap.data.documents
+                                        .where(
+                                          (x) => x['selection'] == playerID,
+                                        )
+                                        .toList()[i]
+                                        .documentID,
+                              )
+                              .toList()[0]['name'],
+                          style: TextStyle(
+                            fontSize: 20,
+                          ),
+                        ),
+                      ],
                     );
                   },
-                  stream: Firestore.instance
-                      .collection('roomDetails')
-                      .document(gameID)
-                      .collection('users')
-                      .orderBy('timestamp')
-                      .snapshots(),
+                  itemCount: usersnap.data.documents
+                      .where(
+                        (x) => x['selection'] == playerID,
+                      )
+                      .toList()
+                      .length,
+                  shrinkWrap: true,
                 );
               },
               stream: Firestore.instance
@@ -254,37 +241,25 @@ class WaitForReady extends StatelessWidget {
                 if (!snap.hasData) {
                   return SizedBox();
                 }
-                return StreamBuilder(
-                  builder: (context, respsnap) {
-                    if (!respsnap.hasData) {
-                      return SizedBox();
-                    }
 
-                    return ListView.builder(
-                      physics: NeverScrollableScrollPhysics(),
-                      itemBuilder: (context, i) {
-                        return NumberOfSelectionsCard(
-                          response: respsnap.data.documents[i]['response'],
-                          timesSelected: snap.data.documents
-                              .where(
-                                (x) =>
-                                    x['selection'] ==
-                                    snap.data.documents[i].documentID,
-                              )
-                              .toList()
-                              .length
-                              .toString(),
-                        );
-                      },
-                      shrinkWrap: true,
-                      itemCount: snap.data.documents.length,
+                return ListView.builder(
+                  physics: NeverScrollableScrollPhysics(),
+                  itemBuilder: (context, i) {
+                    return NumberOfSelectionsCard(
+                      response: snap.data.documents[i]['response'],
+                      timesSelected: snap.data.documents
+                          .where(
+                            (x) =>
+                                x['selection'] ==
+                                snap.data.documents[i].documentID,
+                          )
+                          .toList()
+                          .length
+                          .toString(),
                     );
                   },
-                  stream: Firestore.instance
-                      .collection('roomDetails')
-                      .document(gameID)
-                      .collection('users')
-                      .snapshots(),
+                  shrinkWrap: true,
+                  itemCount: snap.data.documents.length,
                 );
               },
               stream: Firestore.instance
@@ -309,70 +284,36 @@ class WaitForReady extends StatelessWidget {
                 if (!usersnap.hasData) {
                   return SizedBox();
                 }
-                return StreamBuilder(
-                  builder: (context, selsnap) {
-                    if (!selsnap.hasData) {
-                      return SizedBox();
-                    }
-                    return StreamBuilder(
-                      builder: (context, readysnap) {
-                        if (!readysnap.hasData) {
-                          return SizedBox();
-                        }
 
-                        return ListView.builder(
-                          physics: NeverScrollableScrollPhysics(),
-                          itemBuilder: (context, ind) {
-                            return PlayerScoreCard(
-                              name: usersnap.data.documents[ind]['name'],
-                              score: usersnap.data.documents[ind]['score']
-                                  .toString(),
-                              isReady: readysnap.data.documents
-                                  .where(
-                                    (x) =>
-                                        x.documentID ==
-                                        usersnap.data.documents[ind]['userID'],
-                                  )
-                                  .toList()[0]['isReady'],
-                              scoreAdded: selsnap.data.documents
-                                  .where((x) =>
-                                      x['selection'] ==
-                                      usersnap.data.documents
-                                          .where((y) =>
-                                              y['userID'] ==
-                                              usersnap.data.documents[ind]
-                                                  ['userID'])
-                                          .toList()[0]
-                                          .documentID)
-                                  .toList()
-                                  .length
-                                  .toString(),
-                            );
-                          },
-                          itemCount: usersnap.data.documents.length,
-                          shrinkWrap: true,
-                        );
-                      },
-                      stream: Firestore.instance
-                          .collection('roomDetails')
-                          .document(gameID)
-                          .collection('users')
-                          .orderBy(
-                            'score',
-                            descending: true,
+                return ListView.builder(
+                  physics: NeverScrollableScrollPhysics(),
+                  itemBuilder: (context, ind) {
+                    return PlayerScoreCard(
+                      name: usersnap.data.documents[ind]['name'],
+                      score: usersnap.data.documents[ind]['score'].toString(),
+                      isReady: usersnap.data.documents
+                          .where(
+                            (x) =>
+                                x.documentID ==
+                                usersnap.data.documents[ind]['userID'],
                           )
-                          .snapshots(),
+                          .toList()[0]['isReady'],
+                      scoreAdded: usersnap.data.documents
+                          .where((x) =>
+                              x['selection'] ==
+                              usersnap.data.documents
+                                  .where((y) =>
+                                      y['userID'] ==
+                                      usersnap.data.documents[ind]['userID'])
+                                  .toList()[0]
+                                  .documentID)
+                          .toList()
+                          .length
+                          .toString(),
                     );
                   },
-                  stream: Firestore.instance
-                      .collection('roomDetails')
-                      .document(gameID)
-                      .collection('users')
-                      .orderBy(
-                        'score',
-                        descending: true,
-                      )
-                      .snapshots(),
+                  itemCount: usersnap.data.documents.length,
+                  shrinkWrap: true,
                 );
               },
               stream: Firestore.instance
