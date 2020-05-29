@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:psych/UI/nameInput/structure.dart';
 import 'package:psych/UI/waitForReady/structure.dart';
 import 'package:psych/UI/waitForSubmissions/waitingForSubmissionPlayerCard.dart';
+import 'package:psych/UI/widgets/customAppBar.dart';
 
 class WaitForSelectionsPage extends StatelessWidget {
   WaitForSelectionsPage({
@@ -123,7 +124,12 @@ class WaitForSelectionsPage extends StatelessWidget {
     return WillPopScope(
       onWillPop: _onBackPressed,
       child: Scaffold(
-        appBar: AppBar(),
+        appBar: customAppBar(
+          gameID,
+          playerID,
+          context,
+          '',
+        ),
         body: StreamBuilder(
           builder: (context, snap) {
             if (!snap.hasData) {

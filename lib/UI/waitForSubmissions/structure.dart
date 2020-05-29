@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:psych/UI/nameInput/structure.dart';
 import 'package:psych/UI/responseSelection/structure.dart';
 import 'package:psych/UI/waitForSubmissions/waitingForSubmissionPlayerCard.dart';
+import 'package:psych/UI/widgets/customAppBar.dart';
 
 class WaitForSubmissions extends StatelessWidget {
   WaitForSubmissions({@required this.gameID, @required this.playerID});
@@ -183,26 +184,11 @@ class WaitForSubmissions extends StatelessWidget {
                 }
 
                 return Scaffold(
-                  appBar: AppBar(
-                    flexibleSpace: Container(
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [
-                            Colors.blue,
-                            Colors.cyan,
-                          ],
-                        ),
-                      ),
-                    ),
-                    centerTitle: true,
-                    title: Text(
-                      'Waiting for submissions...',
-                      style: TextStyle(
-                        fontFamily: 'Indie-Flower',
-                        fontSize: MediaQuery.of(context).size.width * 0.058,
-                        fontWeight: FontWeight.w100,
-                      ),
-                    ),
+                  appBar: customAppBar(
+                    gameID,
+                    playerID,
+                    context,
+                    '',
                   ),
                   body: Column(
                     children: <Widget>[

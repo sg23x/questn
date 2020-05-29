@@ -4,6 +4,7 @@ import 'package:psych/UI/QuestionsPage/questionCard.dart';
 import 'package:psych/UI/nameInput/structure.dart';
 import 'package:psych/UI/responseSelection/responseCard.dart';
 import 'package:psych/UI/waitForSelections/structure.dart';
+import 'package:psych/UI/widgets/customAppBar.dart';
 
 class ResponseSelectionPage extends StatelessWidget {
   ResponseSelectionPage({
@@ -123,7 +124,12 @@ class ResponseSelectionPage extends StatelessWidget {
     return WillPopScope(
       onWillPop: _onBackPressed,
       child: Scaffold(
-        appBar: AppBar(),
+        appBar: customAppBar(
+          gameID,
+          playerID,
+          context,
+          '',
+        ),
         body: StreamBuilder(
           builder: (context, snap) {
             if (!snap.hasData) {

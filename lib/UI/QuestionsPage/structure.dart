@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:psych/UI/QuestionsPage/questionCard.dart';
 import 'package:psych/UI/nameInput/structure.dart';
 import 'package:psych/UI/waitForSubmissions/structure.dart';
+import 'package:psych/UI/widgets/customAppBar.dart';
 
 class QuestionsPage extends StatefulWidget {
   QuestionsPage({
@@ -192,17 +193,11 @@ class _QuestionsPageState extends State<QuestionsPage> {
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         resizeToAvoidBottomPadding: false,
-        appBar: AppBar(
-          flexibleSpace: Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  Colors.blue,
-                  Colors.cyan,
-                ],
-              ),
-            ),
-          ),
+        appBar: customAppBar(
+          widget.gameID,
+          widget.playerID,
+          context,
+          'GAME ID: ${widget.gameID}',
         ),
         body: Column(
           children: <Widget>[

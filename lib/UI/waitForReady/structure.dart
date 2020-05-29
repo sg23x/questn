@@ -4,6 +4,7 @@ import 'package:psych/UI/QuestionsPage/structure.dart';
 import 'dart:math';
 
 import 'package:psych/UI/nameInput/structure.dart';
+import 'package:psych/UI/widgets/customAppBar.dart';
 
 class WaitForReady extends StatelessWidget {
   WaitForReady({
@@ -132,7 +133,12 @@ class WaitForReady extends StatelessWidget {
     return WillPopScope(
       onWillPop: _onBackPressed,
       child: Scaffold(
-        appBar: AppBar(),
+        appBar: customAppBar(
+          gameID,
+          playerID,
+          context,
+          '',
+        ),
         body: ListView(
           children: <Widget>[
             Row(

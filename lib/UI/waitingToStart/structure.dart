@@ -4,6 +4,7 @@ import 'package:psych/UI/QuestionsPage/structure.dart';
 import 'package:psych/UI/nameInput/structure.dart';
 import 'package:psych/UI/waitingToStart/playerCard.dart';
 import 'package:psych/UI/waitingToStart/startTheGameButton.dart';
+import 'package:psych/UI/widgets/customAppBar.dart';
 
 class WaitingToStart extends StatefulWidget {
   WaitingToStart({
@@ -181,25 +182,11 @@ class _WaitingToStartState extends State<WaitingToStart> {
               }
 
               return Scaffold(
-                appBar: AppBar(
-                  flexibleSpace: Container(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          Colors.blue,
-                          Colors.cyan,
-                        ],
-                      ),
-                    ),
-                  ),
-                  title: Text(
-                    'GAME ID: ${widget.gameID}',
-                    style: TextStyle(
-                      fontSize: MediaQuery.of(context).size.height * 0.03,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  centerTitle: true,
+                appBar: customAppBar(
+                  widget.gameID,
+                  widget.playerID,
+                  context,
+                  'GAME ID: ${widget.gameID}',
                 ),
                 body: Column(
                   children: <Widget>[
