@@ -10,9 +10,11 @@ class ResponseSelectionPage extends StatelessWidget {
   ResponseSelectionPage({
     @required this.gameID,
     @required this.playerID,
+    @required this.gameMode,
   });
   final String gameID;
   final String playerID;
+  final String gameMode;
   bool abc = true;
   @override
   Widget build(BuildContext context) {
@@ -203,6 +205,7 @@ class ResponseSelectionPage extends StatelessWidget {
                                     WaitForSelectionsPage(
                                   gameID: gameID,
                                   playerID: playerID,
+                                  gameMode: gameMode,
                                 ),
                               ),
                             );

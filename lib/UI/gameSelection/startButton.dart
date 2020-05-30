@@ -54,7 +54,7 @@ class _StartAGameButtonState extends State<StartAGameButton> {
 
     final String playerID = generateUserCode();
 
-    void startGame() async {
+    void startGame(String gameMode) async {
       await Firestore.instance
           .collection('roomDetails')
           .document(gameID)
@@ -96,12 +96,13 @@ class _StartAGameButtonState extends State<StartAGameButton> {
           builder: (BuildContext context) => WaitingToStart(
             gameID: gameID,
             playerID: playerID,
+            gameMode: gameMode,
           ),
         ),
       );
     }
 
-    void del() async {
+    void del(String gameMode) async {
       DocumentSnapshot query = await Firestore.instance
           .collection('roomDetails')
           .document(gameID)
@@ -118,10 +119,10 @@ class _StartAGameButtonState extends State<StartAGameButton> {
 
         await query.reference.delete();
       }
-      startGame();
+      startGame(gameMode);
     }
 
-    void createRoomID() async {
+    void createRoomID(String gameMode) async {
       QuerySnapshot query = await Firestore.instance
           .collection('roomDetails')
           .orderBy('timestamp')
@@ -140,7 +141,7 @@ class _StartAGameButtonState extends State<StartAGameButton> {
         },
       );
 
-      del();
+      del(gameMode);
     }
 
     return AnimatedAlign(
@@ -157,50 +158,79 @@ class _StartAGameButtonState extends State<StartAGameButton> {
         onPressed: () {
           showDialog(
             context: context,
-            barrierDismissible: false,
             builder: (BuildContext context) {
-              return Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  CircularProgressIndicator(
-                    backgroundColor: Colors.pink,
-                    strokeWidth: 8,
-                  ),
-                ],
+              bool willPop = true;
+              return StreamBuilder(
+                stream: Firestore.instance.collection('gameModes').snapshots(),
+                builder: (context, snap) {
+                  if (!snap.hasData) {
+                    return SizedBox();
+                  }
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).pop(willPop);
+                    },
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      shrinkWrap: true,
+                      itemCount: snap.data.documents.length,
+                      itemBuilder: (context, i) {
+                        DocumentSnapshot gameModeData = snap.data.documents[i];
+                        return GestureDetector(
+                          onTap: () {
+                            setState(
+                              () {
+                                willPop = false;
+                              },
+                            );
+                          },
+                          child: AlertDialog(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(
+                                12,
+                              ),
+                            ),
+                            content: Container(
+                              width: MediaQuery.of(context).size.width * 0.45,
+                              height: MediaQuery.of(context).size.height * 0.4,
+                              child: Center(
+                                child: RaisedButton(
+                                  child: Text(
+                                    gameModeData['gameMode'],
+                                  ),
+                                  onPressed: () {
+                                    showDialog(
+                                      context: context,
+                                      barrierDismissible: false,
+                                      builder: (BuildContext context) {
+                                        return Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: <Widget>[
+                                            CircularProgressIndicator(
+                                              backgroundColor: Colors.pink,
+                                              strokeWidth: 8,
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    );
+                                    createRoomID(
+                                      gameModeData['gameMode'],
+                                    );
+                                  },
+                                ),
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  );
+                },
               );
             },
           );
-          createRoomID();
-
-          // showDialog(
-          //   context: context,
-          //   builder: (BuildContext context) {
-          //     return AlertDialog(
-          //       contentTextStyle: TextStyle(
-          //         fontFamily: 'Indie-Flower',
-          //         color: Colors.black,
-          //         fontWeight: FontWeight.bold,
-          //         fontSize: MediaQuery.of(context).size.height * 0.025,
-          //       ),
-          //       shape: RoundedRectangleBorder(
-          //         borderRadius: BorderRadius.circular(
-          //           12,
-          //         ),
-          //       ),
-          //       actions: <Widget>[
-          //         FlatButton(
-          //           onPressed: () {
-          //             Navigator.pop(context);
-          //           },
-          //           child: Text('data'),
-          //         ),
-          //       ],
-          //       content: Text(
-          //         "choose game mode",
-          //       ),
-          //     );
-          //   },
-          // );
         },
         child: Container(
           width: MediaQuery.of(context).size.width * 0.6,

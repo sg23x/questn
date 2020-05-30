@@ -9,9 +9,11 @@ class QuestionsPage extends StatefulWidget {
   QuestionsPage({
     @required this.playerID,
     @required this.gameID,
+    @required this.gameMode,
   });
   final String playerID;
   final String gameID;
+  final String gameMode;
 
   @override
   _QuestionsPageState createState() => _QuestionsPageState();
@@ -336,6 +338,7 @@ class _QuestionsPageState extends State<QuestionsPage> {
                                   WaitForSubmissions(
                                 gameID: widget.gameID,
                                 playerID: widget.playerID,
+                                gameMode: widget.gameMode,
                               ),
                             ),
                           );

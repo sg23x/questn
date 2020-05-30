@@ -10,9 +10,11 @@ class WaitForReady extends StatelessWidget {
   WaitForReady({
     @required this.gameID,
     @required this.playerID,
+    @required this.gameMode,
   });
   final String gameID;
   final String playerID;
+  final String gameMode;
 
   bool abc = true;
 
@@ -362,6 +364,7 @@ class WaitForReady extends StatelessWidget {
                             builder: (BuildContext context) => QuestionsPage(
                               playerID: playerID,
                               gameID: gameID,
+                              gameMode: gameMode,
                             ),
                           ),
                         );
@@ -484,6 +487,8 @@ class WaitForReady extends StatelessWidget {
                         },
                         stream: Firestore.instance
                             .collection('questions')
+                            .document('modes')
+                            .collection(gameMode)
                             .snapshots(),
                       );
                     },

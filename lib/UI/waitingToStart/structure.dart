@@ -10,9 +10,11 @@ class WaitingToStart extends StatefulWidget {
   WaitingToStart({
     @required this.gameID,
     @required this.playerID,
+    this.gameMode,
   });
   final String gameID;
   final String playerID;
+  final String gameMode;
 
   @override
   _WaitingToStartState createState() => _WaitingToStartState();
@@ -192,6 +194,7 @@ class _WaitingToStartState extends State<WaitingToStart> {
                     builder: (BuildContext context) => QuestionsPage(
                       playerID: widget.playerID,
                       gameID: widget.gameID,
+                      gameMode: widget.gameMode,
                     ),
                   ),
                 );
@@ -247,6 +250,7 @@ class _WaitingToStartState extends State<WaitingToStart> {
                                 isPlayerPlural: snap.data.documents.length > 1
                                     ? true
                                     : false,
+                                gameMode: widget.gameMode,
                               )
                             : Container(
                                 alignment: Alignment.center,

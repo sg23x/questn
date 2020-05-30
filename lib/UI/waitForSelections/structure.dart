@@ -9,9 +9,11 @@ class WaitForSelectionsPage extends StatelessWidget {
   WaitForSelectionsPage({
     @required this.gameID,
     @required this.playerID,
+    @required this.gameMode,
   });
   final String playerID;
   final String gameID;
+  final String gameMode;
   bool abc = true;
   bool xyz = true;
   @override
@@ -205,6 +207,7 @@ class WaitForSelectionsPage extends StatelessWidget {
                       builder: (BuildContext context) => WaitForReady(
                         gameID: gameID,
                         playerID: playerID,
+                        gameMode: gameMode,
                       ),
                     ),
                   );

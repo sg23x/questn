@@ -6,9 +6,14 @@ import 'package:psych/UI/waitForSubmissions/waitingForSubmissionPlayerCard.dart'
 import 'package:psych/UI/widgets/customAppBar.dart';
 
 class WaitForSubmissions extends StatelessWidget {
-  WaitForSubmissions({@required this.gameID, @required this.playerID});
+  WaitForSubmissions({
+    @required this.gameID,
+    @required this.playerID,
+    @required this.gameMode,
+  });
   final String gameID;
   final String playerID;
+  final String gameMode;
   bool abc = true;
   @override
   Widget build(BuildContext context) {
@@ -194,6 +199,7 @@ class WaitForSubmissions extends StatelessWidget {
                     builder: (BuildContext context) => ResponseSelectionPage(
                       playerID: playerID,
                       gameID: gameID,
+                      gameMode: gameMode,
                     ),
                   ),
                 );

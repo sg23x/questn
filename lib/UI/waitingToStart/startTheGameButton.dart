@@ -7,10 +7,12 @@ class StartTheGameButton extends StatefulWidget {
     @required this.gameID,
     @required this.playerID,
     @required this.isPlayerPlural,
+    @required this.gameMode,
   });
   final String gameID;
   final String playerID;
   final bool isPlayerPlural;
+  final String gameMode;
 
   @override
   _StartTheGameButtonState createState() => _StartTheGameButtonState();
@@ -199,7 +201,11 @@ class _StartTheGameButtonState extends State<StartTheGameButton> {
               .snapshots(),
         );
       },
-      stream: Firestore.instance.collection('questions').snapshots(),
+      stream: Firestore.instance
+          .collection('questions')
+          .document('modes')
+          .collection(widget.gameMode)
+          .snapshots(),
     );
   }
 }
