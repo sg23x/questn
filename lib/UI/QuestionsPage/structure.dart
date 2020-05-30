@@ -21,6 +21,7 @@ class _QuestionsPageState extends State<QuestionsPage> {
   Alignment align;
   bool isButtonEnabled;
   String response = '';
+  bool abc = true;
   @override
   void initState() {
     align = Alignment.lerp(
@@ -155,19 +156,21 @@ class _QuestionsPageState extends State<QuestionsPage> {
             .snapshots()
             .listen(
           (event) {
-            if (event.documents
-                        .where(
-                            (element) => element.documentID == widget.playerID)
-                        .toList()
-                        .length !=
-                    1 ||
-                event.documents.length < 2) {
+            if ((event.documents
+                            .where((element) =>
+                                element.documentID == widget.playerID)
+                            .toList()
+                            .length !=
+                        1 ||
+                    event.documents.length < 2) &&
+                abc) {
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
                   builder: (BuildContext context) => NameInputPage(),
                 ),
               );
+
               showDialog(
                 context: context,
                 builder: (BuildContext context) {
@@ -205,6 +208,7 @@ class _QuestionsPageState extends State<QuestionsPage> {
                   );
                 },
               );
+              abc = !abc;
             }
           },
         );

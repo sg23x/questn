@@ -13,6 +13,7 @@ class ResponseSelectionPage extends StatelessWidget {
   });
   final String gameID;
   final String playerID;
+  bool abc = true;
   @override
   Widget build(BuildContext context) {
     void deletePlayer(String id) async {
@@ -89,18 +90,20 @@ class ResponseSelectionPage extends StatelessWidget {
             .snapshots()
             .listen(
           (event) {
-            if (event.documents
-                        .where((element) => element.documentID == playerID)
-                        .toList()
-                        .length !=
-                    1 ||
-                event.documents.length < 2) {
+            if ((event.documents
+                            .where((element) => element.documentID == playerID)
+                            .toList()
+                            .length !=
+                        1 ||
+                    event.documents.length < 2) &&
+                abc) {
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
                   builder: (BuildContext context) => NameInputPage(),
                 ),
               );
+              abc = !abc;
               showDialog(
                 context: context,
                 builder: (BuildContext context) {

@@ -171,6 +171,36 @@ class _StartAGameButtonState extends State<StartAGameButton> {
             },
           );
           createRoomID();
+
+          // showDialog(
+          //   context: context,
+          //   builder: (BuildContext context) {
+          //     return AlertDialog(
+          //       contentTextStyle: TextStyle(
+          //         fontFamily: 'Indie-Flower',
+          //         color: Colors.black,
+          //         fontWeight: FontWeight.bold,
+          //         fontSize: MediaQuery.of(context).size.height * 0.025,
+          //       ),
+          //       shape: RoundedRectangleBorder(
+          //         borderRadius: BorderRadius.circular(
+          //           12,
+          //         ),
+          //       ),
+          //       actions: <Widget>[
+          //         FlatButton(
+          //           onPressed: () {
+          //             Navigator.pop(context);
+          //           },
+          //           child: Text('data'),
+          //         ),
+          //       ],
+          //       content: Text(
+          //         "choose game mode",
+          //       ),
+          //     );
+          //   },
+          // );
         },
         child: Container(
           width: MediaQuery.of(context).size.width * 0.6,
