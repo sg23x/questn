@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:psych/UI/waitingToStart/structure.dart';
 import 'dart:math';
+import 'package:firebase_admob/firebase_admob.dart';
 
 class StartAGameButton extends StatefulWidget {
   StartAGameButton({
@@ -14,6 +15,8 @@ class StartAGameButton extends StatefulWidget {
 }
 
 class _StartAGameButtonState extends State<StartAGameButton> {
+  static const MobileAdTargetingInfo targetingInfo = MobileAdTargetingInfo();
+  RewardedVideoAd myAd = RewardedVideoAd.instance;
   String gameID;
   Alignment axis;
   @override
@@ -24,6 +27,10 @@ class _StartAGameButtonState extends State<StartAGameButton> {
       Alignment.bottomLeft,
       1,
     );
+    FirebaseAdMob.instance.initialize(
+      appId: FirebaseAdMob.testAppId,
+    );
+
     super.initState();
   }
 
@@ -193,33 +200,97 @@ class _StartAGameButtonState extends State<StartAGameButton> {
                             content: Container(
                               width: MediaQuery.of(context).size.width * 0.45,
                               height: MediaQuery.of(context).size.height * 0.4,
-                              child: Center(
-                                child: RaisedButton(
-                                  child: Text(
-                                    gameModeData['gameMode'],
-                                  ),
-                                  onPressed: () {
-                                    showDialog(
-                                      context: context,
-                                      barrierDismissible: false,
-                                      builder: (BuildContext context) {
-                                        return Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: <Widget>[
-                                            CircularProgressIndicator(
-                                              backgroundColor: Colors.pink,
-                                              strokeWidth: 8,
-                                            ),
-                                          ],
-                                        );
-                                      },
-                                    );
-                                    createRoomID(
+                              child: Column(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
+                                children: [
+                                  gameModeData['isLocked']
+                                      ? Icon(
+                                          Icons.lock,
+                                        )
+                                      : SizedBox(),
+                                  RaisedButton(
+                                    child: Text(
                                       gameModeData['gameMode'],
-                                    );
-                                  },
-                                ),
+                                    ),
+                                    onPressed: gameModeData['isLocked']
+                                        ? () {
+                                            myAd.load(
+                                              adUnitId:
+                                                  RewardedVideoAd.testAdUnitId,
+                                              targetingInfo: targetingInfo,
+                                            );
+                                            myAd.listener = (
+                                              RewardedVideoAdEvent event, {
+                                              String rewardType,
+                                              int rewardAmount,
+                                            }) {
+                                              if (event ==
+                                                  RewardedVideoAdEvent.loaded) {
+                                                myAd.show();
+                                              }
+                                              if (event ==
+                                                  RewardedVideoAdEvent
+                                                      .rewarded) {
+                                                createRoomID(
+                                                  gameModeData['gameMode'],
+                                                );
+                                              }
+                                              if (event ==
+                                                  RewardedVideoAdEvent
+                                                      .failedToLoad) {
+                                                createRoomID(
+                                                  gameModeData['gameMode'],
+                                                );
+                                              }
+                                              if (event ==
+                                                  RewardedVideoAdEvent.closed) {
+                                                Navigator.pop(context);
+                                              }
+                                            };
+
+                                            showDialog(
+                                              context: context,
+                                              barrierDismissible: false,
+                                              builder: (BuildContext context) {
+                                                return Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: <Widget>[
+                                                    CircularProgressIndicator(
+                                                      backgroundColor:
+                                                          Colors.pink,
+                                                      strokeWidth: 8,
+                                                    ),
+                                                  ],
+                                                );
+                                              },
+                                            );
+                                          }
+                                        : () {
+                                            createRoomID(
+                                              gameModeData['gameMode'],
+                                            );
+                                            showDialog(
+                                              context: context,
+                                              barrierDismissible: false,
+                                              builder: (BuildContext context) {
+                                                return Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: <Widget>[
+                                                    CircularProgressIndicator(
+                                                      backgroundColor:
+                                                          Colors.pink,
+                                                      strokeWidth: 8,
+                                                    ),
+                                                  ],
+                                                );
+                                              },
+                                            );
+                                          },
+                                  ),
+                                ],
                               ),
                             ),
                           ),

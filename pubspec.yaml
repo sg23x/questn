@@ -21,6 +21,7 @@ dependencies:
     sdk: flutter
   cloud_firestore: "^0.13.5"
   pin_entry_text_field:
+  firebase_admob:
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
