@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:psych/UI/waitingToStart/structure.dart';
 import 'dart:math';
@@ -19,6 +20,7 @@ class _StartAGameButtonState extends State<StartAGameButton> {
   RewardedVideoAd myAd = RewardedVideoAd.instance;
   String gameID;
   Alignment axis;
+
   @override
   void initState() {
     gameID = '';
@@ -168,7 +170,10 @@ class _StartAGameButtonState extends State<StartAGameButton> {
             builder: (BuildContext context) {
               bool willPop = true;
               return StreamBuilder(
-                stream: Firestore.instance.collection('gameModes').snapshots(),
+                stream: Firestore.instance
+                    .collection('gameModes')
+                    .orderBy('index')
+                    .snapshots(),
                 builder: (context, snap) {
                   if (!snap.hasData) {
                     return SizedBox();
@@ -177,9 +182,11 @@ class _StartAGameButtonState extends State<StartAGameButton> {
                     onTap: () {
                       Navigator.of(context).pop(willPop);
                     },
-                    child: ListView.builder(
+                    child: PageView.builder(
+                      controller: PageController(
+                        viewportFraction: 0.7,
+                      ),
                       scrollDirection: Axis.horizontal,
-                      shrinkWrap: true,
                       itemCount: snap.data.documents.length,
                       itemBuilder: (context, i) {
                         DocumentSnapshot gameModeData = snap.data.documents[i];
@@ -192,26 +199,56 @@ class _StartAGameButtonState extends State<StartAGameButton> {
                             );
                           },
                           child: AlertDialog(
+                            backgroundColor: Color(
+                              int.parse(gameModeData['colorCode']),
+                            ),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(
-                                12,
+                                10,
                               ),
                             ),
                             content: Container(
-                              width: MediaQuery.of(context).size.width * 0.45,
+                              decoration: BoxDecoration(),
+                              width: MediaQuery.of(context).size.width * 0.7,
                               height: MediaQuery.of(context).size.height * 0.4,
                               child: Column(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceAround,
                                 children: [
                                   gameModeData['isLocked']
-                                      ? Icon(
-                                          Icons.lock,
+                                      ? Container(
+                                          height: 80,
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceAround,
+                                            children: [
+                                              Icon(
+                                                Icons.lock,
+                                                size: 35,
+                                                color: Colors.white,
+                                              ),
+                                              Text(
+                                                'View ad to unlock!',
+                                                style: TextStyle(
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
                                         )
-                                      : SizedBox(),
+                                      : SizedBox(
+                                          height: 80,
+                                        ),
+                                  Text(
+                                    gameModeData['gameName'],
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 30,
+                                    ),
+                                  ),
                                   RaisedButton(
                                     child: Text(
-                                      gameModeData['gameMode'],
+                                      'Play!',
                                     ),
                                     onPressed: gameModeData['isLocked']
                                         ? () {
@@ -234,6 +271,25 @@ class _StartAGameButtonState extends State<StartAGameButton> {
                                                       .rewarded) {
                                                 createRoomID(
                                                   gameModeData['gameMode'],
+                                                );
+                                                showDialog(
+                                                  context: context,
+                                                  barrierDismissible: false,
+                                                  builder:
+                                                      (BuildContext context) {
+                                                    return Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
+                                                      children: <Widget>[
+                                                        CircularProgressIndicator(
+                                                          backgroundColor:
+                                                              Colors.pink,
+                                                          strokeWidth: 8,
+                                                        ),
+                                                      ],
+                                                    );
+                                                  },
                                                 );
                                               }
                                               if (event ==
