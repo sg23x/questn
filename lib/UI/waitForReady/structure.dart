@@ -110,6 +110,8 @@ class WaitForReady extends StatelessWidget {
                         1 ||
                     event.documents.length < 2) &&
                 abc) {
+              Navigator.popUntil(context, (route) => route.isFirst);
+
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
