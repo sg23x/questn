@@ -20,10 +20,12 @@ class _StartAGameButtonState extends State<StartAGameButton> {
   RewardedVideoAd myAd = RewardedVideoAd.instance;
   String gameID;
   Alignment axis;
+  bool adCloseChecker;
 
   @override
   void initState() {
     gameID = '';
+    adCloseChecker = true;
     axis = Alignment.lerp(
       Alignment.bottomCenter,
       Alignment.bottomLeft,
@@ -269,6 +271,8 @@ class _StartAGameButtonState extends State<StartAGameButton> {
                                               if (event ==
                                                   RewardedVideoAdEvent
                                                       .rewarded) {
+                                                adCloseChecker =
+                                                    !adCloseChecker;
                                                 createRoomID(
                                                   gameModeData['gameMode'],
                                                 );
@@ -277,17 +281,21 @@ class _StartAGameButtonState extends State<StartAGameButton> {
                                                   barrierDismissible: false,
                                                   builder:
                                                       (BuildContext context) {
-                                                    return Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .center,
-                                                      children: <Widget>[
-                                                        CircularProgressIndicator(
-                                                          backgroundColor:
-                                                              Colors.pink,
-                                                          strokeWidth: 8,
-                                                        ),
-                                                      ],
+                                                    return WillPopScope(
+                                                      onWillPop: () async =>
+                                                          false,
+                                                      child: Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .center,
+                                                        children: <Widget>[
+                                                          CircularProgressIndicator(
+                                                            backgroundColor:
+                                                                Colors.pink,
+                                                            strokeWidth: 8,
+                                                          ),
+                                                        ],
+                                                      ),
                                                     );
                                                   },
                                                 );
@@ -300,7 +308,9 @@ class _StartAGameButtonState extends State<StartAGameButton> {
                                                 );
                                               }
                                               if (event ==
-                                                  RewardedVideoAdEvent.closed) {
+                                                      RewardedVideoAdEvent
+                                                          .closed &&
+                                                  adCloseChecker) {
                                                 Navigator.pop(context);
                                               }
                                             };
@@ -309,16 +319,20 @@ class _StartAGameButtonState extends State<StartAGameButton> {
                                               context: context,
                                               barrierDismissible: false,
                                               builder: (BuildContext context) {
-                                                return Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.center,
-                                                  children: <Widget>[
-                                                    CircularProgressIndicator(
-                                                      backgroundColor:
-                                                          Colors.pink,
-                                                      strokeWidth: 8,
-                                                    ),
-                                                  ],
+                                                return WillPopScope(
+                                                  onWillPop: () async => false,
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    children: <Widget>[
+                                                      CircularProgressIndicator(
+                                                        backgroundColor:
+                                                            Colors.pink,
+                                                        strokeWidth: 8,
+                                                      ),
+                                                    ],
+                                                  ),
                                                 );
                                               },
                                             );
@@ -331,16 +345,20 @@ class _StartAGameButtonState extends State<StartAGameButton> {
                                               context: context,
                                               barrierDismissible: false,
                                               builder: (BuildContext context) {
-                                                return Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.center,
-                                                  children: <Widget>[
-                                                    CircularProgressIndicator(
-                                                      backgroundColor:
-                                                          Colors.pink,
-                                                      strokeWidth: 8,
-                                                    ),
-                                                  ],
+                                                return WillPopScope(
+                                                  onWillPop: () async => false,
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    children: <Widget>[
+                                                      CircularProgressIndicator(
+                                                        backgroundColor:
+                                                            Colors.pink,
+                                                        strokeWidth: 8,
+                                                      ),
+                                                    ],
+                                                  ),
                                                 );
                                               },
                                             );
