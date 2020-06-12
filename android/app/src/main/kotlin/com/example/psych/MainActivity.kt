@@ -1,4 +1,4 @@
-package com.example.psych
+package soumyagupta2307.psych
 
 import androidx.annotation.NonNull;
 import io.flutter.embedding.android.FlutterActivity
