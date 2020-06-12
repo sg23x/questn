@@ -102,12 +102,12 @@ class WaitForSelectionsPage extends StatelessWidget {
                 xyz) {
               Navigator.popUntil(context, (route) => route.isFirst);
 
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (BuildContext context) => NameInputPage(),
-                ),
-              );
+              Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(
+                    builder: (BuildContext context) => NameInputPage(),
+                  ),
+                  (route) => false);
               xyz = !xyz;
               showDialog(
                 context: context,

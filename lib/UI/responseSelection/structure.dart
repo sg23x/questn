@@ -99,12 +99,12 @@ class ResponseSelectionPage extends StatelessWidget {
                         1 ||
                     event.documents.length < 2) &&
                 abc) {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (BuildContext context) => NameInputPage(),
-                ),
-              );
+              Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(
+                    builder: (BuildContext context) => NameInputPage(),
+                  ),
+                  (route) => false);
               abc = !abc;
               showDialog(
                 context: context,

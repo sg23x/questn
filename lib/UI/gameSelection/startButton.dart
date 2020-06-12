@@ -101,7 +101,7 @@ class _StartAGameButtonState extends State<StartAGameButton> {
 
       Navigator.pop(context);
 
-      Navigator.push(
+      Navigator.pushReplacement(
         context,
         MaterialPageRoute(
           builder: (BuildContext context) => WaitingToStart(

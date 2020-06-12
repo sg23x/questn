@@ -113,12 +113,12 @@ class WaitForReady extends StatelessWidget {
                 abc) {
               Navigator.popUntil(context, (route) => route.isFirst);
 
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (BuildContext context) => NameInputPage(),
-                ),
-              );
+              Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(
+                    builder: (BuildContext context) => NameInputPage(),
+                  ),
+                  (route) => false);
               abc = !abc;
               showDialog(
                 context: context,

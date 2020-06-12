@@ -166,12 +166,12 @@ class _QuestionsPageState extends State<QuestionsPage> {
                         1 ||
                     event.documents.length < 2) &&
                 abc) {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (BuildContext context) => NameInputPage(),
-                ),
-              );
+              Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(
+                    builder: (BuildContext context) => NameInputPage(),
+                  ),
+                  (route) => false);
 
               showDialog(
                 context: context,

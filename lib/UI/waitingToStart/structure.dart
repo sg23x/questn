@@ -126,12 +126,12 @@ class _WaitingToStartState extends State<WaitingToStart> {
                     .toList()
                     .length !=
                 1) {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (BuildContext context) => NameInputPage(),
-                ),
-              );
+              Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(
+                    builder: (BuildContext context) => NameInputPage(),
+                  ),
+                  (route) => false);
               showDialog(
                 context: context,
                 builder: (BuildContext context) {

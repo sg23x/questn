@@ -10,45 +10,19 @@ class GameSelection extends StatelessWidget {
   final String playerName;
 
   Widget build(BuildContext context) {
-    Future<bool> _onBackPressed() {
-      return showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                actions: <Widget>[
-                  FlatButton(
-                    onPressed: () {
-                      Navigator.of(context).pop(false);
-                    },
-                    child: Text(
-                      "NO",
-                    ),
-                  ),
-                  FlatButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (BuildContext context) => NameInputPage(),
-                        ),
-                      );
-                    },
-                    child: Text(
-                      "YES",
-                    ),
-                  ),
-                ],
-                content: Text(
-                  "You sure you wanna leave the game?",
-                ),
-              );
-            },
-          ) ??
-          false;
+    void _onBackPressed() {
+      Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+            builder: (BuildContext context) => NameInputPage(),
+          ),
+          (route) => false);
     }
 
     return WillPopScope(
-      onWillPop: _onBackPressed,
+      onWillPop: () {
+        _onBackPressed();
+      },
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         resizeToAvoidBottomPadding: false,

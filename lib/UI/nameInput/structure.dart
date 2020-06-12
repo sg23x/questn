@@ -29,7 +29,7 @@ class _NameInputPageState extends State<NameInputPage> {
   @override
   Widget build(BuildContext context) {
     void submitName() {
-      Navigator.push(
+      Navigator.pushReplacement(
         context,
         MaterialPageRoute(
           builder: (BuildContext context) => GameSelection(
