@@ -256,7 +256,7 @@ class _StartAGameButtonState extends State<StartAGameButton> {
                                         ? () {
                                             myAd.load(
                                               adUnitId:
-                                                  RewardedVideoAd.testAdUnitId,
+                                                  'ca-app-pub-2468807992323747/9025521431',
                                               targetingInfo: targetingInfo,
                                             );
                                             myAd.listener = (
