@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:psych/UI/QuestionsPage/structure.dart';
 import 'dart:math';
 
@@ -360,6 +361,8 @@ class WaitForReady extends StatelessWidget {
                       )) {
                     WidgetsBinding.instance.addPostFrameCallback(
                       (_) async {
+                        HapticFeedback.vibrate();
+
                         Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(

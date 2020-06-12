@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:psych/UI/nameInput/structure.dart';
 import 'package:psych/UI/responseSelection/structure.dart';
 import 'package:psych/UI/waitForSubmissions/waitingForSubmissionPlayerCard.dart';
@@ -194,6 +195,8 @@ class WaitForSubmissions extends StatelessWidget {
               )) {
             WidgetsBinding.instance.addPostFrameCallback(
               (_) async {
+                HapticFeedback.vibrate();
+
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
