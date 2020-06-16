@@ -4,6 +4,8 @@ import 'package:pin_entry_text_field/pin_entry_text_field.dart';
 import 'package:psych/UI/waitingToStart/structure.dart';
 import 'dart:math';
 
+import 'package:psych/UI/widgets/customProgressIndicator.dart';
+
 class JoinGameButton extends StatefulWidget {
   JoinGameButton({
     @required this.playerName,
@@ -70,22 +72,7 @@ class _JoinGameButtonState extends State<JoinGameButton> {
             actions: <Widget>[
               FlatButton(
                 onPressed: () async {
-                  showDialog(
-                    context: context,
-                    barrierDismissible: false,
-                    builder: (BuildContext context) {
-                      return Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          CircularProgressIndicator(
-                            backgroundColor: Colors.pink,
-                            strokeWidth: 8,
-                          ),
-                        ],
-                      );
-                    },
-                  );
-
+                  customProgressIndicator(context: context);
                   final snap = await Firestore.instance
                       .collection('roomDetails')
                       .document(gameID)

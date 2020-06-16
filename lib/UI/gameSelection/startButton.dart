@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:psych/UI/waitingToStart/structure.dart';
 import 'dart:math';
 import 'package:firebase_admob/firebase_admob.dart';
+import 'package:psych/UI/widgets/customProgressIndicator.dart';
 
 class StartAGameButton extends StatefulWidget {
   StartAGameButton({
@@ -276,29 +277,8 @@ class _StartAGameButtonState extends State<StartAGameButton> {
                                                 createRoomID(
                                                   gameModeData['gameMode'],
                                                 );
-                                                showDialog(
-                                                  context: context,
-                                                  barrierDismissible: false,
-                                                  builder:
-                                                      (BuildContext context) {
-                                                    return WillPopScope(
-                                                      onWillPop: () async =>
-                                                          false,
-                                                      child: Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .center,
-                                                        children: <Widget>[
-                                                          CircularProgressIndicator(
-                                                            backgroundColor:
-                                                                Colors.pink,
-                                                            strokeWidth: 8,
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    );
-                                                  },
-                                                );
+                                                customProgressIndicator(
+                                                    context: context);
                                               }
                                               if (event ==
                                                   RewardedVideoAdEvent
@@ -315,53 +295,15 @@ class _StartAGameButtonState extends State<StartAGameButton> {
                                               }
                                             };
 
-                                            showDialog(
-                                              context: context,
-                                              barrierDismissible: false,
-                                              builder: (BuildContext context) {
-                                                return WillPopScope(
-                                                  onWillPop: () async => false,
-                                                  child: Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
-                                                    children: <Widget>[
-                                                      CircularProgressIndicator(
-                                                        backgroundColor:
-                                                            Colors.pink,
-                                                        strokeWidth: 8,
-                                                      ),
-                                                    ],
-                                                  ),
-                                                );
-                                              },
-                                            );
+                                            customProgressIndicator(
+                                                context: context);
                                           }
                                         : () {
                                             createRoomID(
                                               gameModeData['gameMode'],
                                             );
-                                            showDialog(
-                                              context: context,
-                                              barrierDismissible: false,
-                                              builder: (BuildContext context) {
-                                                return WillPopScope(
-                                                  onWillPop: () async => false,
-                                                  child: Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
-                                                    children: <Widget>[
-                                                      CircularProgressIndicator(
-                                                        backgroundColor:
-                                                            Colors.pink,
-                                                        strokeWidth: 8,
-                                                      ),
-                                                    ],
-                                                  ),
-                                                );
-                                              },
-                                            );
+                                            customProgressIndicator(
+                                                context: context);
                                           },
                                   ),
                                 ],
