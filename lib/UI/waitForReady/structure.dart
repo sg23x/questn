@@ -2,10 +2,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:psych/UI/QuestionsPage/structure.dart';
+import 'package:psych/UI/functionCalls/backPressCall.dart';
 import 'dart:math';
 
 import 'package:psych/UI/nameInput/structure.dart';
 import 'package:psych/UI/widgets/customAppBar.dart';
+import 'package:psych/UI/widgets/gameEndedAlert.dart';
 
 class WaitForReady extends StatelessWidget {
   WaitForReady({
@@ -23,15 +25,6 @@ class WaitForReady extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    void deletePlayer(String id) async {
-      await Firestore.instance
-          .collection('roomDetails')
-          .document(gameID)
-          .collection('users')
-          .document(id)
-          .delete();
-    }
-
     generateRandomIndex(int len) {
       Random rnd;
       int min = 0;
@@ -39,52 +32,6 @@ class WaitForReady extends StatelessWidget {
       rnd = new Random();
       var r = min + rnd.nextInt(max - min);
       return r;
-    }
-
-    Future<bool> _onBackPressed() {
-      return showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                actions: <Widget>[
-                  FlatButton(
-                    onPressed: () {
-                      Navigator.of(context).pop(false);
-                    },
-                    child: Text(
-                      "NO",
-                    ),
-                  ),
-                  FlatButton(
-                    onPressed: () {
-                      isAdmin
-                          ? Firestore.instance
-                              .collection('roomDetails')
-                              .document(gameID)
-                              .collection('users')
-                              .getDocuments()
-                              .then(
-                              (snapshot) {
-                                for (DocumentSnapshot ds
-                                    in snapshot.documents) {
-                                  ds.reference.delete();
-                                }
-                              },
-                            )
-                          : deletePlayer(playerID);
-                    },
-                    child: Text(
-                      "YES",
-                    ),
-                  ),
-                ],
-                content: Text(
-                  "You sure you wanna leave the game?",
-                ),
-              );
-            },
-          ) ??
-          false;
     }
 
     WidgetsBinding.instance.addPostFrameCallback(
@@ -113,43 +60,7 @@ class WaitForReady extends StatelessWidget {
                   ),
                   (route) => false);
               abc = !abc;
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    contentTextStyle: TextStyle(
-                      fontFamily: 'Indie-Flower',
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                      fontSize: MediaQuery.of(context).size.height * 0.025,
-                    ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(
-                        12,
-                      ),
-                    ),
-                    actions: <Widget>[
-                      FlatButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        child: Text(
-                          "OK",
-                          style: TextStyle(
-                            fontFamily: 'Indie-Flower',
-                            color: Colors.pink,
-                            fontWeight: FontWeight.w900,
-                            fontSize: MediaQuery.of(context).size.height * 0.03,
-                          ),
-                        ),
-                      )
-                    ],
-                    content: Text(
-                      "The game has ended!",
-                    ),
-                  );
-                },
-              );
+              gameEndedAlert(context: context);
             }
           },
         );
@@ -157,7 +68,12 @@ class WaitForReady extends StatelessWidget {
     );
 
     return WillPopScope(
-      onWillPop: _onBackPressed,
+      onWillPop: () => onBackPressed(
+        context: context,
+        gameID: gameID,
+        isAdmin: isAdmin,
+        playerID: playerID,
+      ),
       child: Scaffold(
         appBar: customAppBar(
           context: context,

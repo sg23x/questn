@@ -1,10 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:psych/UI/functionCalls/backPressCall.dart';
 import 'package:psych/UI/nameInput/structure.dart';
 import 'package:psych/UI/responseSelection/structure.dart';
 import 'package:psych/UI/waitForSubmissions/waitingForSubmissionPlayerCard.dart';
 import 'package:psych/UI/widgets/customAppBar.dart';
+import 'package:psych/UI/widgets/gameEndedAlert.dart';
 
 class WaitForSubmissions extends StatelessWidget {
   WaitForSubmissions({
@@ -20,82 +22,6 @@ class WaitForSubmissions extends StatelessWidget {
   bool abc = true;
   @override
   Widget build(BuildContext context) {
-    void deletePlayer(String id) async {
-      await Firestore.instance
-          .collection('roomDetails')
-          .document(gameID)
-          .collection('users')
-          .document(id)
-          .delete();
-    }
-
-    Future<bool> _onBackPressed() {
-      return showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(
-                    10,
-                  ),
-                ),
-                actions: <Widget>[
-                  FlatButton(
-                    onPressed: () {
-                      Navigator.of(context).pop(false);
-                    },
-                    child: Text(
-                      "NO",
-                      style: TextStyle(
-                        fontFamily: 'Indie-Flower',
-                        fontWeight: FontWeight.w900,
-                        fontSize: MediaQuery.of(context).size.width * 0.05,
-                      ),
-                    ),
-                  ),
-                  FlatButton(
-                    onPressed: () {
-                      isAdmin
-                          ? Firestore.instance
-                              .collection('roomDetails')
-                              .document(gameID)
-                              .collection('users')
-                              .getDocuments()
-                              .then(
-                              (snapshot) {
-                                for (DocumentSnapshot ds
-                                    in snapshot.documents) {
-                                  ds.reference.delete();
-                                }
-                              },
-                            )
-                          : deletePlayer(playerID);
-                    },
-                    child: Text(
-                      "YES",
-                      style: TextStyle(
-                        fontFamily: 'Indie-Flower',
-                        fontWeight: FontWeight.w900,
-                        fontSize: MediaQuery.of(context).size.width * 0.05,
-                        color: Colors.pink,
-                      ),
-                    ),
-                  ),
-                ],
-                content: Text(
-                  "You sure you wanna leave the game?",
-                  style: TextStyle(
-                    fontFamily: 'Indie-Flower',
-                    fontWeight: FontWeight.w400,
-                    fontSize: MediaQuery.of(context).size.width * 0.06,
-                  ),
-                ),
-              );
-            },
-          ) ??
-          false;
-    }
-
     WidgetsBinding.instance.addPostFrameCallback(
       (_) async {
         Firestore.instance
@@ -121,43 +47,7 @@ class WaitForSubmissions extends StatelessWidget {
                   ),
                   (route) => false);
               abc = !abc;
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    contentTextStyle: TextStyle(
-                      fontFamily: 'Indie-Flower',
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                      fontSize: MediaQuery.of(context).size.height * 0.025,
-                    ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(
-                        12,
-                      ),
-                    ),
-                    actions: <Widget>[
-                      FlatButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        child: Text(
-                          "OK",
-                          style: TextStyle(
-                            fontFamily: 'Indie-Flower',
-                            color: Colors.pink,
-                            fontWeight: FontWeight.w900,
-                            fontSize: MediaQuery.of(context).size.height * 0.03,
-                          ),
-                        ),
-                      )
-                    ],
-                    content: Text(
-                      "The game has ended!",
-                    ),
-                  );
-                },
-              );
+              gameEndedAlert(context: context);
             }
           },
         );
@@ -165,7 +55,12 @@ class WaitForSubmissions extends StatelessWidget {
     );
 
     return WillPopScope(
-      onWillPop: _onBackPressed,
+      onWillPop: () => onBackPressed(
+        context: context,
+        gameID: gameID,
+        isAdmin: isAdmin,
+        playerID: playerID,
+      ),
       child: StreamBuilder(
         builder: (context, snap) {
           if (!snap.hasData) {

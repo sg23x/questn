@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-customProgressIndicator({context}) {
+customProgressIndicator({@required context}) {
   return showDialog(
     context: context,
     barrierDismissible: false,

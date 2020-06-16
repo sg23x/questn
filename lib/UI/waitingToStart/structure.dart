@@ -2,10 +2,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:psych/UI/QuestionsPage/structure.dart';
+import 'package:psych/UI/functionCalls/backPressCall.dart';
 import 'package:psych/UI/nameInput/structure.dart';
 import 'package:psych/UI/waitingToStart/playerCard.dart';
 import 'package:psych/UI/waitingToStart/startTheGameButton.dart';
 import 'package:psych/UI/widgets/customAppBar.dart';
+import 'package:psych/UI/widgets/gameEndedAlert.dart';
 
 class WaitingToStart extends StatefulWidget {
   WaitingToStart({
@@ -26,82 +28,6 @@ class WaitingToStart extends StatefulWidget {
 class _WaitingToStartState extends State<WaitingToStart> {
   @override
   Widget build(BuildContext context) {
-    void deletePlayer(String id) async {
-      await Firestore.instance
-          .collection('roomDetails')
-          .document(widget.gameID)
-          .collection('users')
-          .document(id)
-          .delete();
-    }
-
-    Future<bool> _onBackPressed() {
-      return showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(
-                    10,
-                  ),
-                ),
-                actions: <Widget>[
-                  FlatButton(
-                    onPressed: () {
-                      Navigator.of(context).pop(false);
-                    },
-                    child: Text(
-                      "NO",
-                      style: TextStyle(
-                        fontFamily: 'Indie-Flower',
-                        fontWeight: FontWeight.w900,
-                        fontSize: MediaQuery.of(context).size.width * 0.05,
-                      ),
-                    ),
-                  ),
-                  FlatButton(
-                    onPressed: () {
-                      widget.isAdmin
-                          ? Firestore.instance
-                              .collection('roomDetails')
-                              .document(widget.gameID)
-                              .collection('users')
-                              .getDocuments()
-                              .then(
-                              (snapshot) {
-                                for (DocumentSnapshot ds
-                                    in snapshot.documents) {
-                                  ds.reference.delete();
-                                }
-                              },
-                            )
-                          : deletePlayer(widget.playerID);
-                    },
-                    child: Text(
-                      "YES",
-                      style: TextStyle(
-                        fontFamily: 'Indie-Flower',
-                        fontWeight: FontWeight.w900,
-                        fontSize: MediaQuery.of(context).size.width * 0.05,
-                        color: Colors.pink,
-                      ),
-                    ),
-                  ),
-                ],
-                content: Text(
-                  "You sure you wanna leave the game?",
-                  style: TextStyle(
-                    fontFamily: 'Indie-Flower',
-                    fontWeight: FontWeight.w400,
-                    fontSize: MediaQuery.of(context).size.width * 0.06,
-                  ),
-                ),
-              );
-            },
-          ) ??
-          false;
-    }
-
     WidgetsBinding.instance.addPostFrameCallback(
       (_) async {
         Firestore.instance
@@ -125,43 +51,7 @@ class _WaitingToStartState extends State<WaitingToStart> {
                     builder: (BuildContext context) => NameInputPage(),
                   ),
                   (route) => false);
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    contentTextStyle: TextStyle(
-                      fontFamily: 'Indie-Flower',
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                      fontSize: MediaQuery.of(context).size.height * 0.025,
-                    ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(
-                        12,
-                      ),
-                    ),
-                    actions: <Widget>[
-                      FlatButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        child: Text(
-                          "OK",
-                          style: TextStyle(
-                            fontFamily: 'Indie-Flower',
-                            color: Colors.pink,
-                            fontWeight: FontWeight.w900,
-                            fontSize: MediaQuery.of(context).size.height * 0.03,
-                          ),
-                        ),
-                      )
-                    ],
-                    content: Text(
-                      "The game has ended!",
-                    ),
-                  );
-                },
-              );
+              gameEndedAlert(context: context);
             }
           },
         );
@@ -169,7 +59,12 @@ class _WaitingToStartState extends State<WaitingToStart> {
     );
 
     return WillPopScope(
-      onWillPop: _onBackPressed,
+      onWillPop: () => onBackPressed(
+        context: context,
+        gameID: widget.gameID,
+        isAdmin: widget.isAdmin,
+        playerID: widget.playerID,
+      ),
       child: StreamBuilder(
         builder: (context, snap) {
           if (!snap.hasData) {
