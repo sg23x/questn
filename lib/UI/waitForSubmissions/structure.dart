@@ -11,10 +11,12 @@ class WaitForSubmissions extends StatelessWidget {
     @required this.gameID,
     @required this.playerID,
     @required this.gameMode,
+    @required this.isAdmin,
   });
   final String gameID;
   final String playerID;
   final String gameMode;
+  final bool isAdmin;
   bool abc = true;
   @override
   Widget build(BuildContext context) {
@@ -204,6 +206,7 @@ class WaitForSubmissions extends StatelessWidget {
                       playerID: playerID,
                       gameID: gameID,
                       gameMode: gameMode,
+                      isAdmin: isAdmin,
                     ),
                   ),
                 );

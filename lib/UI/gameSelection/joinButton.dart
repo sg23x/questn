@@ -125,6 +125,7 @@ class _JoinGameButtonState extends State<JoinGameButton> {
                           builder: (BuildContext context) => WaitingToStart(
                             gameID: gameID,
                             playerID: playerID,
+                            isAdmin: false,
                           ),
                         ),
                       );

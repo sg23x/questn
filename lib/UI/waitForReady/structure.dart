@@ -12,10 +12,12 @@ class WaitForReady extends StatelessWidget {
     @required this.gameID,
     @required this.playerID,
     @required this.gameMode,
+    @required this.isAdmin,
   });
   final String gameID;
   final String playerID;
   final String gameMode;
+  final bool isAdmin;
 
   bool abc = true;
 
@@ -370,6 +372,7 @@ class WaitForReady extends StatelessWidget {
                               playerID: playerID,
                               gameID: gameID,
                               gameMode: gameMode,
+                              isAdmin: isAdmin,
                             ),
                           ),
                         );

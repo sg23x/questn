@@ -11,11 +11,13 @@ class WaitingToStart extends StatefulWidget {
   WaitingToStart({
     @required this.gameID,
     @required this.playerID,
+    @required this.isAdmin,
     this.gameMode,
   });
   final String gameID;
   final String playerID;
   final String gameMode;
+  final bool isAdmin;
 
   @override
   _WaitingToStartState createState() => _WaitingToStartState();
@@ -198,6 +200,7 @@ class _WaitingToStartState extends State<WaitingToStart> {
                       playerID: widget.playerID,
                       gameID: widget.gameID,
                       gameMode: widget.gameMode,
+                      isAdmin: widget.isAdmin,
                     ),
                   ),
                 );

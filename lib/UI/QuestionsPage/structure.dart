@@ -10,10 +10,12 @@ class QuestionsPage extends StatefulWidget {
     @required this.playerID,
     @required this.gameID,
     @required this.gameMode,
+    @required this.isAdmin,
   });
   final String playerID;
   final String gameID;
   final String gameMode;
+  final bool isAdmin;
 
   @override
   _QuestionsPageState createState() => _QuestionsPageState();
@@ -339,6 +341,7 @@ class _QuestionsPageState extends State<QuestionsPage> {
                                 gameID: widget.gameID,
                                 playerID: widget.playerID,
                                 gameMode: widget.gameMode,
+                                isAdmin: widget.isAdmin,
                               ),
                             ),
                           );

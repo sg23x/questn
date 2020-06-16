@@ -108,6 +108,7 @@ class _StartAGameButtonState extends State<StartAGameButton> {
             gameID: gameID,
             playerID: playerID,
             gameMode: gameMode,
+            isAdmin: true,
           ),
         ),
       );
