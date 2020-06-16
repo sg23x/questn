@@ -61,30 +61,21 @@ class _WaitingToStartState extends State<WaitingToStart> {
                   ),
                   FlatButton(
                     onPressed: () {
-                      Firestore.instance
-                          .collection('roomDetails')
-                          .document(widget.gameID)
-                          .snapshots()
-                          .listen(
-                        (event) {
-                          event.data['admin'] == widget.playerID
-                              ? Firestore.instance
-                                  .collection('roomDetails')
-                                  .document(widget.gameID)
-                                  .collection('users')
-                                  .getDocuments()
-                                  .then(
-                                  (snapshot) {
-                                    for (DocumentSnapshot ds
-                                        in snapshot.documents) {
-                                      ds.reference.delete();
-                                    }
-                                  },
-                                )
-                              : deletePlayer(widget.playerID);
-                        },
-                      );
-                      deletePlayer(widget.playerID);
+                      widget.isAdmin
+                          ? Firestore.instance
+                              .collection('roomDetails')
+                              .document(widget.gameID)
+                              .collection('users')
+                              .getDocuments()
+                              .then(
+                              (snapshot) {
+                                for (DocumentSnapshot ds
+                                    in snapshot.documents) {
+                                  ds.reference.delete();
+                                }
+                              },
+                            )
+                          : deletePlayer(widget.playerID);
                     },
                     child: Text(
                       "YES",
@@ -207,97 +198,82 @@ class _WaitingToStartState extends State<WaitingToStart> {
               },
             );
           }
-          return StreamBuilder(
-            builder: (context, snapshot) {
-              if (!snapshot.hasData) {
-                return Scaffold();
-              }
 
-              return Scaffold(
-                appBar: customAppBar(
-                  widget.gameID,
-                  widget.playerID,
-                  context,
-                  'GAME ID: ${widget.gameID}',
+          return Scaffold(
+            appBar: customAppBar(
+              context: context,
+              gameID: widget.gameID,
+              isAdmin: widget.isAdmin,
+              playerID: widget.playerID,
+              title: 'GAME ID: ${widget.gameID}',
+            ),
+            body: Column(
+              children: <Widget>[
+                SizedBox(
+                  height: 5,
                 ),
-                body: Column(
-                  children: <Widget>[
-                    SizedBox(
-                      height: 5,
-                    ),
-                    Expanded(
-                      child: ListView.builder(
-                        itemBuilder: (context, i) {
-                          return PlayerWaitingCard(
-                            animationIndex: i,
-                            colorList: i % 2 == 0
-                                ? [
-                                    Colors.cyan,
-                                    Colors.blue,
-                                  ]
-                                : [
-                                    Colors.blue,
-                                    Colors.cyan,
-                                  ],
-                            name: snap.data.documents.length != 0
-                                ? snap.data.documents[i]['name']
-                                : '',
-                          );
-                        },
-                        shrinkWrap: true,
-                        itemCount: snap.data.documents.length,
-                      ),
-                    ),
-                    snap.data.documents.length != 0
-                        ? widget.playerID == snapshot.data['admin']
-                            ? StartTheGameButton(
-                                gameID: widget.gameID,
-                                playerID: widget.playerID,
-                                isPlayerPlural: snap.data.documents.length > 1
-                                    ? true
-                                    : false,
-                                gameMode: widget.gameMode,
-                              )
-                            : Container(
-                                alignment: Alignment.center,
-                                child: Text(
-                                  "Waiting to start...",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontFamily: 'Indie-Flower',
-                                    fontWeight: FontWeight.w900,
-                                    fontSize:
-                                        MediaQuery.of(context).size.height *
-                                            0.03,
-                                  ),
-                                ),
-                                decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                    colors: [
-                                      Colors.black,
-                                      Colors.grey,
-                                    ],
-                                  ),
-                                ),
-                                height:
-                                    MediaQuery.of(context).size.height * 0.1,
-                                margin: EdgeInsets.only(
-                                  bottom:
-                                      MediaQuery.of(context).size.height * 0.01,
-                                  top:
-                                      MediaQuery.of(context).size.height * 0.01,
-                                ),
-                                width: MediaQuery.of(context).size.width * 0.96,
-                              )
-                        : SizedBox(),
-                  ],
+                Expanded(
+                  child: ListView.builder(
+                    itemBuilder: (context, i) {
+                      return PlayerWaitingCard(
+                        animationIndex: i,
+                        colorList: i % 2 == 0
+                            ? [
+                                Colors.cyan,
+                                Colors.blue,
+                              ]
+                            : [
+                                Colors.blue,
+                                Colors.cyan,
+                              ],
+                        name: snap.data.documents.length != 0
+                            ? snap.data.documents[i]['name']
+                            : '',
+                      );
+                    },
+                    shrinkWrap: true,
+                    itemCount: snap.data.documents.length,
+                  ),
                 ),
-              );
-            },
-            stream: Firestore.instance
-                .collection('roomDetails')
-                .document(widget.gameID)
-                .snapshots(),
+                snap.data.documents.length != 0
+                    ? widget.isAdmin
+                        ? StartTheGameButton(
+                            gameID: widget.gameID,
+                            playerID: widget.playerID,
+                            isPlayerPlural:
+                                snap.data.documents.length > 1 ? true : false,
+                            gameMode: widget.gameMode,
+                          )
+                        : Container(
+                            alignment: Alignment.center,
+                            child: Text(
+                              "Waiting to start...",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontFamily: 'Indie-Flower',
+                                fontWeight: FontWeight.w900,
+                                fontSize:
+                                    MediaQuery.of(context).size.height * 0.03,
+                              ),
+                            ),
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                colors: [
+                                  Colors.black,
+                                  Colors.grey,
+                                ],
+                              ),
+                            ),
+                            height: MediaQuery.of(context).size.height * 0.1,
+                            margin: EdgeInsets.only(
+                              bottom: MediaQuery.of(context).size.height * 0.01,
+                              top: MediaQuery.of(context).size.height * 0.01,
+                            ),
+                            width: MediaQuery.of(context).size.width * 0.96,
+                          )
+                    : SizedBox(),
+              ],
+            ),
           );
         },
         stream: Firestore.instance

@@ -89,30 +89,21 @@ class _QuestionsPageState extends State<QuestionsPage> {
                   ),
                   FlatButton(
                     onPressed: () {
-                      Firestore.instance
-                          .collection('roomDetails')
-                          .document(widget.gameID)
-                          .snapshots()
-                          .listen(
-                        (event) {
-                          event.data['admin'] == widget.playerID
-                              ? Firestore.instance
-                                  .collection('roomDetails')
-                                  .document(widget.gameID)
-                                  .collection('users')
-                                  .getDocuments()
-                                  .then(
-                                  (snapshot) {
-                                    for (DocumentSnapshot ds
-                                        in snapshot.documents) {
-                                      ds.reference.delete();
-                                    }
-                                  },
-                                )
-                              : deletePlayer(widget.playerID);
-                        },
-                      );
-                      deletePlayer(widget.playerID);
+                      widget.isAdmin
+                          ? Firestore.instance
+                              .collection('roomDetails')
+                              .document(widget.gameID)
+                              .collection('users')
+                              .getDocuments()
+                              .then(
+                              (snapshot) {
+                                for (DocumentSnapshot ds
+                                    in snapshot.documents) {
+                                  ds.reference.delete();
+                                }
+                              },
+                            )
+                          : deletePlayer(widget.playerID);
                     },
                     child: Text(
                       "YES",
@@ -225,10 +216,11 @@ class _QuestionsPageState extends State<QuestionsPage> {
         resizeToAvoidBottomInset: false,
         resizeToAvoidBottomPadding: false,
         appBar: customAppBar(
-          widget.gameID,
-          widget.playerID,
-          context,
-          'GAME ID: ${widget.gameID}',
+          context: context,
+          gameID: widget.gameID,
+          isAdmin: widget.isAdmin,
+          playerID: widget.playerID,
+          title: 'GAME ID: ${widget.gameID}',
         ),
         body: Column(
           children: <Widget>[

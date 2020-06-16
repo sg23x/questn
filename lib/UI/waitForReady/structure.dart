@@ -57,30 +57,21 @@ class WaitForReady extends StatelessWidget {
                   ),
                   FlatButton(
                     onPressed: () {
-                      Firestore.instance
-                          .collection('roomDetails')
-                          .document(gameID)
-                          .snapshots()
-                          .listen(
-                        (event) {
-                          event.data['admin'] == playerID
-                              ? Firestore.instance
-                                  .collection('roomDetails')
-                                  .document(gameID)
-                                  .collection('users')
-                                  .getDocuments()
-                                  .then(
-                                  (snapshot) {
-                                    for (DocumentSnapshot ds
-                                        in snapshot.documents) {
-                                      ds.reference.delete();
-                                    }
-                                  },
-                                )
-                              : deletePlayer(playerID);
-                        },
-                      );
-                      deletePlayer(playerID);
+                      isAdmin
+                          ? Firestore.instance
+                              .collection('roomDetails')
+                              .document(gameID)
+                              .collection('users')
+                              .getDocuments()
+                              .then(
+                              (snapshot) {
+                                for (DocumentSnapshot ds
+                                    in snapshot.documents) {
+                                  ds.reference.delete();
+                                }
+                              },
+                            )
+                          : deletePlayer(playerID);
                     },
                     child: Text(
                       "YES",
@@ -169,10 +160,11 @@ class WaitForReady extends StatelessWidget {
       onWillPop: _onBackPressed,
       child: Scaffold(
         appBar: customAppBar(
-          gameID,
-          playerID,
-          context,
-          '',
+          context: context,
+          gameID: gameID,
+          isAdmin: isAdmin,
+          playerID: playerID,
+          title: 'GAME ID: $gameID',
         ),
         body: ListView(
           children: <Widget>[
@@ -381,128 +373,114 @@ class WaitForReady extends StatelessWidget {
                   }
 
                   return StreamBuilder(
-                    builder: (context, roomsnap) {
-                      if (!roomsnap.hasData) {
-                        return SizedBox();
-                      }
-                      return StreamBuilder(
-                        builder: (context, quessnap) {
-                          List getIndexes(int len, int n) {
-                            if (n == 1) {
-                              return [
-                                generateRandomIndex(
-                                  len,
-                                ),
-                              ];
-                            } else if (n == 2) {
-                              List x = [];
-                              x.add(
-                                generateRandomIndex(
-                                  len,
-                                ),
-                              );
-                              void test() {
-                                int newIndex = generateRandomIndex(
-                                  len,
-                                );
-                                if (x.contains(newIndex)) {
-                                  test();
-                                } else {
-                                  x.add(newIndex);
-                                }
-                              }
-
+                    builder: (context, quessnap) {
+                      List getIndexes(int len, int n) {
+                        if (n == 1) {
+                          return [
+                            generateRandomIndex(
+                              len,
+                            ),
+                          ];
+                        } else if (n == 2) {
+                          List x = [];
+                          x.add(
+                            generateRandomIndex(
+                              len,
+                            ),
+                          );
+                          void test() {
+                            int newIndex = generateRandomIndex(
+                              len,
+                            );
+                            if (x.contains(newIndex)) {
                               test();
-                              return x;
+                            } else {
+                              x.add(newIndex);
                             }
                           }
 
-                          if (!quessnap.hasData) {
-                            return SizedBox();
+                          test();
+                          return x;
+                        }
+                      }
+
+                      if (!quessnap.hasData) {
+                        return SizedBox();
+                      }
+                      return RaisedButton(
+                        color: Colors.red,
+                        onPressed: () async {
+                          if (isAdmin) {
+                            DocumentSnapshot questionRaw =
+                                quessnap.data.documents[generateRandomIndex(
+                              quessnap.data.documents.length,
+                            )];
+
+                            List indexes = getIndexes(
+                              snap.data.documents.length,
+                              snap.data.documents.length == 1 ? 1 : 2,
+                            );
+
+                            String question = !questionRaw.data['question']
+                                    .contains('abc')
+                                ? questionRaw.data['question'].replaceAll(
+                                    'xyz',
+                                    snap.data.documents[indexes[0]]['name'],
+                                  )
+                                : questionRaw.data['question']
+                                    .replaceAll('xyz',
+                                        snap.data.documents[indexes[0]]['name'])
+                                    .replaceAll(
+                                      'abc',
+                                      snap.data.documents[indexes[1]]['name'],
+                                    );
+
+                            await Firestore.instance
+                                .collection('roomDetails')
+                                .document(gameID)
+                                .updateData(
+                              {
+                                'currentQuestion': question,
+                              },
+                            );
                           }
-                          return RaisedButton(
-                            color: Colors.red,
-                            onPressed: () async {
-                              if (roomsnap.data['admin'] == playerID) {
-                                DocumentSnapshot questionRaw =
-                                    quessnap.data.documents[generateRandomIndex(
-                                  quessnap.data.documents.length,
-                                )];
 
-                                List indexes = getIndexes(
-                                  snap.data.documents.length,
-                                  snap.data.documents.length == 1 ? 1 : 2,
-                                );
-
-                                String question = !questionRaw.data['question']
-                                        .contains('abc')
-                                    ? questionRaw.data['question'].replaceAll(
-                                        'xyz',
-                                        snap.data.documents[indexes[0]]['name'],
-                                      )
-                                    : questionRaw.data['question']
-                                        .replaceAll(
-                                            'xyz',
-                                            snap.data.documents[indexes[0]]
-                                                ['name'])
-                                        .replaceAll(
-                                          'abc',
-                                          snap.data.documents[indexes[1]]
-                                              ['name'],
-                                        );
-
-                                await Firestore.instance
-                                    .collection('roomDetails')
-                                    .document(gameID)
-                                    .updateData(
-                                  {
-                                    'currentQuestion': question,
-                                  },
-                                );
-                              }
-
-                              Firestore.instance
-                                  .collection('roomDetails')
-                                  .document(gameID)
-                                  .collection('users')
-                                  .document(playerID)
-                                  .updateData(
-                                {
-                                  'hasSelected': false,
-                                },
-                              );
-
-                              Firestore.instance
-                                  .collection('roomDetails')
-                                  .document(gameID)
-                                  .collection('users')
-                                  .document(playerID)
-                                  .updateData(
-                                {
-                                  'hasSubmitted': false,
-                                },
-                              );
-
-                              changeReadyStateToTrue();
+                          Firestore.instance
+                              .collection('roomDetails')
+                              .document(gameID)
+                              .collection('users')
+                              .document(playerID)
+                              .updateData(
+                            {
+                              'hasSelected': false,
                             },
-                            child: Text(
-                              'ready',
-                              style: TextStyle(
-                                color: Colors.white,
-                              ),
-                            ),
                           );
+
+                          Firestore.instance
+                              .collection('roomDetails')
+                              .document(gameID)
+                              .collection('users')
+                              .document(playerID)
+                              .updateData(
+                            {
+                              'hasSubmitted': false,
+                            },
+                          );
+
+                          changeReadyStateToTrue();
                         },
-                        stream: Firestore.instance
-                            .collection('questions')
-                            .document('modes')
-                            .collection(gameMode)
-                            .snapshots(),
+                        child: Text(
+                          'ready',
+                          style: TextStyle(
+                            color: Colors.white,
+                          ),
+                        ),
                       );
                     },
                     stream: Firestore.instance
-                        .collection('roomDetails')
-                        .document(gameID)
+                        .collection('questions')
+                        .document('modes')
+                        .collection(gameMode)
                         .snapshots(),
                   );
                 },
