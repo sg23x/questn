@@ -2,11 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:psych/UI/functionCalls/backPressCall.dart';
-import 'package:psych/UI/nameInput/structure.dart';
+import 'package:psych/UI/functionCalls/checkForGameEnd.dart';
 import 'package:psych/UI/waitForReady/structure.dart';
 import 'package:psych/UI/waitForSubmissions/waitingForSubmissionPlayerCard.dart';
 import 'package:psych/UI/widgets/customAppBar.dart';
-import 'package:psych/UI/widgets/gameEndedAlert.dart';
 
 class WaitForSelectionsPage extends StatelessWidget {
   WaitForSelectionsPage({
@@ -25,33 +24,10 @@ class WaitForSelectionsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     WidgetsBinding.instance.addPostFrameCallback(
       (_) async {
-        Firestore.instance
-            .collection('roomDetails')
-            .document(gameID)
-            .collection('users')
-            .reference()
-            .snapshots()
-            .listen(
-          (event) {
-            if ((event.documents
-                            .where((element) => element.documentID == playerID)
-                            .toList()
-                            .length !=
-                        1 ||
-                    event.documents.length < 2) &&
-                xyz) {
-              Navigator.popUntil(context, (route) => route.isFirst);
-
-              Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(
-                    builder: (BuildContext context) => NameInputPage(),
-                  ),
-                  (route) => false);
-              xyz = !xyz;
-              gameEndedAlert(context: context);
-            }
-          },
+        checkForGameEnd(
+          context: context,
+          gameID: gameID,
+          playerID: playerID,
         );
       },
     );

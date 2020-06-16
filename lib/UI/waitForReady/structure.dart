@@ -3,11 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:psych/UI/QuestionsPage/structure.dart';
 import 'package:psych/UI/functionCalls/backPressCall.dart';
+import 'package:psych/UI/functionCalls/checkForGameEnd.dart';
 import 'dart:math';
-
-import 'package:psych/UI/nameInput/structure.dart';
 import 'package:psych/UI/widgets/customAppBar.dart';
-import 'package:psych/UI/widgets/gameEndedAlert.dart';
 
 class WaitForReady extends StatelessWidget {
   WaitForReady({
@@ -36,33 +34,10 @@ class WaitForReady extends StatelessWidget {
 
     WidgetsBinding.instance.addPostFrameCallback(
       (_) async {
-        Firestore.instance
-            .collection('roomDetails')
-            .document(gameID)
-            .collection('users')
-            .reference()
-            .snapshots()
-            .listen(
-          (event) {
-            if ((event.documents
-                            .where((element) => element.documentID == playerID)
-                            .toList()
-                            .length !=
-                        1 ||
-                    event.documents.length < 2) &&
-                abc) {
-              Navigator.popUntil(context, (route) => route.isFirst);
-
-              Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(
-                    builder: (BuildContext context) => NameInputPage(),
-                  ),
-                  (route) => false);
-              abc = !abc;
-              gameEndedAlert(context: context);
-            }
-          },
+        checkForGameEnd(
+          context: context,
+          gameID: gameID,
+          playerID: playerID,
         );
       },
     );
@@ -263,7 +238,8 @@ class WaitForReady extends StatelessWidget {
                   for (int index = 0;
                       index < snap.data.documents.length;
                       index++) {
-                    _users.add(snap.data.documents[index].documentID);
+                    _users.add(snap.data.documents[index]
+                        .documentID); //TODO: WTF is this shit??
                   }
                   if (snap.data.documents.every((x) => x['isReady'] == true) &&
                       _users.contains(

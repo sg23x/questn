@@ -3,11 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:psych/UI/QuestionsPage/structure.dart';
 import 'package:psych/UI/functionCalls/backPressCall.dart';
-import 'package:psych/UI/nameInput/structure.dart';
+import 'package:psych/UI/functionCalls/checkForGameEnd.dart';
 import 'package:psych/UI/waitingToStart/playerCard.dart';
 import 'package:psych/UI/waitingToStart/startTheGameButton.dart';
 import 'package:psych/UI/widgets/customAppBar.dart';
-import 'package:psych/UI/widgets/gameEndedAlert.dart';
 
 class WaitingToStart extends StatefulWidget {
   WaitingToStart({
@@ -30,30 +29,10 @@ class _WaitingToStartState extends State<WaitingToStart> {
   Widget build(BuildContext context) {
     WidgetsBinding.instance.addPostFrameCallback(
       (_) async {
-        Firestore.instance
-            .collection('roomDetails')
-            .document(widget.gameID)
-            .collection('users')
-            .reference()
-            .snapshots()
-            .listen(
-          (event) {
-            if (event.documents
-                    .where(
-                      (element) => element.documentID == widget.playerID,
-                    )
-                    .toList()
-                    .length !=
-                1) {
-              Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(
-                    builder: (BuildContext context) => NameInputPage(),
-                  ),
-                  (route) => false);
-              gameEndedAlert(context: context);
-            }
-          },
+        checkForGameEnd(
+          context: context,
+          gameID: widget.gameID,
+          playerID: widget.playerID,
         );
       },
     );

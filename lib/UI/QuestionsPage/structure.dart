@@ -2,10 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:psych/UI/QuestionsPage/questionCard.dart';
 import 'package:psych/UI/functionCalls/backPressCall.dart';
-import 'package:psych/UI/nameInput/structure.dart';
+import 'package:psych/UI/functionCalls/checkForGameEnd.dart';
 import 'package:psych/UI/waitForSubmissions/structure.dart';
 import 'package:psych/UI/widgets/customAppBar.dart';
-import 'package:psych/UI/widgets/gameEndedAlert.dart';
 
 class QuestionsPage extends StatefulWidget {
   QuestionsPage({
@@ -27,7 +26,7 @@ class _QuestionsPageState extends State<QuestionsPage> {
   Alignment align;
   bool isButtonEnabled;
   String response = '';
-  bool abc = true;
+
   @override
   void initState() {
     align = Alignment.lerp(
@@ -69,33 +68,10 @@ class _QuestionsPageState extends State<QuestionsPage> {
 
     WidgetsBinding.instance.addPostFrameCallback(
       (_) async {
-        Firestore.instance
-            .collection('roomDetails')
-            .document(widget.gameID)
-            .collection('users')
-            .reference()
-            .snapshots()
-            .listen(
-          (event) {
-            if ((event.documents
-                            .where((element) =>
-                                element.documentID == widget.playerID)
-                            .toList()
-                            .length !=
-                        1 ||
-                    event.documents.length < 2) &&
-                abc) {
-              Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(
-                    builder: (BuildContext context) => NameInputPage(),
-                  ),
-                  (route) => false);
-
-              gameEndedAlert(context: context);
-              abc = !abc;
-            }
-          },
+        checkForGameEnd(
+          context: context,
+          gameID: widget.gameID,
+          playerID: widget.playerID,
         );
       },
     );
