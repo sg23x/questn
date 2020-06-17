@@ -3,12 +3,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:psych/UI/nameInput/structure.dart';
 import 'package:psych/UI/widgets/gameEndedAlert.dart';
 
-bool abc = true;
-
 checkForGameEnd({
   gameID,
   playerID,
   context,
+  bool isInLobby = false,
 }) {
   Firestore.instance
       .collection('roomDetails')
@@ -18,22 +17,38 @@ checkForGameEnd({
       .snapshots()
       .listen(
     (event) {
-      if ((event.documents
-                      .where((element) => element.documentID == playerID)
-                      .toList()
-                      .length !=
-                  1 ||
-              event.documents.length < 2) &&
-          abc) {
-        Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(
-              builder: (BuildContext context) => NameInputPage(),
-            ),
-            (route) => false);
+      if (isInLobby) {
+        if (event.documents
+                .where((element) => element.documentID == playerID)
+                .toList()
+                .length !=
+            1) {
+          Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(
+                builder: (BuildContext context) => NameInputPage(),
+              ),
+              (route) => false);
 
-        gameEndedAlert(context: context);
-        abc = !abc;
+          gameEndedAlert(context: context);
+        }
+      }
+      if (!isInLobby) {
+        if (event.documents
+                    .where((element) => element.documentID == playerID)
+                    .toList()
+                    .length !=
+                1 ||
+            event.documents.length < 2) {
+          Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(
+                builder: (BuildContext context) => NameInputPage(),
+              ),
+              (route) => false);
+
+          gameEndedAlert(context: context);
+        }
       }
     },
   );

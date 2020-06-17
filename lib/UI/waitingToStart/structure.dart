@@ -33,6 +33,7 @@ class _WaitingToStartState extends State<WaitingToStart> {
           context: context,
           gameID: widget.gameID,
           playerID: widget.playerID,
+          isInLobby: true,
         );
       },
     );

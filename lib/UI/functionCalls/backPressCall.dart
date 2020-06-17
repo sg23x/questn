@@ -64,7 +64,9 @@ Future<bool> onBackPressed({
               ),
             ],
             content: Text(
-              "You sure you wanna leave the game?",
+              isAdmin
+                  ? "You sure you wanna end the game?"
+                  : "You sure you wanna leave the game?",
               style: TextStyle(
                 fontFamily: 'Indie-Flower',
                 fontWeight: FontWeight.w400,
