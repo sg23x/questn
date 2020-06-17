@@ -179,7 +179,15 @@ class _StartAGameButtonState extends State<StartAGameButton> {
                     .snapshots(),
                 builder: (context, snap) {
                   if (!snap.hasData) {
-                    return SizedBox();
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        CircularProgressIndicator(
+                          backgroundColor: Colors.pink,
+                          strokeWidth: 8,
+                        ),
+                      ],
+                    );
                   }
                   return GestureDetector(
                     onTap: () {
