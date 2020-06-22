@@ -165,7 +165,7 @@ class _NameInputPageState extends State<NameInputPage> {
                                 ),
                               ),
                               onChanged: (val) {
-                                playerName = val;
+                                playerName = val.trim();
                                 if (!(playerName == null ||
                                     playerName.length == 0)) {
                                   setState(

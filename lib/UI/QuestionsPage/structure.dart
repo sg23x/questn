@@ -155,7 +155,7 @@ class _QuestionsPageState extends State<QuestionsPage> {
                         ),
                       ),
                       onChanged: (val) {
-                        response = val;
+                        response = val.trim();
                         if (!(response == null || response.length == 0)) {
                           setState(
                             () {
