@@ -4,9 +4,9 @@ import 'package:flutter/services.dart';
 import 'package:psych/UI/functionCalls/backPressCall.dart';
 import 'package:psych/UI/functionCalls/changeNavigationState.dart';
 import 'package:psych/UI/functionCalls/checkForGameEnd.dart';
-import 'package:psych/UI/waitForReady/structure.dart';
-import 'package:psych/UI/waitForSubmissions/waitingForSubmissionPlayerCard.dart';
+import 'package:psych/UI/screens/waitForReady.dart';
 import 'package:psych/UI/widgets/customAppBar.dart';
+import 'package:psych/UI/widgets/waitingForSubmissionPlayerCard.dart';
 
 class WaitForSelectionsPage extends StatelessWidget {
   WaitForSelectionsPage({

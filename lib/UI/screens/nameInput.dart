@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:psych/UI/gameSelection/structure.dart';
+import 'package:psych/UI/screens/gameSelection.dart';
 
 class NameInputPage extends StatefulWidget {
   @override

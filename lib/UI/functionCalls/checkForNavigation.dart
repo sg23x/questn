@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:psych/UI/QuestionsPage/structure.dart';
-import 'package:psych/UI/responseSelection/structure.dart';
+import 'package:psych/UI/screens/questionsPage.dart';
+import 'package:psych/UI/screens/responseSelection.dart';
 
 void checkForNavigation({
   @required context,

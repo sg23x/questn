@@ -6,6 +6,8 @@ import 'package:psych/UI/functionCalls/checkForGameEnd.dart';
 import 'package:psych/UI/functionCalls/checkForNavigation.dart';
 import 'dart:math';
 import 'package:psych/UI/widgets/customAppBar.dart';
+import 'package:psych/UI/widgets/playerScoreCard.dart';
+import 'package:psych/UI/widgets/resultResponseCard.dart';
 
 class WaitForReady extends StatelessWidget {
   WaitForReady({
@@ -137,7 +139,7 @@ class WaitForReady extends StatelessWidget {
                 ListView.builder(
                   physics: NeverScrollableScrollPhysics(),
                   itemBuilder: (context, i) {
-                    return NumberOfSelectionsCard(
+                    return ResultResponseCard(
                       response: snappp.data.documents[i]['response'],
                       timesSelected: snappp.data.documents
                           .where(
@@ -314,94 +316,6 @@ class WaitForReady extends StatelessWidget {
       {
         'isReady': true,
       },
-    );
-  }
-}
-
-class NumberOfSelectionsCard extends StatelessWidget {
-  NumberOfSelectionsCard({
-    @required this.response,
-    @required this.timesSelected,
-  });
-  final String response;
-  final String timesSelected;
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: MediaQuery.of(context).size.height * 0.1,
-      width: MediaQuery.of(context).size.width,
-      margin: EdgeInsets.all(
-        5,
-      ),
-      padding: EdgeInsets.symmetric(
-        horizontal: 20,
-      ),
-      color: Colors.pink,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          Text(
-            '$response',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 18,
-            ),
-          ),
-          Text(
-            '$timesSelected',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 25,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class PlayerScoreCard extends StatelessWidget {
-  PlayerScoreCard({
-    @required this.name,
-    @required this.score,
-    @required this.scoreAdded,
-    @required this.isReady,
-  });
-  final String name;
-  final String score;
-  final String scoreAdded;
-  final bool isReady;
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: MediaQuery.of(context).size.height * 0.1,
-      width: MediaQuery.of(context).size.width,
-      margin: EdgeInsets.all(
-        5,
-      ),
-      padding: EdgeInsets.symmetric(
-        horizontal: 20,
-      ),
-      color: Colors.grey,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          Text(
-            '$name :',
-            style: TextStyle(
-              color: isReady ? Colors.green : Colors.red,
-              fontSize: 25,
-            ),
-          ),
-          Text(
-            '$score (+$scoreAdded)',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 25,
-            ),
-          ),
-        ],
-      ),
     );
   }
 }

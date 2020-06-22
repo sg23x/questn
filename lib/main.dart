@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:psych/UI/nameInput/structure.dart';
+import 'package:psych/UI/screens/nameInput.dart';
 
 main() => runApp(
       MyApp(),

@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:psych/UI/waitingToStart/structure.dart';
+import 'package:psych/UI/screens/waitingToStart.dart';
 import 'dart:math';
 import 'package:firebase_admob/firebase_admob.dart';
 import 'package:psych/UI/widgets/customProgressIndicator.dart';

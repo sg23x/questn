@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:psych/UI/functionCalls/backPressCall.dart';
 import 'package:psych/UI/functionCalls/checkForGameEnd.dart';
 import 'package:psych/UI/functionCalls/checkForNavigation.dart';
-import 'package:psych/UI/waitingToStart/playerCard.dart';
-import 'package:psych/UI/waitingToStart/startTheGameButton.dart';
 import 'package:psych/UI/widgets/customAppBar.dart';
+import 'package:psych/UI/widgets/playerCard.dart';
+import 'package:psych/UI/widgets/startTheGameButton.dart';
 
 class WaitingToStart extends StatefulWidget {
   WaitingToStart({

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:psych/UI/gameSelection/joinButton.dart';
-import 'package:psych/UI/gameSelection/startButton.dart';
-import 'package:psych/UI/nameInput/structure.dart';
+import 'package:psych/UI/screens/nameInput.dart';
+import 'package:psych/UI/widgets/joinButton.dart';
+import 'package:psych/UI/widgets/startButton.dart';
 
 class GameSelection extends StatelessWidget {
   GameSelection({

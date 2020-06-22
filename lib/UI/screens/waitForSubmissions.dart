@@ -4,8 +4,8 @@ import 'package:psych/UI/functionCalls/backPressCall.dart';
 import 'package:psych/UI/functionCalls/changeNavigationState.dart';
 import 'package:psych/UI/functionCalls/checkForGameEnd.dart';
 import 'package:psych/UI/functionCalls/checkForNavigation.dart';
-import 'package:psych/UI/waitForSubmissions/waitingForSubmissionPlayerCard.dart';
 import 'package:psych/UI/widgets/customAppBar.dart';
+import 'package:psych/UI/widgets/waitingForSubmissionPlayerCard.dart';
 
 class WaitForSubmissions extends StatelessWidget {
   WaitForSubmissions({

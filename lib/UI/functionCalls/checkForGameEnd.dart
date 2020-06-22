@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:psych/UI/nameInput/structure.dart';
+import 'package:psych/UI/screens/nameInput.dart';
 import 'package:psych/UI/widgets/gameEndedAlert.dart';
 
 checkForGameEnd({
