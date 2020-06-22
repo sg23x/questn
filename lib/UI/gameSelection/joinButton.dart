@@ -96,7 +96,7 @@ class _JoinGameButtonState extends State<JoinGameButton> {
                           'score': 0,
                           'timestamp':
                               Timestamp.now().millisecondsSinceEpoch.toString(),
-                          'isReady': false,
+                          'isReady': true,
                           'hasSelected': false,
                           'selection': '',
                           'hasSubmitted': false,

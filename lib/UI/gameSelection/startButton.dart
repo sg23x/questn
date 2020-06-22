@@ -66,7 +66,7 @@ class _StartAGameButtonState extends State<StartAGameButton> {
 
     final String playerID = generateUserCode();
 
-    void startGame(String gameMode) async {
+    void startGame({String gameMode, int quesCount}) async {
       await Firestore.instance
           .collection('roomDetails')
           .document(gameID)
@@ -75,6 +75,9 @@ class _StartAGameButtonState extends State<StartAGameButton> {
           'currentQuestion': '',
           'timestamp': Timestamp.now().millisecondsSinceEpoch,
           'isGameStarted': false,
+          'isResponseSubmitted': false,
+          'isResponseSelected': false,
+          'isReady': false,
         },
       );
 
@@ -109,12 +112,13 @@ class _StartAGameButtonState extends State<StartAGameButton> {
             playerID: playerID,
             gameMode: gameMode,
             isAdmin: true,
+            quesCount: quesCount,
           ),
         ),
       );
     }
 
-    void del(String gameMode) async {
+    void del({String gameMode, int quesCount}) async {
       DocumentSnapshot query = await Firestore.instance
           .collection('roomDetails')
           .document(gameID)
@@ -131,10 +135,13 @@ class _StartAGameButtonState extends State<StartAGameButton> {
 
         await query.reference.delete();
       }
-      startGame(gameMode);
+      startGame(
+        gameMode: gameMode,
+        quesCount: quesCount,
+      );
     }
 
-    void createRoomID(String gameMode) async {
+    void createRoomID({String gameMode, int quesCount}) async {
       QuerySnapshot query = await Firestore.instance
           .collection('roomDetails')
           .orderBy('timestamp')
@@ -153,7 +160,10 @@ class _StartAGameButtonState extends State<StartAGameButton> {
         },
       );
 
-      del(gameMode);
+      del(
+        gameMode: gameMode,
+        quesCount: quesCount,
+      );
     }
 
     return AnimatedAlign(
@@ -283,7 +293,10 @@ class _StartAGameButtonState extends State<StartAGameButton> {
                                                 adCloseChecker =
                                                     !adCloseChecker;
                                                 createRoomID(
-                                                  gameModeData['gameMode'],
+                                                  gameMode:
+                                                      gameModeData['gameMode'],
+                                                  quesCount:
+                                                      gameModeData['quesCount'],
                                                 );
                                                 customProgressIndicator(
                                                     context: context);
@@ -292,7 +305,10 @@ class _StartAGameButtonState extends State<StartAGameButton> {
                                                   RewardedVideoAdEvent
                                                       .failedToLoad) {
                                                 createRoomID(
-                                                  gameModeData['gameMode'],
+                                                  gameMode:
+                                                      gameModeData['gameMode'],
+                                                  quesCount:
+                                                      gameModeData['quesCount'],
                                                 );
                                               }
                                               if (event ==
@@ -308,7 +324,10 @@ class _StartAGameButtonState extends State<StartAGameButton> {
                                           }
                                         : () {
                                             createRoomID(
-                                              gameModeData['gameMode'],
+                                              gameMode:
+                                                  gameModeData['gameMode'],
+                                              quesCount:
+                                                  gameModeData['quesCount'],
                                             );
                                             customProgressIndicator(
                                                 context: context);

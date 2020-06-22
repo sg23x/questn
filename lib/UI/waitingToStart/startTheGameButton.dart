@@ -2,17 +2,23 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'dart:math';
 
+import 'package:psych/UI/functionCalls/changeNavigationState.dart';
+
 class StartTheGameButton extends StatefulWidget {
   StartTheGameButton({
     @required this.gameID,
     @required this.playerID,
     @required this.isPlayerPlural,
     @required this.gameMode,
+    @required this.isAdmin,
+    @required this.quesCount,
   });
   final String gameID;
   final String playerID;
   final bool isPlayerPlural;
   final String gameMode;
+  final bool isAdmin;
+  final int quesCount;
 
   @override
   _StartTheGameButtonState createState() => _StartTheGameButtonState();
@@ -28,78 +34,55 @@ class _StartTheGameButtonState extends State<StartTheGameButton> {
     super.initState();
   }
 
+  generateRandomIndex(int len) {
+    Random rnd;
+    int min = 0;
+    int max = len;
+    rnd = new Random();
+    var r = min + rnd.nextInt(max - min);
+    return r;
+  }
+
+  List getIndexes(int len, int n) {
+    if (n == 1) {
+      return [
+        generateRandomIndex(
+          len,
+        ),
+      ];
+    } else if (n == 2) {
+      List x = [];
+      x.add(
+        generateRandomIndex(
+          len,
+        ),
+      );
+      void test() {
+        int newIndex = generateRandomIndex(
+          len,
+        );
+        if (x.contains(newIndex)) {
+          test();
+        } else {
+          x.add(newIndex);
+        }
+      }
+
+      test();
+      return x;
+    }
+  }
+
+  String quesIndex() {
+    return (generateRandomIndex(widget.quesCount) + 1).toString();
+  }
+
   @override
   Widget build(BuildContext context) {
-    generateRandomIndex(int len) {
-      Random rnd;
-      int min = 0;
-      int max = len;
-      rnd = new Random();
-      var r = min + rnd.nextInt(max - min);
-      return r;
-    }
-
-    void startGame() async {
-      Firestore.instance
-          .collection('roomDetails')
-          .document(widget.gameID)
-          .collection('users')
-          .getDocuments()
-          .then(
-        (snapshot) {
-          for (DocumentSnapshot ds in snapshot.documents) {
-            ds.reference.updateData(
-              {
-                'isReady': true,
-              },
-            );
-          }
-        },
-      );
-      Firestore.instance
-          .collection('roomDetails')
-          .document(widget.gameID)
-          .updateData(
-        {
-          'isGameStarted': true,
-        },
-      );
-    }
-
-    List getIndexes(int len, int n) {
-      if (n == 1) {
-        return [
-          generateRandomIndex(
-            len,
-          ),
-        ];
-      } else if (n == 2) {
-        List x = [];
-        x.add(
-          generateRandomIndex(
-            len,
-          ),
-        );
-        void test() {
-          int newIndex = generateRandomIndex(
-            len,
-          );
-          if (x.contains(newIndex)) {
-            test();
-          } else {
-            x.add(newIndex);
-          }
-        }
-
-        test();
-        return x;
-      }
-    }
-
     return StreamBuilder(
       builder: (context, snap) {
         return StreamBuilder(
-          builder: (context, snapshot) {
+          builder: (context, usersnap) {
             return RaisedButton(
               highlightColor: Colors.transparent,
               disabledColor: Colors.transparent,
@@ -112,27 +95,23 @@ class _StartTheGameButtonState extends State<StartTheGameButton> {
                 child: AnimatedAlign(
                   curve: Curves.fastOutSlowIn,
                   onEnd: () {
-                    startGame();
-                    DocumentSnapshot questionRaw =
-                        snap.data.documents[generateRandomIndex(
-                      snap.data.documents.length,
-                    )];
+                    DocumentSnapshot questionRaw = snap.data;
 
                     List indexes =
-                        getIndexes(snapshot.data.documents.length, 2);
+                        getIndexes(usersnap.data.documents.length, 2);
 
                     String question =
                         !questionRaw.data['question'].contains('abc')
                             ? questionRaw.data['question'].replaceAll(
                                 'xyz',
-                                snapshot.data.documents[indexes[0]]['name'],
+                                usersnap.data.documents[indexes[0]]['name'],
                               )
                             : questionRaw.data['question']
                                 .replaceAll('xyz',
-                                    snapshot.data.documents[indexes[0]]['name'])
+                                    usersnap.data.documents[indexes[0]]['name'])
                                 .replaceAll(
                                   'abc',
-                                  snapshot.data.documents[indexes[1]]['name'],
+                                  usersnap.data.documents[indexes[1]]['name'],
                                 );
 
                     Firestore.instance
@@ -142,6 +121,10 @@ class _StartTheGameButtonState extends State<StartTheGameButton> {
                       {
                         'currentQuestion': question,
                       },
+                    );
+                    changeNavigationStateToTrue(
+                      gameID: widget.gameID,
+                      field: 'isGameStarted',
                     );
                   },
                   duration: Duration(
@@ -205,6 +188,7 @@ class _StartTheGameButtonState extends State<StartTheGameButton> {
           .collection('questions')
           .document('modes')
           .collection(widget.gameMode)
+          .document(quesIndex())
           .snapshots(),
     );
   }

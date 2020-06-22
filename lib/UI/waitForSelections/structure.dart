@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:psych/UI/functionCalls/backPressCall.dart';
+import 'package:psych/UI/functionCalls/changeNavigationState.dart';
 import 'package:psych/UI/functionCalls/checkForGameEnd.dart';
 import 'package:psych/UI/waitForReady/structure.dart';
 import 'package:psych/UI/waitForSubmissions/waitingForSubmissionPlayerCard.dart';
@@ -13,15 +14,71 @@ class WaitForSelectionsPage extends StatelessWidget {
     @required this.playerID,
     @required this.gameMode,
     @required this.isAdmin,
+    @required this.quesCount,
   });
   final String playerID;
   final String gameID;
   final String gameMode;
   final bool isAdmin;
+  final int quesCount;
   bool abc = true;
-  bool xyz = true;
+
   @override
   Widget build(BuildContext context) {
+    void navigatorAndScoreUpdator() async {
+      DocumentSnapshot ds = await Firestore.instance
+          .collection('roomDetails')
+          .document(gameID)
+          .get();
+
+      ds.reference.snapshots().listen(
+        (event) {
+          if (event.data['isResponseSelected'] == true) {
+            if (abc) {
+              Firestore.instance
+                  .collection('roomDetails')
+                  .document(gameID)
+                  .collection('users')
+                  .getDocuments()
+                  .then(
+                (event) {
+                  Firestore.instance
+                      .collection('roomDetails')
+                      .document(gameID)
+                      .collection('users')
+                      .document(playerID)
+                      .updateData(
+                    {
+                      'score': FieldValue.increment(event.documents
+                          .where((element) => element['selection'] == playerID)
+                          .toList()
+                          .length),
+                    },
+                  );
+                },
+              );
+
+              HapticFeedback.vibrate();
+
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (BuildContext context) => WaitForReady(
+                    quesCount: quesCount,
+                    playerID: playerID,
+                    gameID: gameID,
+                    gameMode: gameMode,
+                    isAdmin: isAdmin,
+                  ),
+                ),
+              );
+              abc = !abc;
+            }
+          }
+        },
+      );
+    }
+
     WidgetsBinding.instance.addPostFrameCallback(
       (_) async {
         checkForGameEnd(
@@ -29,6 +86,13 @@ class WaitForSelectionsPage extends StatelessWidget {
           gameID: gameID,
           playerID: playerID,
         );
+        navigatorAndScoreUpdator();
+        isAdmin
+            ? changeNavigationStateToTrue(
+                playerField: 'hasSelected',
+                gameID: gameID,
+                field: 'isResponseSelected')
+            : null;
       },
     );
 
@@ -52,60 +116,6 @@ class WaitForSelectionsPage extends StatelessWidget {
             if (!usersnap.hasData) {
               return SizedBox();
             }
-            List _users = [];
-            for (int index = 0;
-                index < usersnap.data.documents.length;
-                index++) {
-              _users.add(
-                usersnap.data.documents[index]['userID'],
-              );
-            }
-
-            if (usersnap.data.documents
-                        .where((x) => x['hasSelected'] == true)
-                        .toList()
-                        .length ==
-                    usersnap.data.documents.length &&
-                _users.contains(
-                  playerID,
-                )) {
-              if (abc) {
-                Firestore.instance
-                    .collection('roomDetails')
-                    .document(gameID)
-                    .collection('users')
-                    .document(playerID)
-                    .updateData(
-                  {
-                    'score': FieldValue.increment(
-                      usersnap.data.documents
-                          .where((g) => g['selection'] == playerID)
-                          .toList()
-                          .length,
-                    ),
-                  },
-                );
-                abc = !abc;
-              }
-
-              WidgetsBinding.instance.addPostFrameCallback(
-                (_) {
-                  HapticFeedback.vibrate();
-
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                      builder: (BuildContext context) => WaitForReady(
-                        gameID: gameID,
-                        playerID: playerID,
-                        gameMode: gameMode,
-                        isAdmin: isAdmin,
-                      ),
-                    ),
-                  );
-                },
-              );
-            }
 
             return Column(
               children: <Widget>[
@@ -114,28 +124,10 @@ class WaitForSelectionsPage extends StatelessWidget {
                     itemCount: usersnap.data.documents.length,
                     itemBuilder: (context, i) {
                       return WaitingForSubmissionPlayerCard(
-                          animationIndex: i,
-                          name: usersnap.data.documents.length != 0
-                              ? usersnap.data.documents
-                                  .where((n) =>
-                                      n['userID'] ==
-                                      usersnap.data.documents[i].documentID)
-                                  .toList()[0]['name']
-                              : '',
-                          hasSubmitted: usersnap.data.documents
-                                      .where((no) =>
-                                          no.documentID ==
-                                          usersnap.data.documents[i]['userID'])
-                                      .toList()
-                                      .length !=
-                                  0
-                              ? usersnap.data.documents
-                                  .where((no) =>
-                                      no.documentID ==
-                                      usersnap.data.documents[i]['userID'])
-                                  .toList()[0]
-                                  .data['hasSelected']
-                              : false);
+                        animationIndex: i,
+                        name: usersnap.data.documents[i]['name'],
+                        hasSubmitted: usersnap.data.documents[i]['hasSelected'],
+                      );
                     },
                     shrinkWrap: true,
                   ),

@@ -13,11 +13,13 @@ class ResponseSelectionPage extends StatelessWidget {
     @required this.playerID,
     @required this.gameMode,
     @required this.isAdmin,
+    @required this.quesCount,
   });
   final String gameID;
   final String playerID;
   final String gameMode;
   final bool isAdmin;
+  final int quesCount;
   bool abc = true;
   @override
   Widget build(BuildContext context) {
@@ -91,6 +93,7 @@ class ResponseSelectionPage extends StatelessWidget {
                               MaterialPageRoute(
                                 builder: (BuildContext context) =>
                                     WaitForSelectionsPage(
+                                  quesCount: quesCount,
                                   gameID: gameID,
                                   playerID: playerID,
                                   gameMode: gameMode,

@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:psych/UI/functionCalls/backPressCall.dart';
+import 'package:psych/UI/functionCalls/changeNavigationState.dart';
 import 'package:psych/UI/functionCalls/checkForGameEnd.dart';
-import 'package:psych/UI/responseSelection/structure.dart';
+import 'package:psych/UI/functionCalls/checkForNavigation.dart';
 import 'package:psych/UI/waitForSubmissions/waitingForSubmissionPlayerCard.dart';
 import 'package:psych/UI/widgets/customAppBar.dart';
 
@@ -13,11 +13,13 @@ class WaitForSubmissions extends StatelessWidget {
     @required this.playerID,
     @required this.gameMode,
     @required this.isAdmin,
+    @required this.quesCount,
   });
   final String gameID;
   final String playerID;
   final String gameMode;
   final bool isAdmin;
+  final int quesCount;
   bool abc = true;
   @override
   Widget build(BuildContext context) {
@@ -28,6 +30,21 @@ class WaitForSubmissions extends StatelessWidget {
           gameID: gameID,
           playerID: playerID,
         );
+        checkForNavigation(
+            quesCount: quesCount,
+            context: context,
+            gameID: gameID,
+            playerID: playerID,
+            gameMode: gameMode,
+            isAdmin: isAdmin,
+            currentPage: 'WaitForSubmissions');
+        isAdmin
+            ? changeNavigationStateToTrue(
+                playerField: 'hasSubmitted',
+                gameID: gameID,
+                field: 'isResponseSubmitted',
+              )
+            : null;
       },
     );
 
@@ -42,39 +59,6 @@ class WaitForSubmissions extends StatelessWidget {
         builder: (context, snap) {
           if (!snap.hasData) {
             return Scaffold();
-          }
-
-          List _users = [];
-          for (int index = 0; index < snap.data.documents.length; index++) {
-            _users.add(
-              snap.data.documents[index]['userID'],
-            );
-          }
-          if (snap.data.documents
-                      .where((x) => x['hasSubmitted'] == true)
-                      .toList()
-                      .length ==
-                  snap.data.documents.length &&
-              _users.contains(
-                playerID,
-              )) {
-            WidgetsBinding.instance.addPostFrameCallback(
-              (_) async {
-                HapticFeedback.vibrate();
-
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (BuildContext context) => ResponseSelectionPage(
-                      playerID: playerID,
-                      gameID: gameID,
-                      gameMode: gameMode,
-                      isAdmin: isAdmin,
-                    ),
-                  ),
-                );
-              },
-            );
           }
 
           return Scaffold(
@@ -96,24 +80,7 @@ class WaitForSubmissions extends StatelessWidget {
                       return WaitingForSubmissionPlayerCard(
                         animationIndex: i,
                         name: snap.data.documents[i]['name'],
-                        hasSubmitted: snap.data.documents
-                                    .where(
-                                      (no) =>
-                                          no.documentID ==
-                                          snap.data.documents[i]['userID'],
-                                    )
-                                    .toList()
-                                    .length !=
-                                0
-                            ? snap.data.documents
-                                .where(
-                                  (no) =>
-                                      no.documentID ==
-                                      snap.data.documents[i]['userID'],
-                                )
-                                .toList()[0]
-                                .data['hasSubmitted']
-                            : false,
+                        hasSubmitted: snap.data.documents[i]['hasSubmitted'],
                       );
                     },
                     shrinkWrap: true,

@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:psych/UI/QuestionsPage/structure.dart';
 import 'package:psych/UI/functionCalls/backPressCall.dart';
+import 'package:psych/UI/functionCalls/changeNavigationState.dart';
 import 'package:psych/UI/functionCalls/checkForGameEnd.dart';
+import 'package:psych/UI/functionCalls/checkForNavigation.dart';
 import 'dart:math';
 import 'package:psych/UI/widgets/customAppBar.dart';
 
@@ -13,25 +13,31 @@ class WaitForReady extends StatelessWidget {
     @required this.playerID,
     @required this.gameMode,
     @required this.isAdmin,
+    @required this.quesCount,
   });
   final String gameID;
   final String playerID;
   final String gameMode;
   final bool isAdmin;
+  final int quesCount;
 
   bool abc = true;
 
+  generateRandomIndex(int len) {
+    Random rnd;
+    int min = 0;
+    int max = len;
+    rnd = new Random();
+    var r = min + rnd.nextInt(max - min);
+    return r;
+  }
+
+  String quesIndex() {
+    return (generateRandomIndex(quesCount) + 1).toString();
+  }
+
   @override
   Widget build(BuildContext context) {
-    generateRandomIndex(int len) {
-      Random rnd;
-      int min = 0;
-      int max = len;
-      rnd = new Random();
-      var r = min + rnd.nextInt(max - min);
-      return r;
-    }
-
     WidgetsBinding.instance.addPostFrameCallback(
       (_) async {
         checkForGameEnd(
@@ -39,6 +45,16 @@ class WaitForReady extends StatelessWidget {
           gameID: gameID,
           playerID: playerID,
         );
+        checkForNavigation(
+            quesCount: quesCount,
+            context: context,
+            gameID: gameID,
+            playerID: playerID,
+            gameMode: gameMode,
+            isAdmin: isAdmin,
+            currentPage: 'WaitForReady');
+        changeNavigationStateToTrue(
+            gameID: gameID, field: 'isReady', playerField: 'isReady');
       },
     );
 
@@ -49,51 +65,46 @@ class WaitForReady extends StatelessWidget {
         isAdmin: isAdmin,
         playerID: playerID,
       ),
-      child: Scaffold(
-        appBar: customAppBar(
-          context: context,
-          gameID: gameID,
-          isAdmin: isAdmin,
-          playerID: playerID,
-          title: 'GAME ID: $gameID',
-        ),
-        body: ListView(
-          children: <Widget>[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Text(
-                  "Players who chose your answer:",
-                  style: TextStyle(
-                    fontSize: 20,
-                  ),
-                ),
-              ],
+      child: StreamBuilder(
+        stream: Firestore.instance
+            .collection('roomDetails')
+            .document(gameID)
+            .collection('users')
+            .snapshots(),
+        builder: (context, snappp) {
+          if (!snappp.hasData) {
+            return SizedBox();
+          }
+          return Scaffold(
+            appBar: customAppBar(
+              context: context,
+              gameID: gameID,
+              isAdmin: isAdmin,
+              playerID: playerID,
+              title: 'GAME ID: $gameID',
             ),
-            StreamBuilder(
-              builder: (context, usersnap) {
-                if (!usersnap.hasData) {
-                  return SizedBox();
-                }
-
-                return ListView.builder(
+            body: ListView(
+              children: <Widget>[
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Text(
+                      "Players who chose your answer:",
+                      style: TextStyle(
+                        fontSize: 20,
+                      ),
+                    ),
+                  ],
+                ),
+                ListView.builder(
                   itemBuilder: (context, i) {
                     return Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         Text(
-                          usersnap.data.documents
-                              .where(
-                                (c) =>
-                                    c.documentID ==
-                                    usersnap.data.documents
-                                        .where(
-                                          (x) => x['selection'] == playerID,
-                                        )
-                                        .toList()[i]
-                                        .documentID,
-                              )
-                              .toList()[0]['name'],
+                          snappp.data.documents
+                              .where((x) => x['selection'] == playerID)
+                              .toList()[i]['name'],
                           style: TextStyle(
                             fontSize: 20,
                           ),
@@ -101,52 +112,38 @@ class WaitForReady extends StatelessWidget {
                       ],
                     );
                   },
-                  itemCount: usersnap.data.documents
+                  itemCount: snappp.data.documents
                       .where(
                         (x) => x['selection'] == playerID,
                       )
                       .toList()
                       .length,
                   shrinkWrap: true,
-                );
-              },
-              stream: Firestore.instance
-                  .collection('roomDetails')
-                  .document(gameID)
-                  .collection('users')
-                  .orderBy('timestamp')
-                  .snapshots(),
-            ),
-            SizedBox(
-              height: 30,
-            ),
-            Row(
-              children: <Widget>[
-                Text(
-                  "RESPONSES:",
-                  style: TextStyle(
-                    fontSize: 30,
-                  ),
                 ),
-              ],
-              mainAxisAlignment: MainAxisAlignment.center,
-            ),
-            StreamBuilder(
-              builder: (context, snap) {
-                if (!snap.hasData) {
-                  return SizedBox();
-                }
-
-                return ListView.builder(
+                SizedBox(
+                  height: 30,
+                ),
+                Row(
+                  children: <Widget>[
+                    Text(
+                      "RESPONSES:",
+                      style: TextStyle(
+                        fontSize: 30,
+                      ),
+                    ),
+                  ],
+                  mainAxisAlignment: MainAxisAlignment.center,
+                ),
+                ListView.builder(
                   physics: NeverScrollableScrollPhysics(),
                   itemBuilder: (context, i) {
                     return NumberOfSelectionsCard(
-                      response: snap.data.documents[i]['response'],
-                      timesSelected: snap.data.documents
+                      response: snappp.data.documents[i]['response'],
+                      timesSelected: snappp.data.documents
                           .where(
                             (x) =>
                                 x['selection'] ==
-                                snap.data.documents[i].documentID,
+                                snappp.data.documents[i].documentID,
                           )
                           .toList()
                           .length
@@ -154,117 +151,46 @@ class WaitForReady extends StatelessWidget {
                     );
                   },
                   shrinkWrap: true,
-                  itemCount: snap.data.documents.length,
-                );
-              },
-              stream: Firestore.instance
-                  .collection('roomDetails')
-                  .document(gameID)
-                  .collection('users')
-                  .snapshots(),
-            ),
-            Row(
-              children: <Widget>[
-                Text(
-                  "SCORE:",
-                  style: TextStyle(
-                    fontSize: 30,
-                  ),
+                  itemCount: snappp.data.documents.length,
                 ),
-              ],
-              mainAxisAlignment: MainAxisAlignment.center,
-            ),
-            StreamBuilder(
-              builder: (context, usersnap) {
-                if (!usersnap.hasData) {
-                  return SizedBox();
-                }
-
-                return ListView.builder(
+                Row(
+                  children: <Widget>[
+                    Text(
+                      "SCORE:",
+                      style: TextStyle(
+                        fontSize: 30,
+                      ),
+                    ),
+                  ],
+                  mainAxisAlignment: MainAxisAlignment.center,
+                ),
+                ListView.builder(
                   physics: NeverScrollableScrollPhysics(),
                   itemBuilder: (context, ind) {
                     return PlayerScoreCard(
-                      name: usersnap.data.documents[ind]['name'],
-                      score: usersnap.data.documents[ind]['score'].toString(),
-                      isReady: usersnap.data.documents
+                      name: snappp.data.documents[ind]['name'],
+                      score: snappp.data.documents[ind]['score'].toString(),
+                      isReady: snappp.data.documents[ind]['isReady'],
+                      scoreAdded: snappp.data.documents
                           .where(
                             (x) =>
-                                x.documentID ==
-                                usersnap.data.documents[ind]['userID'],
+                                x['selection'] ==
+                                snappp.data.documents[ind].documentID,
                           )
-                          .toList()[0]['isReady'],
-                      scoreAdded: usersnap.data.documents
-                          .where((x) =>
-                              x['selection'] ==
-                              usersnap.data.documents
-                                  .where((y) =>
-                                      y['userID'] ==
-                                      usersnap.data.documents[ind]['userID'])
-                                  .toList()[0]
-                                  .documentID)
                           .toList()
                           .length
                           .toString(),
                     );
                   },
-                  itemCount: usersnap.data.documents.length,
+                  itemCount: snappp.data.documents.length,
                   shrinkWrap: true,
-                );
-              },
-              stream: Firestore.instance
-                  .collection(
-                    'roomDetails',
-                  )
-                  .document(gameID)
-                  .collection('users')
-                  .orderBy(
-                    'score',
-                    descending: true,
-                  )
-                  .snapshots(),
-            ),
-            Container(
-              width: 50,
-              margin: EdgeInsets.symmetric(
-                horizontal: 100,
-              ),
-              child: StreamBuilder(
-                builder: (context, snap) {
-                  if (!snap.hasData) {
-                    return SizedBox();
-                  }
-
-                  List _users = [];
-                  for (int index = 0;
-                      index < snap.data.documents.length;
-                      index++) {
-                    _users.add(snap.data.documents[index]
-                        .documentID); //TODO: WTF is this shit??
-                  }
-                  if (snap.data.documents.every((x) => x['isReady'] == true) &&
-                      _users.contains(
-                        playerID,
-                      )) {
-                    WidgetsBinding.instance.addPostFrameCallback(
-                      (_) async {
-                        HapticFeedback.vibrate();
-
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (BuildContext context) => QuestionsPage(
-                              playerID: playerID,
-                              gameID: gameID,
-                              gameMode: gameMode,
-                              isAdmin: isAdmin,
-                            ),
-                          ),
-                        );
-                      },
-                    );
-                  }
-
-                  return StreamBuilder(
+                ),
+                Container(
+                  width: 50,
+                  margin: EdgeInsets.symmetric(
+                    horizontal: 100,
+                  ),
+                  child: StreamBuilder(
                     builder: (context, quessnap) {
                       List getIndexes(int len, int n) {
                         if (n == 1) {
@@ -303,28 +229,31 @@ class WaitForReady extends StatelessWidget {
                         color: Colors.red,
                         onPressed: () async {
                           if (isAdmin) {
-                            DocumentSnapshot questionRaw =
-                                quessnap.data.documents[generateRandomIndex(
-                              quessnap.data.documents.length,
-                            )];
+                            changeNavigationStateToFalse(
+                                gameID: gameID, field: 'isResponseSubmitted');
+                            changeNavigationStateToFalse(
+                                gameID: gameID, field: 'isResponseSelected');
+                            DocumentSnapshot questionRaw = quessnap.data;
 
                             List indexes = getIndexes(
-                              snap.data.documents.length,
-                              snap.data.documents.length == 1 ? 1 : 2,
+                              snappp.data.documents.length,
+                              snappp.data.documents.length == 1 ? 1 : 2,
                             );
 
                             String question = !questionRaw.data['question']
                                     .contains('abc')
                                 ? questionRaw.data['question'].replaceAll(
                                     'xyz',
-                                    snap.data.documents[indexes[0]]['name'],
+                                    snappp.data.documents[indexes[0]]['name'],
                                   )
                                 : questionRaw.data['question']
-                                    .replaceAll('xyz',
-                                        snap.data.documents[indexes[0]]['name'])
+                                    .replaceAll(
+                                        'xyz',
+                                        snappp.data.documents[indexes[0]]
+                                            ['name'])
                                     .replaceAll(
                                       'abc',
-                                      snap.data.documents[indexes[1]]['name'],
+                                      snappp.data.documents[indexes[1]]['name'],
                                     );
 
                             await Firestore.instance
@@ -345,16 +274,6 @@ class WaitForReady extends StatelessWidget {
                               .updateData(
                             {
                               'hasSelected': false,
-                            },
-                          );
-
-                          Firestore.instance
-                              .collection('roomDetails')
-                              .document(gameID)
-                              .collection('users')
-                              .document(playerID)
-                              .updateData(
-                            {
                               'hasSubmitted': false,
                             },
                           );
@@ -373,19 +292,14 @@ class WaitForReady extends StatelessWidget {
                         .collection('questions')
                         .document('modes')
                         .collection(gameMode)
+                        .document(quesIndex())
                         .snapshots(),
-                  );
-                },
-                stream: Firestore.instance
-                    .collection('roomDetails')
-                    .document(gameID)
-                    .collection('users')
-                    .orderBy('timestamp')
-                    .snapshots(),
-              ),
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }

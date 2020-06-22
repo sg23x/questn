@@ -4,9 +4,8 @@ customProgressIndicator({@required context}) {
   return showDialog(
     context: context,
     barrierDismissible: false,
-    child: WillPopScope(
-      onWillPop: () async => false,
-      child: Row(
+    builder: (BuildContext context) {
+      return Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           CircularProgressIndicator(
@@ -14,7 +13,7 @@ customProgressIndicator({@required context}) {
             strokeWidth: 8,
           ),
         ],
-      ),
-    ),
+      );
+    },
   );
 }

@@ -1,9 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:psych/UI/QuestionsPage/structure.dart';
 import 'package:psych/UI/functionCalls/backPressCall.dart';
 import 'package:psych/UI/functionCalls/checkForGameEnd.dart';
+import 'package:psych/UI/functionCalls/checkForNavigation.dart';
 import 'package:psych/UI/waitingToStart/playerCard.dart';
 import 'package:psych/UI/waitingToStart/startTheGameButton.dart';
 import 'package:psych/UI/widgets/customAppBar.dart';
@@ -13,12 +12,14 @@ class WaitingToStart extends StatefulWidget {
     @required this.gameID,
     @required this.playerID,
     @required this.isAdmin,
+    this.quesCount,
     this.gameMode,
   });
   final String gameID;
   final String playerID;
   final String gameMode;
   final bool isAdmin;
+  final int quesCount;
 
   @override
   _WaitingToStartState createState() => _WaitingToStartState();
@@ -35,6 +36,14 @@ class _WaitingToStartState extends State<WaitingToStart> {
           playerID: widget.playerID,
           isInLobby: true,
         );
+        checkForNavigation(
+            quesCount: widget.quesCount,
+            context: context,
+            gameID: widget.gameID,
+            playerID: widget.playerID,
+            gameMode: widget.gameMode,
+            isAdmin: widget.isAdmin,
+            currentPage: 'WaitingToStart');
       },
     );
 
@@ -49,29 +58,6 @@ class _WaitingToStartState extends State<WaitingToStart> {
         builder: (context, snap) {
           if (!snap.hasData) {
             return Scaffold();
-          }
-
-          if (snap.data.documents.every(
-                (x) => x['isReady'] == true,
-              ) &&
-              snap.data.documents.length != 0) {
-            WidgetsBinding.instance.addPostFrameCallback(
-              (_) async {
-                HapticFeedback.vibrate();
-
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (BuildContext context) => QuestionsPage(
-                      playerID: widget.playerID,
-                      gameID: widget.gameID,
-                      gameMode: widget.gameMode,
-                      isAdmin: widget.isAdmin,
-                    ),
-                  ),
-                );
-              },
-            );
           }
 
           return Scaffold(
@@ -113,6 +99,8 @@ class _WaitingToStartState extends State<WaitingToStart> {
                 snap.data.documents.length != 0
                     ? widget.isAdmin
                         ? StartTheGameButton(
+                            quesCount: widget.quesCount,
+                            isAdmin: widget.isAdmin,
                             gameID: widget.gameID,
                             playerID: widget.playerID,
                             isPlayerPlural:

@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:psych/UI/QuestionsPage/questionCard.dart';
 import 'package:psych/UI/functionCalls/backPressCall.dart';
+import 'package:psych/UI/functionCalls/changeNavigationState.dart';
 import 'package:psych/UI/functionCalls/checkForGameEnd.dart';
 import 'package:psych/UI/waitForSubmissions/structure.dart';
 import 'package:psych/UI/widgets/customAppBar.dart';
@@ -12,11 +13,13 @@ class QuestionsPage extends StatefulWidget {
     @required this.gameID,
     @required this.gameMode,
     @required this.isAdmin,
+    @required this.quesCount,
   });
   final String playerID;
   final String gameID;
   final String gameMode;
   final bool isAdmin;
+  final int quesCount;
 
   @override
   _QuestionsPageState createState() => _QuestionsPageState();
@@ -53,6 +56,10 @@ class _QuestionsPageState extends State<QuestionsPage> {
           'isReady': false,
         },
       );
+      widget.isAdmin
+          ? changeNavigationStateToFalse(
+              gameID: widget.gameID, field: 'isReady')
+          : null;
     }
 
     int getMaxLine(context, bool isKeyboardOpen) {
@@ -201,6 +208,7 @@ class _QuestionsPageState extends State<QuestionsPage> {
                             MaterialPageRoute(
                               builder: (BuildContext context) =>
                                   WaitForSubmissions(
+                                quesCount: widget.quesCount,
                                 gameID: widget.gameID,
                                 playerID: widget.playerID,
                                 gameMode: widget.gameMode,
