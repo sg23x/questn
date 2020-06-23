@@ -255,7 +255,7 @@ class _JoinGameButtonState extends State<JoinGameButton> {
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         FlatButton(
-          splashColor: secondaryColor,
+          splashColor: Colors.transparent,
           highlightColor: Colors.transparent,
           color: Colors.transparent,
           padding: EdgeInsets.all(

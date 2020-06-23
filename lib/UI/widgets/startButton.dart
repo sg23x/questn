@@ -335,7 +335,7 @@ class _StartAGameButtonState extends State<StartAGameButton> {
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         FlatButton(
-          splashColor: primaryColor,
+          splashColor: Colors.transparent,
           highlightColor: Colors.transparent,
           color: Colors.transparent,
           padding: EdgeInsets.all(
