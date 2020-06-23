@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:psych/UI/constants.dart';
 
 customProgressIndicator({@required context}) {
   return showDialog(
@@ -9,7 +10,7 @@ customProgressIndicator({@required context}) {
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           CircularProgressIndicator(
-            backgroundColor: Colors.pink,
+            backgroundColor: secondaryColor,
             strokeWidth: 8,
           ),
         ],

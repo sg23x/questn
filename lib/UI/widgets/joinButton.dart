@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:pin_entry_text_field/pin_entry_text_field.dart';
+import 'package:psych/UI/constants.dart';
 import 'package:psych/UI/screens/waitingToStart.dart';
 import 'dart:math';
 
@@ -250,50 +251,52 @@ class _JoinGameButtonState extends State<JoinGameButton> {
       );
     }
 
-    return AnimatedAlign(
-      duration: Duration(
-        milliseconds: 400,
-      ),
-      alignment: axis,
-      child: RaisedButton(
-        color: Colors.transparent,
-        padding: EdgeInsets.all(
-          0,
-        ),
-        elevation: 15,
-        onPressed: () {
-          joinGame();
-        },
-        child: Container(
-          width: MediaQuery.of(context).size.width * 0.6,
-          height: MediaQuery.of(context).size.height * 0.07,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(
-              10,
-            ),
-            color: Colors.pink,
-            border: Border.all(
-              width: 3,
-              color: Colors.white,
-            ),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        FlatButton(
+          splashColor: secondaryColor,
+          highlightColor: Colors.transparent,
+          color: Colors.transparent,
+          padding: EdgeInsets.all(
+            0,
           ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Text(
-                'Join Game',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontFamily: 'Indie-Flower',
-                  fontWeight: FontWeight.w900,
-                  fontSize: MediaQuery.of(context).size.height * 0.03,
-                ),
+          onPressed: () {
+            joinGame();
+          },
+          child: Container(
+            width: MediaQuery.of(context).size.width * 0.6,
+            height: MediaQuery.of(context).size.height * 0.4,
+            alignment: Alignment.bottomCenter,
+            child: Container(
+              height: MediaQuery.of(context).size.height * 0.23,
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.04,
+                      ),
+                      Text(
+                        'JOIN\nGAME',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: MediaQuery.of(context).size.width * 0.15,
+                          fontFamily: 'Gotham-Book',
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 50,
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
         ),
-      ),
+      ],
     );
   }
 }

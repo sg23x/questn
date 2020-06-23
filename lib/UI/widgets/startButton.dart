@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:psych/UI/constants.dart';
 import 'package:psych/UI/screens/waitingToStart.dart';
 import 'dart:math';
 import 'package:firebase_admob/firebase_admob.dart';
@@ -166,163 +167,118 @@ class _StartAGameButtonState extends State<StartAGameButton> {
       );
     }
 
-    return AnimatedAlign(
-      duration: Duration(
-        milliseconds: 400,
-      ),
-      alignment: axis,
-      child: RaisedButton(
-        color: Colors.transparent,
-        padding: EdgeInsets.all(
-          0,
-        ),
-        elevation: 15,
-        onPressed: () {
-          showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              bool willPop = true;
-              return StreamBuilder(
-                stream: Firestore.instance
-                    .collection('gameModes')
-                    .orderBy('index')
-                    .snapshots(),
-                builder: (context, snap) {
-                  if (!snap.hasData) {
-                    return Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        CircularProgressIndicator(
-                          backgroundColor: Colors.pink,
-                          strokeWidth: 8,
-                        ),
-                      ],
-                    );
-                  }
-                  return GestureDetector(
-                    onTap: () {
-                      Navigator.of(context).pop(willPop);
-                    },
-                    child: PageView.builder(
-                      controller: PageController(
-                        viewportFraction: 0.7,
-                      ),
-                      scrollDirection: Axis.horizontal,
-                      itemCount: snap.data.documents.length,
-                      itemBuilder: (context, i) {
-                        DocumentSnapshot gameModeData = snap.data.documents[i];
-                        return GestureDetector(
-                          onTap: () {
-                            setState(
-                              () {
-                                willPop = false;
-                              },
-                            );
+    void displayGameModes() {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          bool willPop = true;
+          return StreamBuilder(
+            stream: Firestore.instance
+                .collection('gameModes')
+                .orderBy('index')
+                .snapshots(),
+            builder: (context, snap) {
+              if (!snap.hasData) {
+                return Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    CircularProgressIndicator(
+                      backgroundColor: Colors.pink,
+                      strokeWidth: 8,
+                    ),
+                  ],
+                );
+              }
+              return GestureDetector(
+                onTap: () {
+                  Navigator.of(context).pop(willPop);
+                },
+                child: PageView.builder(
+                  controller: PageController(
+                    viewportFraction: 0.7,
+                  ),
+                  scrollDirection: Axis.horizontal,
+                  itemCount: snap.data.documents.length,
+                  itemBuilder: (context, i) {
+                    DocumentSnapshot gameModeData = snap.data.documents[i];
+                    return GestureDetector(
+                      onTap: () {
+                        setState(
+                          () {
+                            willPop = false;
                           },
-                          child: AlertDialog(
-                            backgroundColor: Color(
-                              int.parse(gameModeData['colorCode']),
-                            ),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(
-                                10,
-                              ),
-                            ),
-                            content: Container(
-                              decoration: BoxDecoration(),
-                              width: MediaQuery.of(context).size.width * 0.7,
-                              height: MediaQuery.of(context).size.height * 0.4,
-                              child: Column(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
-                                children: [
-                                  gameModeData['isLocked']
-                                      ? Container(
-                                          height: 80,
-                                          child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceAround,
-                                            children: [
-                                              Icon(
-                                                Icons.lock,
-                                                size: 35,
-                                                color: Colors.white,
-                                              ),
-                                              Text(
-                                                'View ad to unlock!',
-                                                style: TextStyle(
-                                                  color: Colors.white,
-                                                ),
-                                              ),
-                                            ],
+                        );
+                      },
+                      child: AlertDialog(
+                        backgroundColor: Color(
+                          int.parse(gameModeData['colorCode']),
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(
+                            10,
+                          ),
+                        ),
+                        content: Container(
+                          decoration: BoxDecoration(),
+                          width: MediaQuery.of(context).size.width * 0.7,
+                          height: MediaQuery.of(context).size.height * 0.4,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              gameModeData['isLocked']
+                                  ? Container(
+                                      height: 80,
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceAround,
+                                        children: [
+                                          Icon(
+                                            Icons.lock,
+                                            size: 35,
+                                            color: Colors.white,
                                           ),
-                                        )
-                                      : SizedBox(
-                                          height: 80,
-                                        ),
-                                  Text(
-                                    gameModeData['gameName'],
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 30,
+                                          Text(
+                                            'View ad to unlock!',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    )
+                                  : SizedBox(
+                                      height: 80,
                                     ),
-                                  ),
-                                  RaisedButton(
-                                    child: Text(
-                                      'Play!',
-                                    ),
-                                    onPressed: gameModeData['isLocked']
-                                        ? () {
-                                            myAd.load(
-                                              adUnitId:
-                                                  'ca-app-pub-2468807992323747/9025521431',
-                                              targetingInfo: targetingInfo,
-                                            );
-                                            myAd.listener = (
-                                              RewardedVideoAdEvent event, {
-                                              String rewardType,
-                                              int rewardAmount,
-                                            }) {
-                                              if (event ==
-                                                  RewardedVideoAdEvent.loaded) {
-                                                myAd.show();
-                                              }
-                                              if (event ==
-                                                  RewardedVideoAdEvent
-                                                      .rewarded) {
-                                                adCloseChecker =
-                                                    !adCloseChecker;
-                                                createRoomID(
-                                                  gameMode:
-                                                      gameModeData['gameMode'],
-                                                  quesCount:
-                                                      gameModeData['quesCount'],
-                                                );
-                                                customProgressIndicator(
-                                                    context: context);
-                                              }
-                                              if (event ==
-                                                  RewardedVideoAdEvent
-                                                      .failedToLoad) {
-                                                createRoomID(
-                                                  gameMode:
-                                                      gameModeData['gameMode'],
-                                                  quesCount:
-                                                      gameModeData['quesCount'],
-                                                );
-                                              }
-                                              if (event ==
-                                                      RewardedVideoAdEvent
-                                                          .closed &&
-                                                  adCloseChecker) {
-                                                Navigator.pop(context);
-                                              }
-                                            };
-
-                                            customProgressIndicator(
-                                                context: context);
+                              Text(
+                                gameModeData['gameName'],
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 30,
+                                ),
+                              ),
+                              RaisedButton(
+                                child: Text(
+                                  'Play!',
+                                ),
+                                onPressed: gameModeData['isLocked']
+                                    ? () {
+                                        myAd.load(
+                                          adUnitId:
+                                              'ca-app-pub-2468807992323747/9025521431',
+                                          targetingInfo: targetingInfo,
+                                        );
+                                        myAd.listener = (
+                                          RewardedVideoAdEvent event, {
+                                          String rewardType,
+                                          int rewardAmount,
+                                        }) {
+                                          if (event ==
+                                              RewardedVideoAdEvent.loaded) {
+                                            myAd.show();
                                           }
-                                        : () {
+                                          if (event ==
+                                              RewardedVideoAdEvent.rewarded) {
+                                            adCloseChecker = !adCloseChecker;
                                             createRoomID(
                                               gameMode:
                                                   gameModeData['gameMode'],
@@ -331,51 +287,93 @@ class _StartAGameButtonState extends State<StartAGameButton> {
                                             );
                                             customProgressIndicator(
                                                 context: context);
-                                          },
-                                  ),
-                                ],
+                                          }
+                                          if (event ==
+                                              RewardedVideoAdEvent
+                                                  .failedToLoad) {
+                                            createRoomID(
+                                              gameMode:
+                                                  gameModeData['gameMode'],
+                                              quesCount:
+                                                  gameModeData['quesCount'],
+                                            );
+                                          }
+                                          if (event ==
+                                                  RewardedVideoAdEvent.closed &&
+                                              adCloseChecker) {
+                                            Navigator.pop(context);
+                                          }
+                                        };
+
+                                        customProgressIndicator(
+                                            context: context);
+                                      }
+                                    : () {
+                                        createRoomID(
+                                          gameMode: gameModeData['gameMode'],
+                                          quesCount: gameModeData['quesCount'],
+                                        );
+                                        customProgressIndicator(
+                                            context: context);
+                                      },
                               ),
-                            ),
+                            ],
                           ),
-                        );
-                      },
-                    ),
-                  );
-                },
+                        ),
+                      ),
+                    );
+                  },
+                ),
               );
             },
           );
         },
-        child: Container(
-          width: MediaQuery.of(context).size.width * 0.6,
-          height: MediaQuery.of(context).size.height * 0.07,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(
-              10,
-            ),
-            color: Colors.pink,
-            border: Border.all(
-              width: 3,
-              color: Colors.white,
-            ),
+      );
+    }
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        FlatButton(
+          splashColor: primaryColor,
+          highlightColor: Colors.transparent,
+          color: Colors.transparent,
+          padding: EdgeInsets.all(
+            0,
           ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Text(
-                'Start Game',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontFamily: 'Indie-Flower',
-                  fontWeight: FontWeight.w900,
-                  fontSize: MediaQuery.of(context).size.height * 0.03,
+          onPressed: () {
+            displayGameModes();
+          },
+          child: Container(
+            width: MediaQuery.of(context).size.width * 0.6,
+            height: MediaQuery.of(context).size.height * 0.4,
+            alignment: Alignment.topCenter,
+            child: Column(
+              children: [
+                SizedBox(
+                  height: 50,
                 ),
-              ),
-            ],
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Text(
+                      'START\nGAME',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: MediaQuery.of(context).size.width * 0.15,
+                        fontFamily: 'Gotham-Book',
+                      ),
+                    ),
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.04,
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
-      ),
+      ],
     );
   }
 }
