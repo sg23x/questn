@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:psych/UI/constants.dart';
 import 'package:psych/UI/screens/gameSelection.dart';
 
 class NameInputPage extends StatefulWidget {
@@ -14,15 +15,20 @@ class _NameInputPageState extends State<NameInputPage> {
 
   FocusNode focus;
 
+  Color buttonColor;
+  Color submitColor;
+
   @override
   void initState() {
     isButtonEnabled = false;
     align = Alignment.lerp(
       Alignment.center,
       Alignment.centerLeft,
-      2,
+      1.25,
     );
     focus = new FocusNode();
+    buttonColor = primaryColor;
+    submitColor = primaryColor;
 
     super.initState();
   }
@@ -74,7 +80,7 @@ class _NameInputPageState extends State<NameInputPage> {
                         fontFamily: 'Indie-Flower',
                         fontWeight: FontWeight.w900,
                         fontSize: MediaQuery.of(context).size.width * 0.05,
-                        color: Colors.pink,
+                        color: secondaryColor,
                       ),
                     ),
                   ),
@@ -99,27 +105,18 @@ class _NameInputPageState extends State<NameInputPage> {
         resizeToAvoidBottomInset: false,
         resizeToAvoidBottomPadding: false,
         body: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                Colors.blue,
-                Colors.cyan,
-              ],
-            ),
-          ),
+          color: primaryColor,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
               SizedBox(),
               Text(
-                'Welcome!',
+                'what\'s\nyour\nname?',
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
-                  fontSize: MediaQuery.of(context).size.height * 0.1,
-                  color: focus.hasFocus ? Colors.yellow : Colors.black,
-                  fontFamily: 'Indie-Flower',
+                  fontSize: MediaQuery.of(context).size.height * 0.05,
+                  color: Colors.white,
+                  fontFamily: 'Gotham-Book',
                 ),
               ),
               Container(
@@ -132,32 +129,29 @@ class _NameInputPageState extends State<NameInputPage> {
                           width: MediaQuery.of(context).size.width * 0.9,
                           child: Theme(
                             data: ThemeData(
-                              primaryColor: Colors.yellow,
-                              cursorColor: Colors.yellow,
+                              primaryColor: Colors.transparent,
+                              cursorColor: primaryColor,
                             ),
                             child: TextField(
                               focusNode: focus,
                               maxLength: 15,
                               textCapitalization: TextCapitalization.words,
                               style: TextStyle(
-                                color: Colors.yellow,
-                                fontWeight: FontWeight.w900,
-                                fontFamily: 'Indie-Flower',
+                                color: Colors.white,
+                                fontFamily: 'Gotham-Book',
                                 fontSize:
                                     MediaQuery.of(context).size.height * 0.04,
                               ),
                               decoration: InputDecoration(
-                                prefixIcon: Icon(
-                                  Icons.tag_faces,
+                                contentPadding: EdgeInsets.symmetric(
+                                  horizontal:
+                                      MediaQuery.of(context).size.width * 0.06,
+                                  vertical: MediaQuery.of(context).size.height *
+                                      0.018,
                                 ),
+                                fillColor: Colors.white.withOpacity(0.2),
+                                filled: true,
                                 counterText: '',
-                                labelText: 'Who are you?',
-                                labelStyle: TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: MediaQuery.of(context).size.height *
-                                      0.027,
-                                  fontFamily: 'Indie-Flower',
-                                ),
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(
                                     10,
@@ -172,6 +166,8 @@ class _NameInputPageState extends State<NameInputPage> {
                                     () {
                                       isButtonEnabled = true;
                                       align = Alignment.center;
+                                      buttonColor = secondaryColor;
+                                      submitColor = Colors.white;
                                     },
                                   );
                                 } else {
@@ -181,8 +177,10 @@ class _NameInputPageState extends State<NameInputPage> {
                                       align = Alignment.lerp(
                                         Alignment.center,
                                         Alignment.centerLeft,
-                                        2,
+                                        1.25,
                                       );
+                                      buttonColor = primaryColor;
+                                      submitColor = primaryColor;
                                     },
                                   );
                                 }
@@ -192,23 +190,25 @@ class _NameInputPageState extends State<NameInputPage> {
                         ),
                       ],
                     ),
-                    AnimatedAlign(
-                      onEnd: align ==
-                              Alignment.lerp(
-                                Alignment.center,
-                                Alignment.centerRight,
-                                2,
-                              )
-                          ? submitName
-                          : null,
-                      curve: Curves.fastOutSlowIn,
-                      alignment: align,
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.035,
+                    ),
+                    AnimatedContainer(
                       duration: Duration(
-                        milliseconds: 250,
+                        milliseconds: 300,
                       ),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(30),
+                        gradient: LinearGradient(
+                          colors: [
+                            buttonColor,
+                            primaryColor,
+                          ],
+                        ),
+                      ),
+                      width: MediaQuery.of(context).size.width * 0.5,
+                      height: MediaQuery.of(context).size.height * 0.07,
                       child: FlatButton(
-                        splashColor: Colors.transparent,
-                        highlightColor: Colors.transparent,
                         onPressed: isButtonEnabled
                             ? () {
                                 setState(
@@ -216,22 +216,38 @@ class _NameInputPageState extends State<NameInputPage> {
                                     align = Alignment.lerp(
                                       Alignment.center,
                                       Alignment.centerRight,
-                                      2,
+                                      1.25,
                                     );
                                   },
                                 );
                               }
                             : null,
-                        child: Icon(
-                          Icons.arrow_forward,
-                          size: MediaQuery.of(context).size.height * 0.14,
-                          color: Colors.yellow,
+                        child: AnimatedAlign(
+                          onEnd: align ==
+                                  Alignment.lerp(
+                                    Alignment.center,
+                                    Alignment.centerRight,
+                                    1.25,
+                                  )
+                              ? submitName
+                              : null,
+                          curve: Curves.fastOutSlowIn,
+                          alignment: align,
+                          duration: Duration(
+                            milliseconds: 250,
+                          ),
+                          child: Icon(
+                            Icons.arrow_forward,
+                            size: MediaQuery.of(context).size.height * 0.06,
+                            color: submitColor,
+                          ),
                         ),
                       ),
                     ),
                   ],
                 ),
               ),
+              SizedBox(),
               SizedBox(),
               SizedBox(),
               SizedBox(),
