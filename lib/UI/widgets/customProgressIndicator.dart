@@ -6,14 +6,17 @@ customProgressIndicator({@required context}) {
     context: context,
     barrierDismissible: false,
     builder: (BuildContext context) {
-      return Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          CircularProgressIndicator(
-            backgroundColor: secondaryColor,
-            strokeWidth: 8,
-          ),
-        ],
+      return WillPopScope(
+        onWillPop: () async => false,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            CircularProgressIndicator(
+              backgroundColor: secondaryColor,
+              strokeWidth: 8,
+            ),
+          ],
+        ),
       );
     },
   );
