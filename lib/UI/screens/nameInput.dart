@@ -110,13 +110,57 @@ class _NameInputPageState extends State<NameInputPage> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
               SizedBox(),
-              Text(
-                'what\'s\nyour\nname?',
-                style: TextStyle(
-                  fontWeight: FontWeight.w600,
-                  fontSize: MediaQuery.of(context).size.height * 0.05,
-                  color: Colors.white,
-                  fontFamily: 'Gotham-Book',
+              Container(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    RichText(
+                      text: TextSpan(
+                        children: <TextSpan>[
+                          TextSpan(
+                            text: 'what\'s\n',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize:
+                                  MediaQuery.of(context).size.height * 0.1,
+                              color: Colors.white70,
+                              fontFamily: 'Gotham-Book',
+                            ),
+                          ),
+                          TextSpan(
+                            text: 'your\n',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w100,
+                              fontSize:
+                                  MediaQuery.of(context).size.height * 0.05,
+                              color: Colors.white,
+                              fontFamily: 'Gotham-Book',
+                            ),
+                          ),
+                          TextSpan(
+                            text: 'name',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w400,
+                              fontSize:
+                                  MediaQuery.of(context).size.height * 0.07,
+                              color: Colors.white70,
+                              fontFamily: 'Gotham-Book',
+                            ),
+                          ),
+                          TextSpan(
+                            text: '?',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w900,
+                              fontSize:
+                                  MediaQuery.of(context).size.height * 0.07,
+                              color: secondaryColor,
+                              fontFamily: 'Gotham-Book',
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
               ),
               Container(
