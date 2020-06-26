@@ -260,7 +260,7 @@ class _NameInputPageState extends State<NameInputPage> {
                                     align = Alignment.lerp(
                                       Alignment.center,
                                       Alignment.centerRight,
-                                      1.25,
+                                      3,
                                     );
                                   },
                                 );
@@ -271,7 +271,7 @@ class _NameInputPageState extends State<NameInputPage> {
                                   Alignment.lerp(
                                     Alignment.center,
                                     Alignment.centerRight,
-                                    1.25,
+                                    3,
                                   )
                               ? submitName
                               : null,
