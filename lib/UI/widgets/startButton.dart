@@ -210,55 +210,123 @@ class _StartAGameButtonState extends State<StartAGameButton> {
                         );
                       },
                       child: AlertDialog(
-                        backgroundColor: Color(
-                          int.parse(gameModeData['colorCode']),
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(
-                            10,
-                          ),
-                        ),
+                        contentPadding: EdgeInsets.all(0),
                         content: Container(
-                          decoration: BoxDecoration(),
-                          width: MediaQuery.of(context).size.width * 0.7,
-                          height: MediaQuery.of(context).size.height * 0.4,
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                              colors: [
+                                secondaryColor,
+                                primaryColor,
+                              ],
+                            ),
+                          ),
+                          height: MediaQuery.of(context).size.height * 0.5,
+                          width: MediaQuery.of(context).size.width * 0.8,
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
                               gameModeData['isLocked']
                                   ? Container(
-                                      height: 80,
+                                      height:
+                                          MediaQuery.of(context).size.height *
+                                              0.075,
                                       child: Column(
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceAround,
                                         children: [
                                           Icon(
-                                            Icons.lock,
-                                            size: 35,
+                                            Icons.lock_outline,
+                                            size: MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                0.04,
                                             color: Colors.white,
+                                          ),
+                                          SizedBox(
+                                            height: MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                0.01,
                                           ),
                                           Text(
                                             'View ad to unlock!',
                                             style: TextStyle(
                                               color: Colors.white,
+                                              fontSize: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  0.038,
+                                              fontFamily: 'Gotham-Book',
                                             ),
                                           ),
                                         ],
                                       ),
                                     )
-                                  : SizedBox(
-                                      height: 80,
+                                  : Container(
+                                      height:
+                                          MediaQuery.of(context).size.height *
+                                              0.075,
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceAround,
+                                        children: [
+                                          Icon(
+                                            Icons.lock_open,
+                                            size: MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                0.04,
+                                            color: Colors.white,
+                                          ),
+                                          SizedBox(
+                                            height: MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                0.01,
+                                          ),
+                                          Text(
+                                            'Free pack!',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  0.038,
+                                              fontFamily: 'Gotham-Book',
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                     ),
-                              Text(
-                                gameModeData['gameName'],
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 30,
+                              Container(
+                                width: MediaQuery.of(context).size.width * 0.4,
+                                height:
+                                    MediaQuery.of(context).size.height * 0.1,
+                                child: Image.network(
+                                  gameModeData['imageLink'],
                                 ),
                               ),
-                              RaisedButton(
+                              Container(
+                                width: MediaQuery.of(context).size.width * 0.4,
                                 child: Text(
-                                  'Play!',
+                                  gameModeData['description'],
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontFamily: 'Gotham-Book',
+                                    fontSize:
+                                        MediaQuery.of(context).size.width *
+                                            0.04,
+                                  ),
+                                ),
+                              ),
+                              FlatButton(
+                                child: Icon(
+                                  Icons.arrow_forward_ios,
+                                  color: Colors.white,
+                                  size:
+                                      MediaQuery.of(context).size.height * 0.05,
                                 ),
                                 onPressed: gameModeData['isLocked']
                                     ? () {
