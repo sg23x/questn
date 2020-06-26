@@ -210,9 +210,12 @@ class _StartAGameButtonState extends State<StartAGameButton> {
                         );
                       },
                       child: AlertDialog(
-                        contentPadding: EdgeInsets.all(0),
+                        contentPadding: EdgeInsets.all(3),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10)),
                         content: Container(
                           decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
                             gradient: LinearGradient(
                               begin: Alignment.topCenter,
                               end: Alignment.bottomCenter,
