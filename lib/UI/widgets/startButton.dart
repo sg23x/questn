@@ -309,6 +309,27 @@ class _StartAGameButtonState extends State<StartAGameButton> {
                                     MediaQuery.of(context).size.height * 0.1,
                                 child: Image.network(
                                   gameModeData['imageLink'],
+                                  loadingBuilder: (BuildContext context,
+                                      Widget child,
+                                      ImageChunkEvent loadingProgress) {
+                                    if (loadingProgress == null) {
+                                      return child;
+                                    }
+                                    return Center(
+                                      child: CircularProgressIndicator(
+                                        backgroundColor: secondaryColor,
+                                        strokeWidth: 8,
+                                        value: loadingProgress
+                                                    .expectedTotalBytes !=
+                                                null
+                                            ? loadingProgress
+                                                    .cumulativeBytesLoaded /
+                                                loadingProgress
+                                                    .expectedTotalBytes
+                                            : null,
+                                      ),
+                                    );
+                                  },
                                 ),
                               ),
                               Container(
