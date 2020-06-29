@@ -219,9 +219,8 @@ Widget customAppBar({
     title: Text(
       title,
       style: TextStyle(
-        fontSize: MediaQuery.of(context).size.height * 0.03,
-        fontWeight: FontWeight.w500,
-      ),
+          fontSize: MediaQuery.of(context).size.width * 0.057,
+          fontFamily: 'Gotham-Book'),
     ),
     centerTitle: true,
   );
