@@ -4,9 +4,11 @@ class PlayerWaitingCard extends StatelessWidget {
   PlayerWaitingCard({
     @required this.name,
     @required this.cardIndex,
+    @required this.borderColor,
   });
   final String name;
   final int cardIndex;
+  final Color borderColor;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -19,6 +21,10 @@ class PlayerWaitingCard extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
         color: Colors.black.withOpacity(0.5),
+        border: Border.all(
+          color: borderColor,
+          width: 5,
+        ),
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,

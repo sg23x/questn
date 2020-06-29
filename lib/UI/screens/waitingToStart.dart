@@ -92,6 +92,7 @@ class _WaitingToStartState extends State<WaitingToStart> {
                       ),
                       itemBuilder: (context, i) {
                         return PlayerWaitingCard(
+                          borderColor: Colors.transparent,
                           cardIndex: i,
                           name: snap.data.documents.length != 0
                               ? snap.data.documents[i]['name']
