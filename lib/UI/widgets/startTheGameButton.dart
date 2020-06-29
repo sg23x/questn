@@ -115,7 +115,7 @@ class _StartTheGameButtonState extends State<StartTheGameButton> {
                                 );
 
                     Firestore.instance
-                        .collection('roomDetails')
+                        .collection('rooms')
                         .document(widget.gameID)
                         .updateData(
                       {
@@ -178,7 +178,7 @@ class _StartTheGameButtonState extends State<StartTheGameButton> {
             );
           },
           stream: Firestore.instance
-              .collection('roomDetails')
+              .collection('rooms')
               .document(widget.gameID)
               .collection('users')
               .snapshots(),

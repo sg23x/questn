@@ -10,7 +10,7 @@ Widget customAppBar({
 }) {
   void deletePlayer(String id) async {
     await Firestore.instance
-        .collection('roomDetails')
+        .collection('rooms')
         .document(gameID)
         .collection('users')
         .document(id)
@@ -227,7 +227,7 @@ Widget customAppBar({
               : SizedBox();
         },
         stream: Firestore.instance
-            .collection('roomDetails')
+            .collection('rooms')
             .document(
               gameID,
             )

@@ -69,7 +69,7 @@ class WaitForReady extends StatelessWidget {
       ),
       child: StreamBuilder(
         stream: Firestore.instance
-            .collection('roomDetails')
+            .collection('rooms')
             .document(gameID)
             .collection('users')
             .snapshots(),
@@ -259,7 +259,7 @@ class WaitForReady extends StatelessWidget {
                                     );
 
                             await Firestore.instance
-                                .collection('roomDetails')
+                                .collection('rooms')
                                 .document(gameID)
                                 .updateData(
                               {
@@ -269,7 +269,7 @@ class WaitForReady extends StatelessWidget {
                           }
 
                           Firestore.instance
-                              .collection('roomDetails')
+                              .collection('rooms')
                               .document(gameID)
                               .collection('users')
                               .document(playerID)
@@ -308,7 +308,7 @@ class WaitForReady extends StatelessWidget {
 
   void changeReadyStateToTrue() {
     Firestore.instance
-        .collection('roomDetails')
+        .collection('rooms')
         .document(gameID)
         .collection('users')
         .document(playerID)

@@ -14,7 +14,7 @@ void checkForNavigation({
   @required quesCount,
 }) async {
   DocumentSnapshot ds =
-      await Firestore.instance.collection('roomDetails').document(gameID).get();
+      await Firestore.instance.collection('rooms').document(gameID).get();
 
   ds.reference.snapshots().listen(
     (event) {

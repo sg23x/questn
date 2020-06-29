@@ -88,10 +88,7 @@ class _StartAGameButtonState extends State<StartAGameButton> {
     }
 
     void startGame({String gameMode, int quesCount}) async {
-      await Firestore.instance
-          .collection('roomDetails')
-          .document(gameID)
-          .setData(
+      await Firestore.instance.collection('rooms').document(gameID).setData(
         {
           'currentQuestion': '',
           'timestamp': Timestamp.now().millisecondsSinceEpoch,
@@ -103,7 +100,7 @@ class _StartAGameButtonState extends State<StartAGameButton> {
       );
 
       await Firestore.instance
-          .collection('roomDetails')
+          .collection('rooms')
           .document(gameID)
           .collection('users')
           .document(
@@ -140,10 +137,8 @@ class _StartAGameButtonState extends State<StartAGameButton> {
     }
 
     void del({String gameMode, int quesCount}) async {
-      DocumentSnapshot query = await Firestore.instance
-          .collection('roomDetails')
-          .document(gameID)
-          .get();
+      DocumentSnapshot query =
+          await Firestore.instance.collection('rooms').document(gameID).get();
 
       if (query.exists) {
         await query.reference.collection('users').getDocuments().then(

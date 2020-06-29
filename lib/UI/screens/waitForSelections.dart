@@ -26,24 +26,22 @@ class WaitForSelectionsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     void navigatorAndScoreUpdator() async {
-      DocumentSnapshot ds = await Firestore.instance
-          .collection('roomDetails')
-          .document(gameID)
-          .get();
+      DocumentSnapshot ds =
+          await Firestore.instance.collection('rooms').document(gameID).get();
 
       ds.reference.snapshots().listen(
         (event) {
           if (event.data['isResponseSelected'] == true) {
             if (abc) {
               Firestore.instance
-                  .collection('roomDetails')
+                  .collection('rooms')
                   .document(gameID)
                   .collection('users')
                   .getDocuments()
                   .then(
                 (event) {
                   Firestore.instance
-                      .collection('roomDetails')
+                      .collection('rooms')
                       .document(gameID)
                       .collection('users')
                       .document(playerID)
@@ -136,7 +134,7 @@ class WaitForSelectionsPage extends StatelessWidget {
             );
           },
           stream: Firestore.instance
-              .collection('roomDetails')
+              .collection('rooms')
               .document(gameID)
               .collection('users')
               .snapshots(),

@@ -75,7 +75,7 @@ class _JoinGameButtonState extends State<JoinGameButton> {
                 onPressed: () async {
                   customProgressIndicator(context: context);
                   final snap = await Firestore.instance
-                      .collection('roomDetails')
+                      .collection('rooms')
                       .document(gameID)
                       .get();
 
@@ -84,7 +84,7 @@ class _JoinGameButtonState extends State<JoinGameButton> {
                       Navigator.of(context).pop();
 
                       Firestore.instance
-                          .collection('roomDetails')
+                          .collection('rooms')
                           .document(gameID)
                           .collection('users')
                           .document(

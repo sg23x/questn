@@ -45,7 +45,7 @@ class _QuestionsPageState extends State<QuestionsPage> {
   Widget build(BuildContext context) {
     void sendResponse(String response) {
       Firestore.instance
-          .collection('roomDetails')
+          .collection('rooms')
           .document(widget.gameID)
           .collection('users')
           .document(widget.playerID)
@@ -112,7 +112,7 @@ class _QuestionsPageState extends State<QuestionsPage> {
                 );
               },
               stream: Firestore.instance
-                  .collection('roomDetails')
+                  .collection('rooms')
                   .document(widget.gameID)
                   .snapshots(),
             ),

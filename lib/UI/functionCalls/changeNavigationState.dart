@@ -4,14 +4,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 void changeNavigationStateToTrue(
     {@required gameID, @required field, playerField}) async {
   if (field == 'isGameStarted') {
-    Firestore.instance.collection('roomDetails').document(gameID).updateData(
+    Firestore.instance.collection('rooms').document(gameID).updateData(
       {
         field: true,
       },
     );
   } else {
     Firestore.instance
-        .collection('roomDetails')
+        .collection('rooms')
         .document(gameID)
         .collection('users')
         .snapshots()
@@ -19,10 +19,7 @@ void changeNavigationStateToTrue(
       (event) {
         if (event.documents
             .every((element) => element.data[playerField] == true)) {
-          Firestore.instance
-              .collection('roomDetails')
-              .document(gameID)
-              .updateData(
+          Firestore.instance.collection('rooms').document(gameID).updateData(
             {
               field: true,
             },
@@ -34,7 +31,7 @@ void changeNavigationStateToTrue(
 }
 
 void changeNavigationStateToFalse({@required gameID, @required field}) async {
-  Firestore.instance.collection('roomDetails').document(gameID).updateData(
+  Firestore.instance.collection('rooms').document(gameID).updateData(
     {field: false},
   );
 }

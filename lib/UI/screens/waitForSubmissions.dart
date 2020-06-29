@@ -92,7 +92,7 @@ class WaitForSubmissions extends StatelessWidget {
           );
         },
         stream: Firestore.instance
-            .collection('roomDetails')
+            .collection('rooms')
             .document(gameID)
             .collection('users')
             .snapshots(),

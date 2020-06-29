@@ -34,7 +34,7 @@ Future<bool> onBackPressed({
                 onPressed: () async {
                   isAdmin
                       ? await Firestore.instance
-                          .collection('roomDetails')
+                          .collection('rooms')
                           .document(gameID)
                           .collection('users')
                           .getDocuments()
@@ -46,7 +46,7 @@ Future<bool> onBackPressed({
                           },
                         )
                       : await Firestore.instance
-                          .collection('roomDetails')
+                          .collection('rooms')
                           .document(gameID)
                           .collection('users')
                           .document(playerID)

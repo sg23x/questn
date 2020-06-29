@@ -10,7 +10,7 @@ checkForGameEnd({
   bool isInLobby = false,
 }) {
   Firestore.instance
-      .collection('roomDetails')
+      .collection('rooms')
       .document(gameID)
       .collection('users')
       .reference()

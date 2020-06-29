@@ -64,7 +64,7 @@ class ResponseSelectionPage extends StatelessWidget {
                     );
                   },
                   stream: Firestore.instance
-                      .collection('roomDetails')
+                      .collection('rooms')
                       .document(gameID)
                       .snapshots(),
                 ),
@@ -77,7 +77,7 @@ class ResponseSelectionPage extends StatelessWidget {
                         onTap: () {
                           if (playerID != snap.data.documents[i].documentID) {
                             Firestore.instance
-                                .collection('roomDetails')
+                                .collection('rooms')
                                 .document(gameID)
                                 .collection('users')
                                 .document(playerID)
@@ -135,7 +135,7 @@ class ResponseSelectionPage extends StatelessWidget {
             );
           },
           stream: Firestore.instance
-              .collection('roomDetails')
+              .collection('rooms')
               .document(gameID)
               .collection('users')
               .snapshots(),
