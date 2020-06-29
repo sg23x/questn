@@ -65,7 +65,27 @@ class _StartAGameButtonState extends State<StartAGameButton> {
       },
     );
 
+    generateRandomNumber(int len) {
+      Random rnd;
+      int min = 1;
+      int max = len;
+      rnd = new Random();
+      var r = min + rnd.nextInt(max - min);
+      return r;
+    }
+
     final String playerID = generateUserCode();
+
+    void resetLastRoom() async {
+      await Firestore.instance
+          .collection('newGame')
+          .document('lastRoom')
+          .updateData(
+        {
+          'gameID': int.parse(gameID),
+        },
+      );
+    }
 
     void startGame({String gameMode, int quesCount}) async {
       await Firestore.instance
@@ -143,23 +163,23 @@ class _StartAGameButtonState extends State<StartAGameButton> {
     }
 
     void createRoomID({String gameMode, int quesCount}) async {
-      QuerySnapshot query = await Firestore.instance
-          .collection('roomDetails')
-          .orderBy('timestamp')
-          .getDocuments();
+      DocumentSnapshot query = await Firestore.instance
+          .collection('newGame')
+          .document('lastRoom')
+          .get();
 
       setState(
         () {
-          gameID = query.documents.length != 0
-              ? query.documents.length.toString() ==
-                      (int.parse(query.documents.last.documentID) - 1000)
-                          .toString()
-                  ? ((int.parse(query.documents.last.documentID) % 9999) + 1)
-                      .toString()
-                  : query.documents[0].documentID
-              : '1001';
+          if (query.data['gameID'] < 9990) {
+            gameID =
+                (query.data['gameID'] + generateRandomNumber(5)).toString();
+          } else {
+            gameID = '1001';
+          }
         },
       );
+
+      resetLastRoom();
 
       del(
         gameMode: gameMode,
