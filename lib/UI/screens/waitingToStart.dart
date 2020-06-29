@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:psych/UI/constants.dart';
 import 'package:psych/UI/functionCalls/backPressCall.dart';
 import 'package:psych/UI/functionCalls/checkForGameEnd.dart';
 import 'package:psych/UI/functionCalls/checkForNavigation.dart';
@@ -68,74 +70,80 @@ class _WaitingToStartState extends State<WaitingToStart> {
               playerID: widget.playerID,
               title: 'GAME ID: ${widget.gameID}',
             ),
-            body: Column(
-              children: <Widget>[
-                SizedBox(
-                  height: 5,
+            body: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  end: Alignment.bottomCenter,
+                  begin: Alignment.topCenter,
+                  stops: [0.0, 0.8],
+                  colors: [
+                    secondaryColor,
+                    primaryColor,
+                  ],
                 ),
-                Expanded(
-                  child: ListView.builder(
-                    itemBuilder: (context, i) {
-                      return PlayerWaitingCard(
-                        animationIndex: i,
-                        colorList: i % 2 == 0
-                            ? [
-                                Colors.cyan,
-                                Colors.blue,
-                              ]
-                            : [
-                                Colors.blue,
-                                Colors.cyan,
-                              ],
-                        name: snap.data.documents.length != 0
-                            ? snap.data.documents[i]['name']
-                            : '',
-                      );
-                    },
-                    shrinkWrap: true,
-                    itemCount: snap.data.documents.length,
+              ),
+              child: Column(
+                children: <Widget>[
+                  Expanded(
+                    child: GridView.builder(
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        childAspectRatio: 1,
+                        crossAxisCount: 2,
+                      ),
+                      itemBuilder: (context, i) {
+                        return PlayerWaitingCard(
+                          cardIndex: i,
+                          name: snap.data.documents.length != 0
+                              ? snap.data.documents[i]['name']
+                              : '',
+                        );
+                      },
+                      shrinkWrap: true,
+                      itemCount: snap.data.documents.length,
+                    ),
                   ),
-                ),
-                snap.data.documents.length != 0
-                    ? widget.isAdmin
-                        ? StartTheGameButton(
-                            quesCount: widget.quesCount,
-                            isAdmin: widget.isAdmin,
-                            gameID: widget.gameID,
-                            playerID: widget.playerID,
-                            isPlayerPlural:
-                                snap.data.documents.length > 1 ? true : false,
-                            gameMode: widget.gameMode,
-                          )
-                        : Container(
-                            alignment: Alignment.center,
-                            child: Text(
-                              "Waiting to start...",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontFamily: 'Indie-Flower',
-                                fontWeight: FontWeight.w900,
-                                fontSize:
-                                    MediaQuery.of(context).size.height * 0.03,
+                  snap.data.documents.length != 0
+                      ? widget.isAdmin
+                          ? StartTheGameButton(
+                              quesCount: widget.quesCount,
+                              isAdmin: widget.isAdmin,
+                              gameID: widget.gameID,
+                              playerID: widget.playerID,
+                              isPlayerPlural:
+                                  snap.data.documents.length > 1 ? true : false,
+                              gameMode: widget.gameMode,
+                            )
+                          : Container(
+                              alignment: Alignment.center,
+                              child: Text(
+                                "Waiting to start...",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontFamily: 'Indie-Flower',
+                                  fontWeight: FontWeight.w900,
+                                  fontSize:
+                                      MediaQuery.of(context).size.height * 0.03,
+                                ),
                               ),
-                            ),
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                colors: [
-                                  Colors.black,
-                                  Colors.grey,
-                                ],
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  colors: [
+                                    Colors.black,
+                                    Colors.grey,
+                                  ],
+                                ),
                               ),
-                            ),
-                            height: MediaQuery.of(context).size.height * 0.1,
-                            margin: EdgeInsets.only(
-                              bottom: MediaQuery.of(context).size.height * 0.01,
-                              top: MediaQuery.of(context).size.height * 0.01,
-                            ),
-                            width: MediaQuery.of(context).size.width * 0.96,
-                          )
-                    : SizedBox(),
-              ],
+                              height: MediaQuery.of(context).size.height * 0.1,
+                              margin: EdgeInsets.only(
+                                bottom:
+                                    MediaQuery.of(context).size.height * 0.01,
+                                top: MediaQuery.of(context).size.height * 0.01,
+                              ),
+                              width: MediaQuery.of(context).size.width * 0.96,
+                            )
+                      : SizedBox(),
+                ],
+              ),
             ),
           );
         },

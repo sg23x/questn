@@ -1,84 +1,50 @@
 import 'package:flutter/material.dart';
 
-class PlayerWaitingCard extends StatefulWidget {
+class PlayerWaitingCard extends StatelessWidget {
   PlayerWaitingCard({
     @required this.name,
-    @required this.colorList,
-    @required this.animationIndex,
+    @required this.cardIndex,
   });
   final String name;
-  final List<Color> colorList;
-  final int animationIndex;
-
-  @override
-  _PlayerWaitingCardState createState() => _PlayerWaitingCardState();
-}
-
-class _PlayerWaitingCardState extends State<PlayerWaitingCard> {
-  Alignment align;
-  @override
-  void initState() {
-    align = widget.animationIndex % 2 == 0
-        ? Alignment.lerp(
-            Alignment.center,
-            Alignment.centerRight,
-            120,
-          )
-        : Alignment.lerp(
-            Alignment.center,
-            Alignment.centerLeft,
-            120,
-          );
-    super.initState();
-  }
-
+  final int cardIndex;
   @override
   Widget build(BuildContext context) {
-    WidgetsBinding.instance.addPostFrameCallback(
-      (_) {
-        setState(
-          () {
-            align = Alignment.center;
-          },
-        );
-      },
-    );
-    return AnimatedAlign(
-      alignment: align,
-      duration: Duration(
-        milliseconds: 250,
+    return Container(
+      margin: EdgeInsets.fromLTRB(
+        cardIndex % 2 == 0 ? MediaQuery.of(context).size.width * 0.02 : 0,
+        MediaQuery.of(context).size.width * 0.02,
+        MediaQuery.of(context).size.width * 0.02,
+        0,
       ),
-      child: Container(
-        width: MediaQuery.of(context).size.width * 0.95,
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: widget.colorList,
-          ),
-          borderRadius: BorderRadius.circular(
-            10,
-          ),
-        ),
-        margin: EdgeInsets.symmetric(
-          vertical: MediaQuery.of(context).size.height * 0.005,
-          horizontal: MediaQuery.of(context).size.width * 0.02,
-        ),
-        height: MediaQuery.of(context).size.height * 0.1,
-        child: Row(
-          children: <Widget>[
-            SizedBox(
-              width: MediaQuery.of(context).size.width * 0.1,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        color: Colors.black.withOpacity(0.5),
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          Container(
+            height: MediaQuery.of(context).size.width * 0.22,
+            child: CircleAvatar(
+              radius: MediaQuery.of(context).size.width * 0.11,
+              backgroundColor: Colors.grey,
+              backgroundImage: AssetImage('assets/avatar.png'),
             ),
-            Text(
-              widget.name,
+          ),
+          Container(
+            width: MediaQuery.of(context).size.width * 0.38,
+            height: MediaQuery.of(context).size.width * 0.13,
+            child: Text(
+              name,
+              textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: MediaQuery.of(context).size.width * 0.09,
-                fontFamily: 'Indie-Flower',
                 color: Colors.white,
-                fontWeight: FontWeight.w400,
+                fontFamily: 'Gotham-Book',
+                fontSize: MediaQuery.of(context).size.width * 0.05,
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
