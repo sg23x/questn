@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:psych/UI/constants.dart';
 
 Widget customAppBar({
   String gameID,
@@ -214,16 +215,7 @@ Widget customAppBar({
             )
           : SizedBox()
     ],
-    flexibleSpace: Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            Colors.blue,
-            Colors.cyan,
-          ],
-        ),
-      ),
-    ),
+    backgroundColor: primaryColor,
     title: Text(
       title,
       style: TextStyle(
