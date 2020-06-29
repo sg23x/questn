@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:psych/UI/constants.dart';
 import 'package:psych/UI/screens/nameInput.dart';
 import 'package:psych/UI/widgets/joinButton.dart';
 import 'package:psych/UI/widgets/startButton.dart';
@@ -24,6 +25,7 @@ class GameSelection extends StatelessWidget {
         _onBackPressed();
       },
       child: Scaffold(
+        backgroundColor: primaryColor,
         resizeToAvoidBottomInset: false,
         resizeToAvoidBottomPadding: false,
         body: Stack(
