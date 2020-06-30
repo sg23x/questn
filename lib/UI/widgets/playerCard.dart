@@ -23,7 +23,7 @@ class PlayerWaitingCard extends StatelessWidget {
         color: Colors.black.withOpacity(0.5),
         border: Border.all(
           color: borderColor,
-          width: 5,
+          width: 3,
         ),
       ),
       child: Column(
