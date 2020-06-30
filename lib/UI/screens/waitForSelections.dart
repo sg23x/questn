@@ -2,13 +2,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:psych/UI/constants.dart';
-import 'package:psych/UI/functionCalls/backPressCall.dart';
-import 'package:psych/UI/functionCalls/changeNavigationState.dart';
-import 'package:psych/UI/functionCalls/checkForGameEnd.dart';
+import 'package:psych/UI/services/backPressCall.dart';
+import 'package:psych/UI/services/changeNavigationState.dart';
+import 'package:psych/UI/services/checkForGameEnd.dart';
 import 'package:psych/UI/screens/waitForReady.dart';
 import 'package:psych/UI/widgets/customAppBar.dart';
 import 'package:psych/UI/widgets/playerCard.dart';
-import 'package:psych/UI/widgets/waitingForSubmissionPlayerCard.dart';
 
 class WaitForSelectionsPage extends StatelessWidget {
   WaitForSelectionsPage({

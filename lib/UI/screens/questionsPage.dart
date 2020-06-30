@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:psych/UI/functionCalls/backPressCall.dart';
-import 'package:psych/UI/functionCalls/changeNavigationState.dart';
-import 'package:psych/UI/functionCalls/checkForGameEnd.dart';
 import 'package:psych/UI/screens/waitForSubmissions.dart';
+import 'package:psych/UI/services/backPressCall.dart';
+import 'package:psych/UI/services/changeNavigationState.dart';
+import 'package:psych/UI/services/checkForGameEnd.dart';
 import 'package:psych/UI/widgets/customAppBar.dart';
 import 'package:psych/UI/widgets/questionCard.dart';
 

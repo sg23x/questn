@@ -25,7 +25,7 @@ void checkForNavigation({
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder: (BuildContext context) => QuestionsPage(
+              builder: (BuildContext newcontext) => QuestionsPage(
                 quesCount: quesCount,
                 playerID: playerID,
                 gameID: gameID,
@@ -43,7 +43,7 @@ void checkForNavigation({
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder: (BuildContext context) => ResponseSelectionPage(
+              builder: (BuildContext newcontext) => ResponseSelectionPage(
                 quesCount: quesCount,
                 playerID: playerID,
                 gameID: gameID,
@@ -61,7 +61,7 @@ void checkForNavigation({
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder: (BuildContext context) => QuestionsPage(
+              builder: (BuildContext newcontext) => QuestionsPage(
                 quesCount: quesCount,
                 playerID: playerID,
                 gameID: gameID,

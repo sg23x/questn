@@ -1,8 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'dart:math';
-
-import 'package:psych/UI/functionCalls/changeNavigationState.dart';
+import 'package:psych/UI/services/changeNavigationState.dart';
 
 class StartTheGameButton extends StatefulWidget {
   StartTheGameButton({
