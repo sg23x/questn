@@ -1,11 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:psych/UI/constants.dart';
 import 'package:psych/UI/functionCalls/backPressCall.dart';
 import 'package:psych/UI/functionCalls/changeNavigationState.dart';
 import 'package:psych/UI/functionCalls/checkForGameEnd.dart';
 import 'package:psych/UI/screens/waitForReady.dart';
 import 'package:psych/UI/widgets/customAppBar.dart';
+import 'package:psych/UI/widgets/playerCard.dart';
 import 'package:psych/UI/widgets/waitingForSubmissionPlayerCard.dart';
 
 class WaitForSelectionsPage extends StatelessWidget {
@@ -102,12 +104,13 @@ class WaitForSelectionsPage extends StatelessWidget {
         playerID: playerID,
       ),
       child: Scaffold(
+        backgroundColor: primaryColor,
         appBar: customAppBar(
           context: context,
           gameID: gameID,
           isAdmin: isAdmin,
           playerID: playerID,
-          title: 'GAME ID: $gameID',
+          title: 'Please wait...',
         ),
         body: StreamBuilder(
           builder: (context, usersnap) {
@@ -115,28 +118,29 @@ class WaitForSelectionsPage extends StatelessWidget {
               return SizedBox();
             }
 
-            return Column(
-              children: <Widget>[
-                Expanded(
-                  child: ListView.builder(
-                    itemCount: usersnap.data.documents.length,
-                    itemBuilder: (context, i) {
-                      return WaitingForSubmissionPlayerCard(
-                        animationIndex: i,
-                        name: usersnap.data.documents[i]['name'],
-                        hasSubmitted: usersnap.data.documents[i]['hasSelected'],
-                      );
-                    },
-                    shrinkWrap: true,
-                  ),
-                ),
-              ],
+            return GridView.builder(
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                childAspectRatio: 1,
+                crossAxisCount: 2,
+              ),
+              itemBuilder: (context, i) {
+                return PlayerWaitingCard(
+                  borderColor: usersnap.data.documents[i]['hasSelected']
+                      ? Colors.green
+                      : Colors.red,
+                  cardIndex: i,
+                  name: usersnap.data.documents[i]['name'],
+                );
+              },
+              shrinkWrap: true,
+              itemCount: usersnap.data.documents.length,
             );
           },
           stream: Firestore.instance
               .collection('rooms')
               .document(gameID)
               .collection('users')
+              .orderBy('timestamp')
               .snapshots(),
         ),
       ),

@@ -94,9 +94,7 @@ class _WaitingToStartState extends State<WaitingToStart> {
                         return PlayerWaitingCard(
                           borderColor: Colors.transparent,
                           cardIndex: i,
-                          name: snap.data.documents.length != 0
-                              ? snap.data.documents[i]['name']
-                              : '',
+                          name: snap.data.documents[i]['name'],
                         );
                       },
                       shrinkWrap: true,
@@ -152,9 +150,7 @@ class _WaitingToStartState extends State<WaitingToStart> {
             .collection('rooms')
             .document(widget.gameID)
             .collection('users')
-            .orderBy(
-              'timestamp',
-            )
+            .orderBy('timestamp')
             .snapshots(),
       ),
     );

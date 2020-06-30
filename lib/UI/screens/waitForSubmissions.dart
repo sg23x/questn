@@ -1,10 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:psych/UI/constants.dart';
 import 'package:psych/UI/functionCalls/backPressCall.dart';
 import 'package:psych/UI/functionCalls/changeNavigationState.dart';
 import 'package:psych/UI/functionCalls/checkForGameEnd.dart';
 import 'package:psych/UI/functionCalls/checkForNavigation.dart';
 import 'package:psych/UI/widgets/customAppBar.dart';
+import 'package:psych/UI/widgets/playerCard.dart';
 import 'package:psych/UI/widgets/waitingForSubmissionPlayerCard.dart';
 
 class WaitForSubmissions extends StatelessWidget {
@@ -62,32 +64,30 @@ class WaitForSubmissions extends StatelessWidget {
           }
 
           return Scaffold(
+            backgroundColor: primaryColor,
             appBar: customAppBar(
               context: context,
               gameID: gameID,
               isAdmin: isAdmin,
               playerID: playerID,
-              title: 'GAME ID: $gameID',
+              title: 'Please wait...',
             ),
-            body: Column(
-              children: <Widget>[
-                SizedBox(
-                  height: MediaQuery.of(context).size.width * 0.0075,
-                ),
-                Expanded(
-                  child: ListView.builder(
-                    itemBuilder: (context, i) {
-                      return WaitingForSubmissionPlayerCard(
-                        animationIndex: i,
-                        name: snap.data.documents[i]['name'],
-                        hasSubmitted: snap.data.documents[i]['hasSubmitted'],
-                      );
-                    },
-                    shrinkWrap: true,
-                    itemCount: snap.data.documents.length,
-                  ),
-                ),
-              ],
+            body: GridView.builder(
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                childAspectRatio: 1,
+                crossAxisCount: 2,
+              ),
+              itemBuilder: (context, i) {
+                return PlayerWaitingCard(
+                  borderColor: snap.data.documents[i]['hasSubmitted']
+                      ? Colors.green
+                      : Colors.red,
+                  cardIndex: i,
+                  name: snap.data.documents[i]['name'],
+                );
+              },
+              shrinkWrap: true,
+              itemCount: snap.data.documents.length,
             ),
           );
         },
@@ -95,6 +95,7 @@ class WaitForSubmissions extends StatelessWidget {
             .collection('rooms')
             .document(gameID)
             .collection('users')
+            .orderBy('timestamp')
             .snapshots(),
       ),
     );
