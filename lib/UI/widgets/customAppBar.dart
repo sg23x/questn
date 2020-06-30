@@ -19,6 +19,7 @@ Widget customAppBar({
   }
 
   return AppBar(
+    elevation: 20,
     actions: [
       isAdmin
           ? IconButton(
