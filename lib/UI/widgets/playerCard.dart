@@ -5,10 +5,12 @@ class PlayerWaitingCard extends StatelessWidget {
     @required this.name,
     @required this.cardIndex,
     @required this.borderColor,
+    @required this.playersCount,
   });
   final String name;
   final int cardIndex;
   final Color borderColor;
+  final int playersCount;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -16,7 +18,13 @@ class PlayerWaitingCard extends StatelessWidget {
         cardIndex % 2 == 0 ? MediaQuery.of(context).size.width * 0.02 : 0,
         MediaQuery.of(context).size.width * 0.02,
         MediaQuery.of(context).size.width * 0.02,
-        0,
+        playersCount % 2 == 0
+            ? cardIndex == playersCount - 1 || cardIndex == playersCount - 2
+                ? MediaQuery.of(context).size.width * 0.02
+                : 0
+            : cardIndex == playersCount - 1
+                ? MediaQuery.of(context).size.width * 0.02
+                : 0,
       ),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
