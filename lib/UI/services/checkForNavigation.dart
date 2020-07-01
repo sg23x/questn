@@ -12,6 +12,7 @@ void checkForNavigation({
   @required isAdmin,
   @required currentPage,
   @required quesCount,
+  @required avatarList,
 }) async {
   DocumentSnapshot ds =
       await Firestore.instance.collection('rooms').document(gameID).get();
@@ -31,6 +32,7 @@ void checkForNavigation({
                 gameID: gameID,
                 gameMode: gameMode,
                 isAdmin: isAdmin,
+                avatarList: avatarList,
               ),
             ),
           );
@@ -49,6 +51,7 @@ void checkForNavigation({
                 gameID: gameID,
                 gameMode: gameMode,
                 isAdmin: isAdmin,
+                avatarList: avatarList,
               ),
             ),
           );
@@ -67,6 +70,7 @@ void checkForNavigation({
                 gameID: gameID,
                 gameMode: gameMode,
                 isAdmin: isAdmin,
+                avatarList: avatarList,
               ),
             ),
           );

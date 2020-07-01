@@ -6,11 +6,13 @@ class PlayerWaitingCard extends StatelessWidget {
     @required this.cardIndex,
     @required this.borderColor,
     @required this.playersCount,
+    @required this.avatarList,
   });
   final String name;
   final int cardIndex;
   final Color borderColor;
   final int playersCount;
+  final List avatarList;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -42,7 +44,7 @@ class PlayerWaitingCard extends StatelessWidget {
             child: CircleAvatar(
               radius: MediaQuery.of(context).size.width * 0.11,
               backgroundColor: Colors.grey,
-              backgroundImage: AssetImage('assets/avatar.png'),
+              backgroundImage: avatarList[cardIndex],
             ),
           ),
           Container(

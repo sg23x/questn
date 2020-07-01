@@ -28,8 +28,20 @@ class WaitingToStart extends StatefulWidget {
 }
 
 class _WaitingToStartState extends State<WaitingToStart> {
+  List<AssetImage> avatarList = [
+    AssetImage('assets/avatars/avatar1.png'),
+    AssetImage('assets/avatars/avatar2.png'),
+    AssetImage('assets/avatars/avatar3.png'),
+    AssetImage('assets/avatars/avatar4.png'),
+    AssetImage('assets/avatars/avatar5.png'),
+    AssetImage('assets/avatars/avatar6.png'),
+    AssetImage('assets/avatars/avatar7.png'),
+    AssetImage('assets/avatars/avatar8.png'),
+  ];
+
   @override
   Widget build(BuildContext context) {
+    avatarList.shuffle();
     WidgetsBinding.instance.addPostFrameCallback(
       (_) async {
         checkForGameEnd(
@@ -39,13 +51,15 @@ class _WaitingToStartState extends State<WaitingToStart> {
           isInLobby: true,
         );
         checkForNavigation(
-            quesCount: widget.quesCount,
-            context: context,
-            gameID: widget.gameID,
-            playerID: widget.playerID,
-            gameMode: widget.gameMode,
-            isAdmin: widget.isAdmin,
-            currentPage: 'WaitingToStart');
+          quesCount: widget.quesCount,
+          context: context,
+          gameID: widget.gameID,
+          playerID: widget.playerID,
+          gameMode: widget.gameMode,
+          isAdmin: widget.isAdmin,
+          currentPage: 'WaitingToStart',
+          avatarList: avatarList,
+        );
       },
     );
 
@@ -92,6 +106,7 @@ class _WaitingToStartState extends State<WaitingToStart> {
                       ),
                       itemBuilder: (context, i) {
                         return PlayerWaitingCard(
+                          avatarList: avatarList,
                           playersCount: snap.data.documents.length,
                           borderColor: Colors.transparent,
                           cardIndex: i,

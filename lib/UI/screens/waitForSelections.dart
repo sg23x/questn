@@ -16,12 +16,14 @@ class WaitForSelectionsPage extends StatelessWidget {
     @required this.gameMode,
     @required this.isAdmin,
     @required this.quesCount,
+    @required this.avatarList,
   });
   final String playerID;
   final String gameID;
   final String gameMode;
   final bool isAdmin;
   final int quesCount;
+  final List avatarList;
   bool abc = true;
 
   @override
@@ -68,6 +70,7 @@ class WaitForSelectionsPage extends StatelessWidget {
                     gameID: gameID,
                     gameMode: gameMode,
                     isAdmin: isAdmin,
+                    avatarList: avatarList,
                   ),
                 ),
               );
@@ -124,6 +127,7 @@ class WaitForSelectionsPage extends StatelessWidget {
               ),
               itemBuilder: (context, i) {
                 return PlayerWaitingCard(
+                  avatarList: avatarList,
                   playersCount: usersnap.data.documents.length,
                   borderColor: usersnap.data.documents[i]['hasSelected']
                       ? Colors.green

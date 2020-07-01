@@ -16,12 +16,14 @@ class WaitForReady extends StatelessWidget {
     @required this.gameMode,
     @required this.isAdmin,
     @required this.quesCount,
+    @required this.avatarList,
   });
   final String gameID;
   final String playerID;
   final String gameMode;
   final bool isAdmin;
   final int quesCount;
+  final List avatarList;
 
   bool abc = true;
 
@@ -48,13 +50,15 @@ class WaitForReady extends StatelessWidget {
           playerID: playerID,
         );
         checkForNavigation(
-            quesCount: quesCount,
-            context: context,
-            gameID: gameID,
-            playerID: playerID,
-            gameMode: gameMode,
-            isAdmin: isAdmin,
-            currentPage: 'WaitForReady');
+          quesCount: quesCount,
+          context: context,
+          gameID: gameID,
+          playerID: playerID,
+          gameMode: gameMode,
+          isAdmin: isAdmin,
+          currentPage: 'WaitForReady',
+          avatarList: avatarList,
+        );
         changeNavigationStateToTrue(
             gameID: gameID, field: 'isReady', playerField: 'isReady');
       },

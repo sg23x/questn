@@ -14,12 +14,14 @@ class ResponseSelectionPage extends StatelessWidget {
     @required this.gameMode,
     @required this.isAdmin,
     @required this.quesCount,
+    @required this.avatarList,
   });
   final String gameID;
   final String playerID;
   final String gameMode;
   final bool isAdmin;
   final int quesCount;
+  final List avatarList;
   bool abc = true;
   @override
   Widget build(BuildContext context) {
@@ -98,6 +100,7 @@ class ResponseSelectionPage extends StatelessWidget {
                                   playerID: playerID,
                                   gameMode: gameMode,
                                   isAdmin: isAdmin,
+                                  avatarList: avatarList,
                                 ),
                               ),
                             );

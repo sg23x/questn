@@ -7,7 +7,6 @@ import 'package:psych/UI/services/checkForGameEnd.dart';
 import 'package:psych/UI/services/checkForNavigation.dart';
 import 'package:psych/UI/widgets/customAppBar.dart';
 import 'package:psych/UI/widgets/playerCard.dart';
-import 'package:psych/UI/widgets/waitingForSubmissionPlayerCard.dart';
 
 class WaitForSubmissions extends StatelessWidget {
   WaitForSubmissions({
@@ -16,12 +15,14 @@ class WaitForSubmissions extends StatelessWidget {
     @required this.gameMode,
     @required this.isAdmin,
     @required this.quesCount,
+    @required this.avatarList,
   });
   final String gameID;
   final String playerID;
   final String gameMode;
   final bool isAdmin;
   final int quesCount;
+  final List avatarList;
   bool abc = true;
   @override
   Widget build(BuildContext context) {
@@ -33,13 +34,15 @@ class WaitForSubmissions extends StatelessWidget {
           playerID: playerID,
         );
         checkForNavigation(
-            quesCount: quesCount,
-            context: context,
-            gameID: gameID,
-            playerID: playerID,
-            gameMode: gameMode,
-            isAdmin: isAdmin,
-            currentPage: 'WaitForSubmissions');
+          quesCount: quesCount,
+          context: context,
+          gameID: gameID,
+          playerID: playerID,
+          gameMode: gameMode,
+          isAdmin: isAdmin,
+          currentPage: 'WaitForSubmissions',
+          avatarList: avatarList,
+        );
         isAdmin
             ? changeNavigationStateToTrue(
                 playerField: 'hasSubmitted',
@@ -79,6 +82,7 @@ class WaitForSubmissions extends StatelessWidget {
               ),
               itemBuilder: (context, i) {
                 return PlayerWaitingCard(
+                  avatarList: avatarList,
                   playersCount: snap.data.documents.length,
                   borderColor: snap.data.documents[i]['hasSubmitted']
                       ? Colors.green
