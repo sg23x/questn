@@ -82,98 +82,153 @@ class _StartTheGameButtonState extends State<StartTheGameButton> {
       builder: (context, snap) {
         return StreamBuilder(
           builder: (context, usersnap) {
-            return RaisedButton(
-              highlightColor: Colors.transparent,
-              disabledColor: Colors.transparent,
-              elevation: 0,
-              color: Colors.transparent,
-              padding: EdgeInsets.all(
-                0,
-              ),
-              child: Container(
-                child: AnimatedAlign(
-                  curve: Curves.fastOutSlowIn,
-                  onEnd: () {
-                    DocumentSnapshot questionRaw = snap.data;
+            // return RaisedButton(
+            //   highlightColor: Colors.transparent,
+            //   disabledColor: Colors.transparent,
+            //   elevation: 0,
+            //   color: Colors.transparent,
+            //   padding: EdgeInsets.all(
+            //     0,
+            //   ),
+            //   child: Container(
+            //     child: AnimatedAlign(
+            //       curve: Curves.fastOutSlowIn,
+            // onEnd: () {
+            //   DocumentSnapshot questionRaw = snap.data;
 
-                    List indexes =
-                        getIndexes(usersnap.data.documents.length, 2);
+            //   List indexes =
+            //       getIndexes(usersnap.data.documents.length, 2);
 
-                    String question =
-                        !questionRaw.data['question'].contains('abc')
-                            ? questionRaw.data['question'].replaceAll(
-                                'xyz',
-                                usersnap.data.documents[indexes[0]]['name'],
-                              )
-                            : questionRaw.data['question']
-                                .replaceAll('xyz',
-                                    usersnap.data.documents[indexes[0]]['name'])
-                                .replaceAll(
-                                  'abc',
-                                  usersnap.data.documents[indexes[1]]['name'],
-                                );
+            //   String question =
+            //       !questionRaw.data['question'].contains('abc')
+            //           ? questionRaw.data['question'].replaceAll(
+            //               'xyz',
+            //               usersnap.data.documents[indexes[0]]['name'],
+            //             )
+            //           : questionRaw.data['question']
+            //               .replaceAll('xyz',
+            //                   usersnap.data.documents[indexes[0]]['name'])
+            //               .replaceAll(
+            //                 'abc',
+            //                 usersnap.data.documents[indexes[1]]['name'],
+            //               );
 
-                    Firestore.instance
-                        .collection('rooms')
-                        .document(widget.gameID)
-                        .updateData(
-                      {
-                        'currentQuestion': question,
-                      },
-                    );
-                    changeNavigationStateToTrue(
-                      gameID: widget.gameID,
-                      field: 'isGameStarted',
-                    );
-                  },
-                  duration: Duration(
-                    milliseconds: 400,
-                  ),
-                  alignment: align,
-                  child: widget.isPlayerPlural
-                      ? Icon(
-                          Icons.arrow_forward,
-                          color: Colors.white,
-                          size: MediaQuery.of(context).size.height * 0.07,
-                        )
-                      : Text(
-                          "Waiting for players...",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontFamily: 'Indie-Flower',
-                            fontWeight: FontWeight.w900,
-                            fontSize: MediaQuery.of(context).size.height * 0.03,
-                          ),
-                        ),
-                ),
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [
-                      Colors.black,
-                      Colors.grey,
-                    ],
-                  ),
-                ),
-                height: MediaQuery.of(context).size.height * 0.1,
-                margin: EdgeInsets.only(
-                  bottom: MediaQuery.of(context).size.height * 0.01,
-                  top: MediaQuery.of(context).size.height * 0.01,
-                ),
-                width: MediaQuery.of(context).size.width * 0.96,
-              ),
-              onPressed: widget.isPlayerPlural
+            //   Firestore.instance
+            //       .collection('rooms')
+            //       .document(widget.gameID)
+            //       .updateData(
+            //     {
+            //       'currentQuestion': question,
+            //     },
+            //   );
+            //   changeNavigationStateToTrue(
+            //     gameID: widget.gameID,
+            //     field: 'isGameStarted',
+            //   );
+            // },
+            // duration: Duration(
+            //   milliseconds: 400,
+            // ),
+            //       alignment: align,
+            //       child: widget.isPlayerPlural
+            //           ? Icon(
+            //               Icons.arrow_forward,
+            //               color: Colors.white,
+            //               size: MediaQuery.of(context).size.height * 0.07,
+            //             )
+            //           : Text(
+            //               "Waiting for players...",
+            //               style: TextStyle(
+            //                 color: Colors.white,
+            //                 fontFamily: 'Indie-Flower',
+            //                 fontWeight: FontWeight.w900,
+            //                 fontSize: MediaQuery.of(context).size.height * 0.03,
+            //               ),
+            //             ),
+            //     ),
+            //     decoration: BoxDecoration(
+            //       gradient: LinearGradient(
+            //         colors: [
+            //           Colors.black,
+            //           Colors.grey,
+            //         ],
+            //       ),
+            //     ),
+            //     height: MediaQuery.of(context).size.height * 0.1,
+            //     margin: EdgeInsets.only(
+            //       bottom: MediaQuery.of(context).size.height * 0.01,
+            //       top: MediaQuery.of(context).size.height * 0.01,
+            //     ),
+            //     width: MediaQuery.of(context).size.width * 0.96,
+            //   ),
+            //   onPressed: widget.isPlayerPlural
+            //       ? () {
+            //           setState(
+            //             () {
+            //               align = Alignment.lerp(
+            //                 Alignment.center,
+            //                 Alignment.centerRight,
+            //                 1.5,
+            //               );
+            //             },
+            //           );
+            //         }
+            //       : null,
+            // );
+
+            return GestureDetector(
+              onTap: widget.isPlayerPlural
                   ? () {
-                      setState(
-                        () {
-                          align = Alignment.lerp(
-                            Alignment.center,
-                            Alignment.centerRight,
-                            1.5,
-                          );
+                      DocumentSnapshot questionRaw = snap.data;
+
+                      List indexes =
+                          getIndexes(usersnap.data.documents.length, 2);
+
+                      String question = !questionRaw.data['question']
+                              .contains('abc')
+                          ? questionRaw.data['question'].replaceAll(
+                              'xyz',
+                              usersnap.data.documents[indexes[0]]['name'],
+                            )
+                          : questionRaw.data['question']
+                              .replaceAll('xyz',
+                                  usersnap.data.documents[indexes[0]]['name'])
+                              .replaceAll(
+                                'abc',
+                                usersnap.data.documents[indexes[1]]['name'],
+                              );
+
+                      Firestore.instance
+                          .collection('rooms')
+                          .document(widget.gameID)
+                          .updateData(
+                        {
+                          'currentQuestion': question,
                         },
+                      );
+                      changeNavigationStateToTrue(
+                        gameID: widget.gameID,
+                        field: 'isGameStarted',
                       );
                     }
                   : null,
+              child: Container(
+                color: Colors.black.withOpacity(0.7),
+                height: MediaQuery.of(context).size.height * 0.09,
+                width: MediaQuery.of(context).size.width,
+                child: Center(
+                  child: Text(
+                    widget.isPlayerPlural
+                        ? 'CONTINUE'
+                        : 'waiting for players..',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontFamily: 'Gotham-Book',
+                      fontSize: MediaQuery.of(context).size.width * 0.07,
+                    ),
+                  ),
+                ),
+              ),
             );
           },
           stream: Firestore.instance
