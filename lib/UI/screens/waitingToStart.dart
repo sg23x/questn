@@ -114,32 +114,21 @@ class _WaitingToStartState extends State<WaitingToStart> {
                               gameMode: widget.gameMode,
                             )
                           : Container(
-                              alignment: Alignment.center,
-                              child: Text(
-                                "Waiting to start...",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontFamily: 'Indie-Flower',
-                                  fontWeight: FontWeight.w900,
-                                  fontSize:
-                                      MediaQuery.of(context).size.height * 0.03,
+                              color: Colors.black.withOpacity(0.7),
+                              height: MediaQuery.of(context).size.height * 0.09,
+                              width: MediaQuery.of(context).size.width,
+                              child: Center(
+                                child: Text(
+                                  'waiting to start..',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontFamily: 'Gotham-Book',
+                                    fontSize:
+                                        MediaQuery.of(context).size.width *
+                                            0.07,
+                                  ),
                                 ),
                               ),
-                              decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  colors: [
-                                    Colors.black,
-                                    Colors.grey,
-                                  ],
-                                ),
-                              ),
-                              height: MediaQuery.of(context).size.height * 0.1,
-                              margin: EdgeInsets.only(
-                                bottom:
-                                    MediaQuery.of(context).size.height * 0.01,
-                                top: MediaQuery.of(context).size.height * 0.01,
-                              ),
-                              width: MediaQuery.of(context).size.width * 0.96,
                             )
                       : SizedBox(),
                 ],
