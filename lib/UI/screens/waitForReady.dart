@@ -192,110 +192,31 @@ class WaitForReady extends StatelessWidget {
                   margin: EdgeInsets.symmetric(
                     horizontal: 100,
                   ),
-                  child: StreamBuilder(
-                    builder: (context, quessnap) {
-                      List getIndexes(int len, int n) {
-                        if (n == 1) {
-                          return [
-                            generateRandomIndex(
-                              len,
-                            ),
-                          ];
-                        } else if (n == 2) {
-                          List x = [];
-                          x.add(
-                            generateRandomIndex(
-                              len,
-                            ),
-                          );
-                          void test() {
-                            int newIndex = generateRandomIndex(
-                              len,
-                            );
-                            if (x.contains(newIndex)) {
-                              test();
-                            } else {
-                              x.add(newIndex);
-                            }
-                          }
+                  child: RaisedButton(
+                    color: Colors.red,
+                    onPressed: () async {
+                      isAdmin ? fetchQues(snappp) : null;
 
-                          test();
-                          return x;
-                        }
-                      }
-
-                      if (!quessnap.hasData) {
-                        return SizedBox();
-                      }
-                      return RaisedButton(
-                        color: Colors.red,
-                        onPressed: () async {
-                          if (isAdmin) {
-                            changeNavigationStateToFalse(
-                                gameID: gameID, field: 'isResponseSubmitted');
-                            changeNavigationStateToFalse(
-                                gameID: gameID, field: 'isResponseSelected');
-                            DocumentSnapshot questionRaw = quessnap.data;
-
-                            List indexes = getIndexes(
-                              snappp.data.documents.length,
-                              snappp.data.documents.length == 1 ? 1 : 2,
-                            );
-
-                            String question = !questionRaw.data['question']
-                                    .contains('abc')
-                                ? questionRaw.data['question'].replaceAll(
-                                    'xyz',
-                                    snappp.data.documents[indexes[0]]['name'],
-                                  )
-                                : questionRaw.data['question']
-                                    .replaceAll(
-                                        'xyz',
-                                        snappp.data.documents[indexes[0]]
-                                            ['name'])
-                                    .replaceAll(
-                                      'abc',
-                                      snappp.data.documents[indexes[1]]['name'],
-                                    );
-
-                            await Firestore.instance
-                                .collection('rooms')
-                                .document(gameID)
-                                .updateData(
-                              {
-                                'currentQuestion': question,
-                              },
-                            );
-                          }
-
-                          Firestore.instance
-                              .collection('rooms')
-                              .document(gameID)
-                              .collection('users')
-                              .document(playerID)
-                              .updateData(
-                            {
-                              'hasSelected': false,
-                              'hasSubmitted': false,
-                            },
-                          );
-
-                          changeReadyStateToTrue();
+                      Firestore.instance
+                          .collection('rooms')
+                          .document(gameID)
+                          .collection('users')
+                          .document(playerID)
+                          .updateData(
+                        {
+                          'hasSelected': false,
+                          'hasSubmitted': false,
                         },
-                        child: Text(
-                          'ready',
-                          style: TextStyle(
-                            color: Colors.white,
-                          ),
-                        ),
                       );
+
+                      changeReadyStateToTrue();
                     },
-                    stream: Firestore.instance
-                        .collection('questions')
-                        .document('modes')
-                        .collection(gameMode)
-                        .document(quesIndex())
-                        .snapshots(),
+                    child: Text(
+                      'ready',
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
+                    ),
                   ),
                 ),
               ],
@@ -315,6 +236,83 @@ class WaitForReady extends StatelessWidget {
         .updateData(
       {
         'isReady': true,
+      },
+    );
+  }
+
+  void fetchQues(snappp) {
+    List getIndexes(int len, int n) {
+      if (n == 1) {
+        return [
+          generateRandomIndex(
+            len,
+          ),
+        ];
+      } else if (n == 2) {
+        List x = [];
+        x.add(
+          generateRandomIndex(
+            len,
+          ),
+        );
+        void test() {
+          int newIndex = generateRandomIndex(
+            len,
+          );
+          if (x.contains(newIndex)) {
+            test();
+          } else {
+            x.add(newIndex);
+          }
+        }
+
+        test();
+        return x;
+      }
+    }
+
+    changeNavigationStateToFalse(
+      gameID: gameID,
+      field: 'isResponseSubmitted',
+    );
+    changeNavigationStateToFalse(
+      gameID: gameID,
+      field: 'isResponseSelected',
+    );
+
+    Firestore.instance
+        .collection('questions')
+        .document('modes')
+        .collection(gameMode)
+        .document(quesIndex())
+        .snapshots()
+        .listen(
+      (event) async {
+        List indexes = getIndexes(
+          snappp.data.documents.length,
+          snappp.data.documents.length == 1 ? 1 : 2,
+        );
+
+        String question = !event.data['question'].contains('abc')
+            ? event.data['question'].replaceAll(
+                'xyz',
+                snappp.data.documents[indexes[0]]['name'],
+              )
+            : event.data['question']
+                .replaceAll('xyz', snappp.data.documents[indexes[0]]['name'])
+                .replaceAll(
+                  'abc',
+                  snappp.data.documents[indexes[1]]['name'],
+                );
+
+        await Firestore.instance
+            .collection('rooms')
+            .document(gameID)
+            .updateData(
+          {
+            'currentQuestion': question,
+          },
+        );
       },
     );
   }
