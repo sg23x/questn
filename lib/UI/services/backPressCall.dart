@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:psych/UI/constants.dart';
 
 Future<bool> onBackPressed({
   context,
@@ -24,9 +25,9 @@ Future<bool> onBackPressed({
                 child: Text(
                   "NO",
                   style: TextStyle(
-                    fontFamily: 'Indie-Flower',
-                    fontWeight: FontWeight.w900,
-                    fontSize: MediaQuery.of(context).size.width * 0.05,
+                    fontFamily: 'Gotham-Book',
+                    fontSize: MediaQuery.of(context).size.width * 0.04,
+                    color: primaryColor,
                   ),
                 ),
               ),
@@ -55,22 +56,21 @@ Future<bool> onBackPressed({
                 child: Text(
                   "YES",
                   style: TextStyle(
-                    fontFamily: 'Indie-Flower',
+                    fontFamily: 'Gotham-Book',
                     fontWeight: FontWeight.w900,
-                    fontSize: MediaQuery.of(context).size.width * 0.05,
-                    color: Colors.pink,
+                    fontSize: MediaQuery.of(context).size.width * 0.04,
+                    color: secondaryColor,
                   ),
                 ),
               ),
             ],
             content: Text(
               isAdmin
-                  ? "You sure you wanna end the game?"
-                  : "You sure you wanna leave the game?",
+                  ? "Are you sure you want to end the game?"
+                  : "Are you sure you want to leave the game?",
               style: TextStyle(
-                fontFamily: 'Indie-Flower',
-                fontWeight: FontWeight.w400,
-                fontSize: MediaQuery.of(context).size.width * 0.06,
+                fontFamily: 'Gotham-Book',
+                fontSize: MediaQuery.of(context).size.width * 0.05,
               ),
             ),
           );
