@@ -61,13 +61,14 @@ class _JoinGameButtonState extends State<JoinGameButton> {
 
     void joinGame() {
       showDialog(
+        barrierColor: Colors.black.withOpacity(0.7),
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
             backgroundColor: Colors.white,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(
-                12,
+                10,
               ),
             ),
             elevation: 20,
@@ -149,33 +150,34 @@ class _JoinGameButtonState extends State<JoinGameButton> {
                   }
                 },
                 child: Text(
-                  "Go!",
+                  "Go",
                   style: TextStyle(
-                    color: Colors.pink,
-                    fontFamily: 'Indie-Flower',
-                    fontSize: MediaQuery.of(context).size.height * 0.03,
+                    color: secondaryColor,
+                    fontFamily: 'Gotham-Book',
+                    fontSize: MediaQuery.of(context).size.height * 0.023,
                     fontWeight: FontWeight.w900,
                   ),
                 ),
               )
             ],
             content: Container(
+              width: MediaQuery.of(context).size.width * 0.6,
               height: MediaQuery.of(context).size.height * 0.14,
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
                   Text(
                     "Enter Game ID",
                     style: TextStyle(
-                      fontFamily: 'Indie-Flower',
+                      fontFamily: 'Gotham-Book',
                       fontSize: MediaQuery.of(context).size.height * 0.03,
-                      color: Colors.pink,
-                      fontWeight: FontWeight.w900,
+                      color: primaryColor,
                     ),
                   ),
                   Theme(
                     data: ThemeData(
-                      primaryColor: Colors.pink,
-                      cursorColor: Colors.pink,
+                      primaryColor: secondaryColor,
+                      cursorColor: secondaryColor,
                     ),
                     child: PinEntryTextField(
                       fields: 4,
