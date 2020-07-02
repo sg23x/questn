@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:psych/UI/constants.dart';
 
 showErrorDialog({
   @required context,
@@ -9,14 +10,13 @@ showErrorDialog({
     builder: (BuildContext context) {
       return AlertDialog(
         contentTextStyle: TextStyle(
-          fontFamily: 'Indie-Flower',
+          fontFamily: 'Gotham-Book',
           color: Colors.black,
-          fontWeight: FontWeight.bold,
-          fontSize: MediaQuery.of(context).size.height * 0.025,
+          fontSize: MediaQuery.of(context).size.width * 0.048,
         ),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(
-            12,
+            10,
           ),
         ),
         actions: <Widget>[
@@ -27,10 +27,10 @@ showErrorDialog({
             child: Text(
               "OK",
               style: TextStyle(
-                fontFamily: 'Indie-Flower',
-                color: Colors.pink,
+                fontFamily: 'Gotham-Book',
+                color: secondaryColor,
                 fontWeight: FontWeight.w900,
-                fontSize: MediaQuery.of(context).size.height * 0.03,
+                fontSize: MediaQuery.of(context).size.width * 0.04,
               ),
             ),
           )
