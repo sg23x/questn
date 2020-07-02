@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:psych/UI/constants.dart';
 import 'package:psych/UI/screens/gameSelection.dart';
+import 'package:double_back_to_close_app/double_back_to_close_app.dart';
 
 class NameInputPage extends StatefulWidget {
   @override
@@ -46,65 +47,16 @@ class _NameInputPageState extends State<NameInputPage> {
       );
     }
 
-    Future<bool> _onBackPressed() {
-      return showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(
-                    10,
-                  ),
-                ),
-                actions: <Widget>[
-                  FlatButton(
-                    onPressed: () {
-                      Navigator.of(context).pop(false);
-                    },
-                    child: Text(
-                      "NO",
-                      style: TextStyle(
-                        fontFamily: 'Indie-Flower',
-                        fontWeight: FontWeight.w900,
-                        fontSize: MediaQuery.of(context).size.width * 0.05,
-                      ),
-                    ),
-                  ),
-                  FlatButton(
-                    onPressed: () {
-                      SystemNavigator.pop();
-                    },
-                    child: Text(
-                      "YES",
-                      style: TextStyle(
-                        fontFamily: 'Indie-Flower',
-                        fontWeight: FontWeight.w900,
-                        fontSize: MediaQuery.of(context).size.width * 0.05,
-                        color: secondaryColor,
-                      ),
-                    ),
-                  ),
-                ],
-                content: Text(
-                  "are you sure you want to exit?",
-                  style: TextStyle(
-                    fontFamily: 'Indie-Flower',
-                    fontWeight: FontWeight.w400,
-                    fontSize: MediaQuery.of(context).size.width * 0.06,
-                  ),
-                ),
-              );
-            },
-          ) ??
-          false;
-    }
-
-    return WillPopScope(
-      onWillPop: _onBackPressed,
-      child: Scaffold(
-        resizeToAvoidBottomInset: false,
-        resizeToAvoidBottomPadding: false,
-        body: Container(
+    return Scaffold(
+      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomPadding: false,
+      body: DoubleBackToCloseApp(
+        snackBar: SnackBar(
+          content: Text(
+            'Press back again to close app',
+          ),
+        ),
+        child: Container(
           color: primaryColor,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,

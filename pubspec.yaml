@@ -22,6 +22,7 @@ dependencies:
   cloud_firestore: "^0.13.5"
   pin_entry_text_field:
   firebase_admob:
+  double_back_to_close_app:
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
