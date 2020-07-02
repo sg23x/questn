@@ -6,6 +6,7 @@ import 'package:psych/UI/screens/waitingToStart.dart';
 import 'dart:math';
 
 import 'package:psych/UI/widgets/customProgressIndicator.dart';
+import 'package:psych/UI/widgets/errorAlertDialog.dart';
 
 class JoinGameButton extends StatefulWidget {
   JoinGameButton({
@@ -78,128 +79,72 @@ class _JoinGameButtonState extends State<JoinGameButton> {
                       .collection('rooms')
                       .document(gameID)
                       .get();
+                  final usersnap = await Firestore.instance
+                      .collection('rooms')
+                      .document(gameID)
+                      .collection('users')
+                      .getDocuments();
 
                   if (snap.exists) {
                     if (snap.data['isGameStarted'] == false) {
-                      Navigator.of(context).pop();
+                      if (usersnap.documents.length < 8) {
+                        Navigator.of(context).pop();
 
-                      Firestore.instance
-                          .collection('rooms')
-                          .document(gameID)
-                          .collection('users')
-                          .document(
-                            playerID,
-                          )
-                          .setData(
-                        {
-                          'name': widget.playerName,
-                          'userID': playerID,
-                          'score': 0,
-                          'timestamp':
-                              Timestamp.now().millisecondsSinceEpoch.toString(),
-                          'isReady': true,
-                          'hasSelected': false,
-                          'selection': '',
-                          'hasSubmitted': false,
-                          'response': '',
-                        },
-                      );
+                        Firestore.instance
+                            .collection('rooms')
+                            .document(gameID)
+                            .collection('users')
+                            .document(
+                              playerID,
+                            )
+                            .setData(
+                          {
+                            'name': widget.playerName,
+                            'userID': playerID,
+                            'score': 0,
+                            'timestamp': Timestamp.now()
+                                .millisecondsSinceEpoch
+                                .toString(),
+                            'isReady': true,
+                            'hasSelected': false,
+                            'selection': '',
+                            'hasSubmitted': false,
+                            'response': '',
+                          },
+                        );
 
-                      Navigator.of(context).pop();
+                        Navigator.of(context).pop();
 
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (BuildContext context) => WaitingToStart(
-                            gameID: gameID,
-                            playerID: playerID,
-                            isAdmin: false,
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (BuildContext context) => WaitingToStart(
+                              gameID: gameID,
+                              playerID: playerID,
+                              isAdmin: false,
+                            ),
                           ),
-                        ),
-                      );
+                        );
+                      } else {
+                        Navigator.pop(context);
+                        showErrorDialog(
+                          context: context,
+                          errorMessage: 'Sorry, the room is full!',
+                        );
+                      }
                     } else {
                       Navigator.of(context).pop();
-                      showDialog(
+                      showErrorDialog(
                         context: context,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            contentTextStyle: TextStyle(
-                              fontFamily: 'Indie-Flower',
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold,
-                              fontSize:
-                                  MediaQuery.of(context).size.height * 0.025,
-                            ),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(
-                                12,
-                              ),
-                            ),
-                            actions: <Widget>[
-                              FlatButton(
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                                child: Text(
-                                  "OK",
-                                  style: TextStyle(
-                                    fontFamily: 'Indie-Flower',
-                                    color: Colors.pink,
-                                    fontWeight: FontWeight.w900,
-                                    fontSize:
-                                        MediaQuery.of(context).size.height *
-                                            0.03,
-                                  ),
-                                ),
-                              )
-                            ],
-                            content: Text(
-                              "Sorry, The game has started!",
-                            ),
-                          );
-                        },
+                        errorMessage: 'Sorry, the game has started!',
                       );
                     }
                   } else {
                     Navigator.of(context).pop();
-                    showDialog(
+
+                    showErrorDialog(
                       context: context,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          contentTextStyle: TextStyle(
-                            fontFamily: 'Indie-Flower',
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                            fontSize:
-                                MediaQuery.of(context).size.height * 0.025,
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(
-                              12,
-                            ),
-                          ),
-                          actions: <Widget>[
-                            FlatButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                              child: Text(
-                                "OK",
-                                style: TextStyle(
-                                  fontFamily: 'Indie-Flower',
-                                  color: Colors.pink,
-                                  fontWeight: FontWeight.w900,
-                                  fontSize:
-                                      MediaQuery.of(context).size.height * 0.03,
-                                ),
-                              ),
-                            )
-                          ],
-                          content: Text(
-                            "Sorry, No such game found!",
-                          ),
-                        );
-                      },
+                      errorMessage: 'Sorry, no such game found!',
                     );
                   }
                 },
