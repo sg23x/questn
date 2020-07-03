@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:psych/UI/constants.dart';
+import 'package:psych/UI/services/deletePlayer.dart';
 
 Future<bool> onBackPressed({
   context,
@@ -46,12 +47,7 @@ Future<bool> onBackPressed({
                             }
                           },
                         )
-                      : await Firestore.instance
-                          .collection('rooms')
-                          .document(gameID)
-                          .collection('users')
-                          .document(playerID)
-                          .delete();
+                      : deletePlayer(id: playerID, gameID: gameID);
                 },
                 child: Text(
                   "YES",
