@@ -96,6 +96,7 @@ class _StartAGameButtonState extends State<StartAGameButton> {
           'isResponseSubmitted': false,
           'isResponseSelected': false,
           'isReady': false,
+          'isGameEnded': false,
         },
       );
 

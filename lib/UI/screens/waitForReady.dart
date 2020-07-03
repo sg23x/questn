@@ -4,6 +4,7 @@ import 'package:psych/UI/services/backPressCall.dart';
 import 'package:psych/UI/services/changeNavigationState.dart';
 import 'package:psych/UI/services/checkForGameEnd.dart';
 import 'package:psych/UI/services/checkForNavigation.dart';
+import 'package:psych/UI/services/listenForGameResult.dart';
 import 'dart:math';
 import 'package:psych/UI/widgets/customAppBar.dart';
 import 'package:psych/UI/widgets/playerScoreCard.dart';
@@ -61,6 +62,20 @@ class WaitForReady extends StatelessWidget {
         );
         changeNavigationStateToTrue(
             gameID: gameID, field: 'isReady', playerField: 'isReady');
+
+        Firestore.instance
+            .collection('rooms')
+            .document(gameID)
+            .collection('users')
+            .document(playerID)
+            .get()
+            .then(
+              (value) => listenForGameResult(
+                context: context,
+                gameID: gameID,
+                name: value.data['name'],
+              ),
+            );
       },
     );
 
@@ -192,35 +207,51 @@ class WaitForReady extends StatelessWidget {
                   shrinkWrap: true,
                 ),
                 Container(
-                  width: 50,
+                  width: MediaQuery.of(context).size.height * 0.4,
                   margin: EdgeInsets.symmetric(
-                    horizontal: 100,
+                    horizontal: 10,
                   ),
-                  child: RaisedButton(
-                    color: Colors.red,
-                    onPressed: () async {
-                      isAdmin ? fetchQues(snappp) : null;
+                  child: Row(
+                    children: [
+                      RaisedButton(
+                        color: Colors.red,
+                        onPressed: () async {
+                          isAdmin ? fetchQues(snappp) : null;
 
-                      Firestore.instance
-                          .collection('rooms')
-                          .document(gameID)
-                          .collection('users')
-                          .document(playerID)
-                          .updateData(
-                        {
-                          'hasSelected': false,
-                          'hasSubmitted': false,
+                          Firestore.instance
+                              .collection('rooms')
+                              .document(gameID)
+                              .collection('users')
+                              .document(playerID)
+                              .updateData(
+                            {
+                              'hasSelected': false,
+                              'hasSubmitted': false,
+                            },
+                          );
+
+                          changeReadyStateToTrue();
                         },
-                      );
-
-                      changeReadyStateToTrue();
-                    },
-                    child: Text(
-                      'ready',
-                      style: TextStyle(
-                        color: Colors.white,
+                        child: Text(
+                          'ready',
+                          style: TextStyle(
+                            color: Colors.white,
+                          ),
+                        ),
                       ),
-                    ),
+                      isAdmin
+                          ? RaisedButton(
+                              onPressed: () {
+                                Firestore.instance
+                                    .collection('rooms')
+                                    .document(gameID)
+                                    .updateData({'isGameEnded': true});
+                              },
+                              color: Colors.green,
+                              child: Text('End game'),
+                            )
+                          : SizedBox(),
+                    ],
                   ),
                 ),
               ],
