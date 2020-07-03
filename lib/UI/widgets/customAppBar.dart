@@ -15,8 +15,10 @@ Widget customAppBar({
     actions: [
       isAdmin
           ? IconButton(
-              icon: Icon(
-                Icons.remove_circle_outline,
+              icon: Image.asset(
+                'assets/kick.png',
+                color: Colors.white,
+                scale: 20,
               ),
               onPressed: () async {
                 QuerySnapshot query = await Firestore.instance
