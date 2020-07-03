@@ -20,43 +20,46 @@ void listenForGameResult({
           barrierDismissible: false,
           barrierColor: Colors.black.withOpacity(0.8),
           builder: (BuildContext context) {
-            return AlertDialog(
-              content: Container(
-                width: 100,
-                height: 100,
-                child: ListView.builder(
-                  itemCount: query.documents.length,
-                  itemBuilder: (context, i) {
-                    return Container(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Text(query.documents[i].data['name']),
-                          Text(query.documents[i].data['score'].toString()),
-                        ],
-                      ),
-                    );
-                  },
-                  shrinkWrap: true,
-                ),
-              ),
-              actions: [
-                FlatButton(
-                  onPressed: () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (BuildContext context) => GameSelection(
-                          playerName: name,
+            return WillPopScope(
+              onWillPop: () async => false,
+              child: AlertDialog(
+                content: Container(
+                  width: 100,
+                  height: 100,
+                  child: ListView.builder(
+                    itemCount: query.documents.length,
+                    itemBuilder: (context, i) {
+                      return Container(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Text(query.documents[i].data['name']),
+                            Text(query.documents[i].data['score'].toString()),
+                          ],
                         ),
-                      ),
-                    );
-                  },
-                  child: Text(
-                    "Go back",
+                      );
+                    },
+                    shrinkWrap: true,
                   ),
                 ),
-              ],
+                actions: [
+                  FlatButton(
+                    onPressed: () {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (BuildContext context) => GameSelection(
+                            playerName: name,
+                          ),
+                        ),
+                      );
+                    },
+                    child: Text(
+                      "Go back",
+                    ),
+                  ),
+                ],
+              ),
             );
           },
         );
