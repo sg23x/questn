@@ -8,15 +8,38 @@ void listenForGameResult({
   @required name,
 }) {
   Firestore.instance.collection('rooms').document(gameID).snapshots().listen(
-    (event) {
+    (event) async {
       if (event.data['isGameEnded'] == true) {
+        QuerySnapshot query = await Firestore.instance
+            .collection('rooms')
+            .document(gameID)
+            .collection('users')
+            .getDocuments();
         showDialog(
           context: context,
           barrierDismissible: false,
-          barrierColor: Colors.black.withOpacity(0.7),
+          barrierColor: Colors.black.withOpacity(0.8),
           builder: (BuildContext context) {
             return AlertDialog(
-              content: Text('Score comes here'),
+              content: Container(
+                width: 100,
+                height: 100,
+                child: ListView.builder(
+                  itemCount: query.documents.length,
+                  itemBuilder: (context, i) {
+                    return Container(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Text(query.documents[i].data['name']),
+                          Text(query.documents[i].data['score'].toString()),
+                        ],
+                      ),
+                    );
+                  },
+                  shrinkWrap: true,
+                ),
+              ),
               actions: [
                 FlatButton(
                   onPressed: () {
