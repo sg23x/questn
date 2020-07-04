@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:psych/UI/constants.dart';
 import 'package:psych/UI/services/backPressCall.dart';
 import 'package:psych/UI/services/changeNavigationState.dart';
 import 'package:psych/UI/services/checkForGameEnd.dart';
@@ -242,10 +243,68 @@ class WaitForReady extends StatelessWidget {
                       isAdmin
                           ? RaisedButton(
                               onPressed: () {
-                                Firestore.instance
-                                    .collection('rooms')
-                                    .document(gameID)
-                                    .updateData({'isGameEnded': true});
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(
+                                          10,
+                                        ),
+                                      ),
+                                      actions: <Widget>[
+                                        FlatButton(
+                                          onPressed: () {
+                                            Navigator.of(context).pop(false);
+                                          },
+                                          child: Text(
+                                            "NO",
+                                            style: TextStyle(
+                                              fontFamily: 'Gotham-Book',
+                                              fontSize: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  0.04,
+                                              color: primaryColor,
+                                            ),
+                                          ),
+                                        ),
+                                        FlatButton(
+                                          onPressed: () async {
+                                            Firestore.instance
+                                                .collection('rooms')
+                                                .document(gameID)
+                                                .updateData(
+                                                    {'isGameEnded': true});
+                                            Navigator.of(context).pop(false);
+                                          },
+                                          child: Text(
+                                            "YES",
+                                            style: TextStyle(
+                                              fontFamily: 'Gotham-Book',
+                                              fontWeight: FontWeight.w900,
+                                              fontSize: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  0.04,
+                                              color: secondaryColor,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                      content: Text(
+                                        "Are you sure you want to end the game?",
+                                        style: TextStyle(
+                                          fontFamily: 'Gotham-Book',
+                                          fontSize: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.05,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                );
                               },
                               color: Colors.green,
                               child: Text('End game'),
