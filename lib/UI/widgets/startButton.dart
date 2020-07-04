@@ -23,6 +23,7 @@ class _StartAGameButtonState extends State<StartAGameButton> {
   String gameID;
   Alignment axis;
   bool adCloseChecker;
+  int rounds;
 
   @override
   void initState() {
@@ -97,6 +98,7 @@ class _StartAGameButtonState extends State<StartAGameButton> {
           'isResponseSelected': false,
           'isReady': false,
           'isGameEnded': false,
+          'rounds': rounds,
         },
       );
 
@@ -368,62 +370,96 @@ class _StartAGameButtonState extends State<StartAGameButton> {
                                   size:
                                       MediaQuery.of(context).size.height * 0.05,
                                 ),
-                                onPressed: gameModeData['isLocked']
-                                    ? () {
-                                        myAd.load(
-                                          adUnitId:
-                                              'ca-app-pub-2468807992323747/9025521431',
-                                          targetingInfo: targetingInfo,
-                                        );
-                                        myAd.listener = (
-                                          RewardedVideoAdEvent event, {
-                                          String rewardType,
-                                          int rewardAmount,
-                                        }) {
-                                          if (event ==
-                                              RewardedVideoAdEvent.loaded) {
-                                            myAd.show();
-                                          }
-                                          if (event ==
-                                              RewardedVideoAdEvent.rewarded) {
-                                            adCloseChecker = !adCloseChecker;
-                                            createRoomID(
-                                              gameMode:
-                                                  gameModeData['gameMode'],
-                                              quesCount:
-                                                  gameModeData['quesCount'],
-                                            );
-                                            customProgressIndicator(
-                                                context: context);
-                                          }
-                                          if (event ==
-                                              RewardedVideoAdEvent
-                                                  .failedToLoad) {
-                                            createRoomID(
-                                              gameMode:
-                                                  gameModeData['gameMode'],
-                                              quesCount:
-                                                  gameModeData['quesCount'],
-                                            );
-                                          }
-                                          if (event ==
-                                                  RewardedVideoAdEvent.closed &&
-                                              adCloseChecker) {
-                                            Navigator.pop(context);
-                                          }
-                                        };
+                                onPressed: () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        title: Text('How many rounds?'),
+                                        content: TextField(
+                                          keyboardType:
+                                              TextInputType.numberWithOptions(),
+                                          onChanged: (val) {
+                                            rounds = int.parse(val);
+                                          },
+                                        ),
+                                        actions: [
+                                          FlatButton(
+                                            onPressed: gameModeData['isLocked']
+                                                ? () {
+                                                    myAd.load(
+                                                      adUnitId:
+                                                          'ca-app-pub-2468807992323747/9025521431',
+                                                      targetingInfo:
+                                                          targetingInfo,
+                                                    );
+                                                    myAd.listener = (
+                                                      RewardedVideoAdEvent
+                                                          event, {
+                                                      String rewardType,
+                                                      int rewardAmount,
+                                                    }) {
+                                                      if (event ==
+                                                          RewardedVideoAdEvent
+                                                              .loaded) {
+                                                        myAd.show();
+                                                      }
+                                                      if (event ==
+                                                          RewardedVideoAdEvent
+                                                              .rewarded) {
+                                                        adCloseChecker =
+                                                            !adCloseChecker;
+                                                        createRoomID(
+                                                          gameMode:
+                                                              gameModeData[
+                                                                  'gameMode'],
+                                                          quesCount:
+                                                              gameModeData[
+                                                                  'quesCount'],
+                                                        );
+                                                        customProgressIndicator(
+                                                            context: context);
+                                                      }
+                                                      if (event ==
+                                                          RewardedVideoAdEvent
+                                                              .failedToLoad) {
+                                                        createRoomID(
+                                                          gameMode:
+                                                              gameModeData[
+                                                                  'gameMode'],
+                                                          quesCount:
+                                                              gameModeData[
+                                                                  'quesCount'],
+                                                        );
+                                                      }
+                                                      if (event ==
+                                                              RewardedVideoAdEvent
+                                                                  .closed &&
+                                                          adCloseChecker) {
+                                                        Navigator.pop(context);
+                                                      }
+                                                    };
 
-                                        customProgressIndicator(
-                                            context: context);
-                                      }
-                                    : () {
-                                        createRoomID(
-                                          gameMode: gameModeData['gameMode'],
-                                          quesCount: gameModeData['quesCount'],
-                                        );
-                                        customProgressIndicator(
-                                            context: context);
-                                      },
+                                                    customProgressIndicator(
+                                                        context: context);
+                                                  }
+                                                : () {
+                                                    createRoomID(
+                                                      gameMode: gameModeData[
+                                                          'gameMode'],
+                                                      quesCount: gameModeData[
+                                                          'quesCount'],
+                                                    );
+                                                    customProgressIndicator(
+                                                        context: context);
+                                                  },
+                                            child: Text('Go'),
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  );
+                                },
                               ),
                             ],
                           ),

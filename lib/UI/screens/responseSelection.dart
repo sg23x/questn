@@ -7,7 +7,7 @@ import 'package:psych/UI/widgets/customAppBar.dart';
 import 'package:psych/UI/widgets/questionCard.dart';
 import 'package:psych/UI/widgets/responseCard.dart';
 
-class ResponseSelectionPage extends StatelessWidget {
+class ResponseSelectionPage extends StatefulWidget {
   ResponseSelectionPage({
     @required this.gameID,
     @required this.playerID,
@@ -22,33 +22,53 @@ class ResponseSelectionPage extends StatelessWidget {
   final bool isAdmin;
   final int quesCount;
   final List avatarList;
+
+  @override
+  _ResponseSelectionPageState createState() => _ResponseSelectionPageState();
+}
+
+class _ResponseSelectionPageState extends State<ResponseSelectionPage> {
   bool abc = true;
+
+  int round;
+
   @override
   Widget build(BuildContext context) {
     WidgetsBinding.instance.addPostFrameCallback(
       (_) async {
         checkForGameEnd(
           context: context,
-          gameID: gameID,
-          playerID: playerID,
+          gameID: widget.gameID,
+          playerID: widget.playerID,
         );
       },
     );
+    getRounds() {
+      Firestore.instance.collection('rooms').document(widget.gameID).get().then(
+        (value) {
+          setState(() {
+            round = value.data['rounds'];
+          });
+        },
+      );
+    }
+
+    getRounds();
 
     return WillPopScope(
       onWillPop: () => onBackPressed(
         context: context,
-        gameID: gameID,
-        isAdmin: isAdmin,
-        playerID: playerID,
+        gameID: widget.gameID,
+        isAdmin: widget.isAdmin,
+        playerID: widget.playerID,
       ),
       child: Scaffold(
         appBar: customAppBar(
           context: context,
-          gameID: gameID,
-          isAdmin: isAdmin,
-          playerID: playerID,
-          title: 'GAME ID: $gameID',
+          gameID: widget.gameID,
+          isAdmin: widget.isAdmin,
+          playerID: widget.playerID,
+          title: 'Round: ' + round.toString(),
         ),
         body: StreamBuilder(
           builder: (context, snap) {
@@ -67,7 +87,7 @@ class ResponseSelectionPage extends StatelessWidget {
                   },
                   stream: Firestore.instance
                       .collection('rooms')
-                      .document(gameID)
+                      .document(widget.gameID)
                       .snapshots(),
                 ),
                 Expanded(
@@ -77,12 +97,13 @@ class ResponseSelectionPage extends StatelessWidget {
                     itemBuilder: (context, i) {
                       return GestureDetector(
                         onTap: () {
-                          if (playerID != snap.data.documents[i].documentID) {
+                          if (widget.playerID !=
+                              snap.data.documents[i].documentID) {
                             Firestore.instance
                                 .collection('rooms')
-                                .document(gameID)
+                                .document(widget.gameID)
                                 .collection('users')
-                                .document(playerID)
+                                .document(widget.playerID)
                                 .updateData(
                               {
                                 'selection': snap.data.documents[i].documentID,
@@ -95,12 +116,12 @@ class ResponseSelectionPage extends StatelessWidget {
                               MaterialPageRoute(
                                 builder: (BuildContext context) =>
                                     WaitForSelectionsPage(
-                                  quesCount: quesCount,
-                                  gameID: gameID,
-                                  playerID: playerID,
-                                  gameMode: gameMode,
-                                  isAdmin: isAdmin,
-                                  avatarList: avatarList,
+                                  quesCount: widget.quesCount,
+                                  gameID: widget.gameID,
+                                  playerID: widget.playerID,
+                                  gameMode: widget.gameMode,
+                                  isAdmin: widget.isAdmin,
+                                  avatarList: widget.avatarList,
                                 ),
                               ),
                             );
@@ -139,7 +160,7 @@ class ResponseSelectionPage extends StatelessWidget {
           },
           stream: Firestore.instance
               .collection('rooms')
-              .document(gameID)
+              .document(widget.gameID)
               .collection('users')
               .snapshots(),
         ),

@@ -11,7 +11,7 @@ import 'package:psych/UI/widgets/customAppBar.dart';
 import 'package:psych/UI/widgets/playerScoreCard.dart';
 import 'package:psych/UI/widgets/resultResponseCard.dart';
 
-class WaitForReady extends StatelessWidget {
+class WaitForReady extends StatefulWidget {
   WaitForReady({
     @required this.gameID,
     @required this.playerID,
@@ -27,7 +27,14 @@ class WaitForReady extends StatelessWidget {
   final int quesCount;
   final List avatarList;
 
+  @override
+  _WaitForReadyState createState() => _WaitForReadyState();
+}
+
+class _WaitForReadyState extends State<WaitForReady> {
   bool abc = true;
+
+  int round;
 
   generateRandomIndex(int len) {
     Random rnd;
@@ -39,41 +46,54 @@ class WaitForReady extends StatelessWidget {
   }
 
   String quesIndex() {
-    return (generateRandomIndex(quesCount) + 1).toString();
+    return (generateRandomIndex(widget.quesCount) + 1).toString();
   }
 
   @override
   Widget build(BuildContext context) {
+    getRounds() {
+      Firestore.instance.collection('rooms').document(widget.gameID).get().then(
+        (value) {
+          setState(
+            () {
+              round = value.data['rounds'];
+            },
+          );
+        },
+      );
+    }
+
+    getRounds();
     WidgetsBinding.instance.addPostFrameCallback(
       (_) async {
         checkForGameEnd(
           context: context,
-          gameID: gameID,
-          playerID: playerID,
+          gameID: widget.gameID,
+          playerID: widget.playerID,
         );
         checkForNavigation(
-          quesCount: quesCount,
+          quesCount: widget.quesCount,
           context: context,
-          gameID: gameID,
-          playerID: playerID,
-          gameMode: gameMode,
-          isAdmin: isAdmin,
+          gameID: widget.gameID,
+          playerID: widget.playerID,
+          gameMode: widget.gameMode,
+          isAdmin: widget.isAdmin,
           currentPage: 'WaitForReady',
-          avatarList: avatarList,
+          avatarList: widget.avatarList,
         );
         changeNavigationStateToTrue(
-            gameID: gameID, field: 'isReady', playerField: 'isReady');
+            gameID: widget.gameID, field: 'isReady', playerField: 'isReady');
 
         Firestore.instance
             .collection('rooms')
-            .document(gameID)
+            .document(widget.gameID)
             .collection('users')
-            .document(playerID)
+            .document(widget.playerID)
             .get()
             .then(
               (value) => listenForGameResult(
                 context: context,
-                gameID: gameID,
+                gameID: widget.gameID,
                 name: value.data['name'],
               ),
             );
@@ -83,14 +103,14 @@ class WaitForReady extends StatelessWidget {
     return WillPopScope(
       onWillPop: () => onBackPressed(
         context: context,
-        gameID: gameID,
-        isAdmin: isAdmin,
-        playerID: playerID,
+        gameID: widget.gameID,
+        isAdmin: widget.isAdmin,
+        playerID: widget.playerID,
       ),
       child: StreamBuilder(
         stream: Firestore.instance
             .collection('rooms')
-            .document(gameID)
+            .document(widget.gameID)
             .collection('users')
             .snapshots(),
         builder: (context, snappp) {
@@ -100,10 +120,10 @@ class WaitForReady extends StatelessWidget {
           return Scaffold(
             appBar: customAppBar(
               context: context,
-              gameID: gameID,
-              isAdmin: isAdmin,
-              playerID: playerID,
-              title: 'GAME ID: $gameID',
+              gameID: widget.gameID,
+              isAdmin: widget.isAdmin,
+              playerID: widget.playerID,
+              title: 'Round: ' + round.toString(),
             ),
             body: ListView(
               children: <Widget>[
@@ -125,7 +145,7 @@ class WaitForReady extends StatelessWidget {
                       children: <Widget>[
                         Text(
                           snappp.data.documents
-                              .where((x) => x['selection'] == playerID)
+                              .where((x) => x['selection'] == widget.playerID)
                               .toList()[i]['name'],
                           style: TextStyle(
                             fontSize: 20,
@@ -136,7 +156,7 @@ class WaitForReady extends StatelessWidget {
                   },
                   itemCount: snappp.data.documents
                       .where(
-                        (x) => x['selection'] == playerID,
+                        (x) => x['selection'] == widget.playerID,
                       )
                       .toList()
                       .length,
@@ -217,13 +237,13 @@ class WaitForReady extends StatelessWidget {
                       RaisedButton(
                         color: Colors.red,
                         onPressed: () async {
-                          isAdmin ? fetchQues(snappp) : null;
+                          widget.isAdmin ? fetchQues(snappp) : null;
 
                           Firestore.instance
                               .collection('rooms')
-                              .document(gameID)
+                              .document(widget.gameID)
                               .collection('users')
-                              .document(playerID)
+                              .document(widget.playerID)
                               .updateData(
                             {
                               'hasSelected': false,
@@ -240,7 +260,7 @@ class WaitForReady extends StatelessWidget {
                           ),
                         ),
                       ),
-                      isAdmin
+                      widget.isAdmin
                           ? RaisedButton(
                               onPressed: () {
                                 showDialog(
@@ -273,7 +293,7 @@ class WaitForReady extends StatelessWidget {
                                           onPressed: () async {
                                             Firestore.instance
                                                 .collection('rooms')
-                                                .document(gameID)
+                                                .document(widget.gameID)
                                                 .updateData(
                                                     {'isGameEnded': true});
                                             Navigator.of(context).pop(false);
@@ -324,9 +344,9 @@ class WaitForReady extends StatelessWidget {
   void changeReadyStateToTrue() {
     Firestore.instance
         .collection('rooms')
-        .document(gameID)
+        .document(widget.gameID)
         .collection('users')
-        .document(playerID)
+        .document(widget.playerID)
         .updateData(
       {
         'isReady': true,
@@ -366,18 +386,18 @@ class WaitForReady extends StatelessWidget {
     }
 
     changeNavigationStateToFalse(
-      gameID: gameID,
+      gameID: widget.gameID,
       field: 'isResponseSubmitted',
     );
     changeNavigationStateToFalse(
-      gameID: gameID,
+      gameID: widget.gameID,
       field: 'isResponseSelected',
     );
 
     Firestore.instance
         .collection('questions')
         .document('modes')
-        .collection(gameMode)
+        .collection(widget.gameMode)
         .document(quesIndex())
         .snapshots()
         .listen(
@@ -401,7 +421,7 @@ class WaitForReady extends StatelessWidget {
 
         await Firestore.instance
             .collection('rooms')
-            .document(gameID)
+            .document(widget.gameID)
             .updateData(
           {
             'currentQuestion': question,
