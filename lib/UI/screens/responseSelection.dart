@@ -4,6 +4,7 @@ import 'package:psych/UI/services/backPressCall.dart';
 import 'package:psych/UI/services/checkForGameEnd.dart';
 import 'package:psych/UI/screens/waitForSelections.dart';
 import 'package:psych/UI/widgets/customAppBar.dart';
+import 'package:psych/UI/widgets/errorAlertDialog.dart';
 import 'package:psych/UI/widgets/questionCard.dart';
 import 'package:psych/UI/widgets/responseCard.dart';
 
@@ -116,26 +117,10 @@ class _ResponseSelectionPageState extends State<ResponseSelectionPage> {
                               ),
                             );
                           } else {
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return AlertDialog(
-                                  actions: <Widget>[
-                                    FlatButton(
-                                      onPressed: () {
-                                        Navigator.pop(context);
-                                      },
-                                      child: Text(
-                                        "OK",
-                                      ),
-                                    )
-                                  ],
-                                  content: Text(
-                                    "You can't choose your own answer!",
-                                  ),
-                                );
-                              },
-                            );
+                            showErrorDialog(
+                                context: context,
+                                errorMessage:
+                                    'You can\'t choose your own answer');
                           }
                         },
                         child: ResponseCard(
