@@ -14,6 +14,7 @@ void checkForNavigation({
   @required quesCount,
   @required avatarList,
   @required round,
+  @required playerName,
 }) async {
   bool xyz = true;
   DocumentSnapshot ds =
@@ -36,6 +37,7 @@ void checkForNavigation({
                 isAdmin: isAdmin,
                 avatarList: avatarList,
                 round: round,
+                playerName: playerName,
               ),
             ),
           );
@@ -56,6 +58,7 @@ void checkForNavigation({
                 isAdmin: isAdmin,
                 avatarList: avatarList,
                 round: round,
+                playerName: playerName,
               ),
             ),
           );
@@ -75,6 +78,7 @@ void checkForNavigation({
                 isAdmin: isAdmin,
                 avatarList: avatarList,
                 round: round - 1,
+                playerName: playerName,
               ),
             ),
           );

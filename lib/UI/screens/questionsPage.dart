@@ -4,6 +4,7 @@ import 'package:psych/UI/screens/waitForSubmissions.dart';
 import 'package:psych/UI/services/backPressCall.dart';
 import 'package:psych/UI/services/changeNavigationState.dart';
 import 'package:psych/UI/services/checkForGameEnd.dart';
+import 'package:psych/UI/services/listenForGameResult.dart';
 import 'package:psych/UI/widgets/customAppBar.dart';
 import 'package:psych/UI/widgets/questionCard.dart';
 
@@ -16,6 +17,7 @@ class QuestionsPage extends StatefulWidget {
     @required this.quesCount,
     @required this.avatarList,
     @required this.round,
+    @required this.playerName,
   });
   final String playerID;
   final String gameID;
@@ -24,6 +26,7 @@ class QuestionsPage extends StatefulWidget {
   final int quesCount;
   final List avatarList;
   final int round;
+  final String playerName;
 
   @override
   _QuestionsPageState createState() => _QuestionsPageState();
@@ -220,6 +223,7 @@ class _QuestionsPageState extends State<QuestionsPage> {
                                 isAdmin: widget.isAdmin,
                                 avatarList: widget.avatarList,
                                 round: widget.round,
+                                playerName: widget.playerName,
                               ),
                             ),
                           );

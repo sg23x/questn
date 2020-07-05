@@ -134,6 +134,7 @@ class _StartAGameButtonState extends State<StartAGameButton> {
             gameMode: gameMode,
             isAdmin: true,
             quesCount: quesCount,
+            playerName: widget.playerName,
           ),
         ),
       );

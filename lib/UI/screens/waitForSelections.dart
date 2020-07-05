@@ -18,6 +18,7 @@ class WaitForSelectionsPage extends StatelessWidget {
     @required this.quesCount,
     @required this.avatarList,
     @required this.round,
+    @required this.playerName,
   });
   final String playerID;
   final String gameID;
@@ -26,6 +27,7 @@ class WaitForSelectionsPage extends StatelessWidget {
   final int quesCount;
   final List avatarList;
   final int round;
+  final String playerName;
   bool abc = true;
 
   @override
@@ -74,6 +76,7 @@ class WaitForSelectionsPage extends StatelessWidget {
                     isAdmin: isAdmin,
                     avatarList: avatarList,
                     round: round,
+                    playerName: playerName,
                   ),
                 ),
               );

@@ -20,6 +20,7 @@ class WaitForReady extends StatefulWidget {
     @required this.quesCount,
     @required this.avatarList,
     @required this.round,
+    @required this.playerName,
   });
   final String gameID;
   final String playerID;
@@ -28,6 +29,7 @@ class WaitForReady extends StatefulWidget {
   final int quesCount;
   final List avatarList;
   final int round;
+  final String playerName;
 
   @override
   _WaitForReadyState createState() => _WaitForReadyState();
@@ -70,31 +72,20 @@ class _WaitForReadyState extends State<WaitForReady> {
           playerID: widget.playerID,
         );
         checkForNavigation(
-            quesCount: widget.quesCount,
-            context: context,
-            gameID: widget.gameID,
-            playerID: widget.playerID,
-            gameMode: widget.gameMode,
-            isAdmin: widget.isAdmin,
-            currentPage: 'WaitForReady',
-            avatarList: widget.avatarList,
-            round: widget.round);
+          quesCount: widget.quesCount,
+          context: context,
+          gameID: widget.gameID,
+          playerID: widget.playerID,
+          gameMode: widget.gameMode,
+          isAdmin: widget.isAdmin,
+          currentPage: 'WaitForReady',
+          avatarList: widget.avatarList,
+          round: widget.round,
+          playerName: widget.playerName,
+        );
         changeNavigationStateToTrue(
             gameID: widget.gameID, field: 'isReady', playerField: 'isReady');
 
-        Firestore.instance
-            .collection('rooms')
-            .document(widget.gameID)
-            .collection('users')
-            .document(widget.playerID)
-            .get()
-            .then(
-              (value) => listenForGameResult(
-                context: context,
-                gameID: widget.gameID,
-                name: value.data['name'],
-              ),
-            );
         checkForRoundsComplete();
       },
     );

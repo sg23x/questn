@@ -14,6 +14,7 @@ class WaitingToStart extends StatefulWidget {
     @required this.gameID,
     @required this.playerID,
     @required this.isAdmin,
+    @required this.playerName,
     this.quesCount,
     this.gameMode,
   });
@@ -22,6 +23,7 @@ class WaitingToStart extends StatefulWidget {
   final String gameMode;
   final bool isAdmin;
   final int quesCount;
+  final String playerName;
 
   @override
   _WaitingToStartState createState() => _WaitingToStartState();
@@ -74,6 +76,7 @@ class _WaitingToStartState extends State<WaitingToStart> {
           currentPage: 'WaitingToStart',
           avatarList: avatarList,
           round: round,
+          playerName: widget.playerName,
         );
         if (abc) {
           getRounds();

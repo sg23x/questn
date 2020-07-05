@@ -33,22 +33,18 @@ Future<bool> onBackPressed({
                 ),
               ),
               FlatButton(
-                onPressed: () async {
-                  isAdmin
-                      ? await Firestore.instance
-                          .collection('rooms')
-                          .document(gameID)
-                          .collection('users')
-                          .getDocuments()
-                          .then(
-                          (snapshot) {
-                            for (DocumentSnapshot ds in snapshot.documents) {
-                              ds.reference.delete();
-                            }
-                          },
-                        )
-                      : deletePlayer(id: playerID, gameID: gameID);
-                },
+                onPressed: isAdmin
+                    ? () {
+                        Firestore.instance
+                            .collection('rooms')
+                            .document(gameID)
+                            .updateData(
+                          {'isGameEnded': true},
+                        );
+                      }
+                    : () async {
+                        deletePlayer(id: playerID, gameID: gameID);
+                      },
                 child: Text(
                   "YES",
                   style: TextStyle(

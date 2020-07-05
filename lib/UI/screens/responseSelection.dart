@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:psych/UI/services/backPressCall.dart';
 import 'package:psych/UI/services/checkForGameEnd.dart';
 import 'package:psych/UI/screens/waitForSelections.dart';
+import 'package:psych/UI/services/listenForGameResult.dart';
 import 'package:psych/UI/widgets/customAppBar.dart';
 import 'package:psych/UI/widgets/errorAlertDialog.dart';
 import 'package:psych/UI/widgets/questionCard.dart';
@@ -17,6 +18,7 @@ class ResponseSelectionPage extends StatefulWidget {
     @required this.quesCount,
     @required this.avatarList,
     @required this.round,
+    @required this.playerName,
   });
   final String gameID;
   final String playerID;
@@ -25,6 +27,7 @@ class ResponseSelectionPage extends StatefulWidget {
   final int quesCount;
   final List avatarList;
   final int round;
+  final String playerName;
 
   @override
   _ResponseSelectionPageState createState() => _ResponseSelectionPageState();
@@ -65,6 +68,7 @@ class _ResponseSelectionPageState extends State<ResponseSelectionPage> {
             if (!snap.hasData) {
               return SizedBox();
             }
+
             return Column(
               children: <Widget>[
                 StreamBuilder(
@@ -113,6 +117,7 @@ class _ResponseSelectionPageState extends State<ResponseSelectionPage> {
                                   isAdmin: widget.isAdmin,
                                   avatarList: widget.avatarList,
                                   round: widget.round,
+                                  playerName: widget.playerName,
                                 ),
                               ),
                             );

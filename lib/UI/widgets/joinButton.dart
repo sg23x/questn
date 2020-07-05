@@ -123,6 +123,7 @@ class _JoinGameButtonState extends State<JoinGameButton> {
                               gameID: gameID,
                               playerID: playerID,
                               isAdmin: false,
+                              playerName: widget.playerName,
                             ),
                           ),
                         );
