@@ -6,6 +6,7 @@ import 'package:psych/UI/services/backPressCall.dart';
 import 'package:psych/UI/services/changeNavigationState.dart';
 import 'package:psych/UI/services/checkForGameEnd.dart';
 import 'package:psych/UI/screens/waitForReady.dart';
+import 'package:psych/UI/services/listenForGameResult.dart';
 import 'package:psych/UI/widgets/customAppBar.dart';
 import 'package:psych/UI/widgets/playerCard.dart';
 
@@ -101,6 +102,11 @@ class WaitForSelectionsPage extends StatelessWidget {
                 gameID: gameID,
                 field: 'isResponseSelected')
             : null;
+        listenForGameResult(
+          gameID: gameID,
+          context: context,
+          name: playerName,
+        );
       },
     );
 

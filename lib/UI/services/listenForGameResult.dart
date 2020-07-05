@@ -101,14 +101,7 @@ void listenForGameResult({
                 actions: [
                   FlatButton(
                     onPressed: () {
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (BuildContext context) => GameSelection(
-                            playerName: name,
-                          ),
-                        ),
-                      );
+                      Navigator.popUntil(context, (route) => route.isFirst);
                     },
                     child: Text(
                       "Go back",

@@ -5,6 +5,7 @@ import 'package:psych/UI/services/backPressCall.dart';
 import 'package:psych/UI/services/changeNavigationState.dart';
 import 'package:psych/UI/services/checkForGameEnd.dart';
 import 'package:psych/UI/services/checkForNavigation.dart';
+import 'package:psych/UI/services/listenForGameResult.dart';
 import 'package:psych/UI/widgets/customAppBar.dart';
 import 'package:psych/UI/widgets/playerCard.dart';
 
@@ -56,6 +57,11 @@ class WaitForSubmissions extends StatelessWidget {
                 field: 'isResponseSubmitted',
               )
             : null;
+        listenForGameResult(
+          gameID: gameID,
+          context: context,
+          name: playerName,
+        );
       },
     );
 

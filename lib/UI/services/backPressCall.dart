@@ -35,6 +35,7 @@ Future<bool> onBackPressed({
               FlatButton(
                 onPressed: isAdmin
                     ? () {
+                        Navigator.pop(context);
                         Firestore.instance
                             .collection('rooms')
                             .document(gameID)

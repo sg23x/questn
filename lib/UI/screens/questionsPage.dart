@@ -88,6 +88,11 @@ class _QuestionsPageState extends State<QuestionsPage> {
           gameID: widget.gameID,
           playerID: widget.playerID,
         );
+        listenForGameResult(
+          gameID: widget.gameID,
+          context: context,
+          name: widget.playerName,
+        );
       },
     );
 

@@ -45,6 +45,11 @@ class _ResponseSelectionPageState extends State<ResponseSelectionPage> {
           gameID: widget.gameID,
           playerID: widget.playerID,
         );
+        listenForGameResult(
+          gameID: widget.gameID,
+          context: context,
+          name: widget.playerName,
+        );
       },
     );
 

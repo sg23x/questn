@@ -87,6 +87,12 @@ class _WaitForReadyState extends State<WaitForReady> {
             gameID: widget.gameID, field: 'isReady', playerField: 'isReady');
 
         checkForRoundsComplete();
+
+        listenForGameResult(
+          gameID: widget.gameID,
+          context: context,
+          name: widget.playerName,
+        );
       },
     );
 
