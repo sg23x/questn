@@ -19,6 +19,7 @@ class WaitForReady extends StatefulWidget {
     @required this.isAdmin,
     @required this.quesCount,
     @required this.avatarList,
+    @required this.round,
   });
   final String gameID;
   final String playerID;
@@ -26,16 +27,13 @@ class WaitForReady extends StatefulWidget {
   final bool isAdmin;
   final int quesCount;
   final List avatarList;
+  final int round;
 
   @override
   _WaitForReadyState createState() => _WaitForReadyState();
 }
 
 class _WaitForReadyState extends State<WaitForReady> {
-  bool abc = true;
-
-  int round;
-
   generateRandomIndex(int len) {
     Random rnd;
     int min = 0;
@@ -51,19 +49,6 @@ class _WaitForReadyState extends State<WaitForReady> {
 
   @override
   Widget build(BuildContext context) {
-    getRounds() {
-      Firestore.instance.collection('rooms').document(widget.gameID).get().then(
-        (value) {
-          setState(
-            () {
-              round = value.data['rounds'];
-            },
-          );
-        },
-      );
-    }
-
-    getRounds();
     WidgetsBinding.instance.addPostFrameCallback(
       (_) async {
         checkForGameEnd(
@@ -72,15 +57,15 @@ class _WaitForReadyState extends State<WaitForReady> {
           playerID: widget.playerID,
         );
         checkForNavigation(
-          quesCount: widget.quesCount,
-          context: context,
-          gameID: widget.gameID,
-          playerID: widget.playerID,
-          gameMode: widget.gameMode,
-          isAdmin: widget.isAdmin,
-          currentPage: 'WaitForReady',
-          avatarList: widget.avatarList,
-        );
+            quesCount: widget.quesCount,
+            context: context,
+            gameID: widget.gameID,
+            playerID: widget.playerID,
+            gameMode: widget.gameMode,
+            isAdmin: widget.isAdmin,
+            currentPage: 'WaitForReady',
+            avatarList: widget.avatarList,
+            round: widget.round);
         changeNavigationStateToTrue(
             gameID: widget.gameID, field: 'isReady', playerField: 'isReady');
 
@@ -123,7 +108,7 @@ class _WaitForReadyState extends State<WaitForReady> {
               gameID: widget.gameID,
               isAdmin: widget.isAdmin,
               playerID: widget.playerID,
-              title: 'Round: ' + round.toString(),
+              title: 'Rounds left: ' + widget.round.toString(),
             ),
             body: ListView(
               children: <Widget>[

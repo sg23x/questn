@@ -13,7 +13,9 @@ void checkForNavigation({
   @required currentPage,
   @required quesCount,
   @required avatarList,
+  @required round,
 }) async {
+  bool xyz = true;
   DocumentSnapshot ds =
       await Firestore.instance.collection('rooms').document(gameID).get();
 
@@ -33,6 +35,7 @@ void checkForNavigation({
                 gameMode: gameMode,
                 isAdmin: isAdmin,
                 avatarList: avatarList,
+                round: round,
               ),
             ),
           );
@@ -52,6 +55,7 @@ void checkForNavigation({
                 gameMode: gameMode,
                 isAdmin: isAdmin,
                 avatarList: avatarList,
+                round: round,
               ),
             ),
           );
@@ -60,7 +64,6 @@ void checkForNavigation({
       if (currentPage == 'WaitForReady') {
         if (event.data['isReady'] == true) {
           HapticFeedback.vibrate();
-
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
@@ -71,6 +74,7 @@ void checkForNavigation({
                 gameMode: gameMode,
                 isAdmin: isAdmin,
                 avatarList: avatarList,
+                round: round - 1,
               ),
             ),
           );

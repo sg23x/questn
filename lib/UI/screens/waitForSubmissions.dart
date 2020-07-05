@@ -16,6 +16,7 @@ class WaitForSubmissions extends StatelessWidget {
     @required this.isAdmin,
     @required this.quesCount,
     @required this.avatarList,
+    @required this.round,
   });
   final String gameID;
   final String playerID;
@@ -23,6 +24,7 @@ class WaitForSubmissions extends StatelessWidget {
   final bool isAdmin;
   final int quesCount;
   final List avatarList;
+  final int round;
   bool abc = true;
   @override
   Widget build(BuildContext context) {
@@ -40,6 +42,7 @@ class WaitForSubmissions extends StatelessWidget {
           playerID: playerID,
           gameMode: gameMode,
           isAdmin: isAdmin,
+          round: round,
           currentPage: 'WaitForSubmissions',
           avatarList: avatarList,
         );

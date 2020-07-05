@@ -38,9 +38,23 @@ class _WaitingToStartState extends State<WaitingToStart> {
     AssetImage('assets/avatars/avatar7.png'),
     AssetImage('assets/avatars/avatar8.png'),
   ];
+  int round;
+  bool abc = true;
 
   @override
   Widget build(BuildContext context) {
+    getRounds() {
+      Firestore.instance.collection('rooms').document(widget.gameID).get().then(
+        (value) {
+          setState(
+            () {
+              round = value.data['rounds'];
+            },
+          );
+        },
+      );
+    }
+
     avatarList.shuffle();
     WidgetsBinding.instance.addPostFrameCallback(
       (_) async {
@@ -59,7 +73,12 @@ class _WaitingToStartState extends State<WaitingToStart> {
           isAdmin: widget.isAdmin,
           currentPage: 'WaitingToStart',
           avatarList: avatarList,
+          round: round,
         );
+        if (abc) {
+          getRounds();
+          abc = false;
+        }
       },
     );
 

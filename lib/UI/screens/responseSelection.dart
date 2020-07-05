@@ -15,6 +15,7 @@ class ResponseSelectionPage extends StatefulWidget {
     @required this.isAdmin,
     @required this.quesCount,
     @required this.avatarList,
+    @required this.round,
   });
   final String gameID;
   final String playerID;
@@ -22,6 +23,7 @@ class ResponseSelectionPage extends StatefulWidget {
   final bool isAdmin;
   final int quesCount;
   final List avatarList;
+  final int round;
 
   @override
   _ResponseSelectionPageState createState() => _ResponseSelectionPageState();
@@ -29,8 +31,6 @@ class ResponseSelectionPage extends StatefulWidget {
 
 class _ResponseSelectionPageState extends State<ResponseSelectionPage> {
   bool abc = true;
-
-  int round;
 
   @override
   Widget build(BuildContext context) {
@@ -43,17 +43,6 @@ class _ResponseSelectionPageState extends State<ResponseSelectionPage> {
         );
       },
     );
-    getRounds() {
-      Firestore.instance.collection('rooms').document(widget.gameID).get().then(
-        (value) {
-          setState(() {
-            round = value.data['rounds'];
-          });
-        },
-      );
-    }
-
-    getRounds();
 
     return WillPopScope(
       onWillPop: () => onBackPressed(
@@ -68,7 +57,7 @@ class _ResponseSelectionPageState extends State<ResponseSelectionPage> {
           gameID: widget.gameID,
           isAdmin: widget.isAdmin,
           playerID: widget.playerID,
-          title: 'Round: ' + round.toString(),
+          title: 'Rounds left: ' + widget.round.toString(),
         ),
         body: StreamBuilder(
           builder: (context, snap) {
@@ -122,6 +111,7 @@ class _ResponseSelectionPageState extends State<ResponseSelectionPage> {
                                   gameMode: widget.gameMode,
                                   isAdmin: widget.isAdmin,
                                   avatarList: widget.avatarList,
+                                  round: widget.round,
                                 ),
                               ),
                             );

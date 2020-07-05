@@ -15,6 +15,7 @@ class QuestionsPage extends StatefulWidget {
     @required this.isAdmin,
     @required this.quesCount,
     @required this.avatarList,
+    @required this.round,
   });
   final String playerID;
   final String gameID;
@@ -22,6 +23,7 @@ class QuestionsPage extends StatefulWidget {
   final bool isAdmin;
   final int quesCount;
   final List avatarList;
+  final int round;
 
   @override
   _QuestionsPageState createState() => _QuestionsPageState();
@@ -31,7 +33,6 @@ class _QuestionsPageState extends State<QuestionsPage> {
   Alignment align;
   bool isButtonEnabled;
   String response = '';
-  int round;
 
   @override
   void initState() {
@@ -47,18 +48,6 @@ class _QuestionsPageState extends State<QuestionsPage> {
 
   @override
   Widget build(BuildContext context) {
-    getRounds() {
-      Firestore.instance.collection('rooms').document(widget.gameID).get().then(
-        (value) {
-          setState(
-            () {
-              round = value.data['rounds'];
-            },
-          );
-        },
-      );
-    }
-
     void sendResponse(String response) {
       Firestore.instance
           .collection('rooms')
@@ -99,8 +88,6 @@ class _QuestionsPageState extends State<QuestionsPage> {
       },
     );
 
-    getRounds();
-
     return WillPopScope(
       onWillPop: () => onBackPressed(
         context: context,
@@ -116,7 +103,7 @@ class _QuestionsPageState extends State<QuestionsPage> {
           gameID: widget.gameID,
           isAdmin: widget.isAdmin,
           playerID: widget.playerID,
-          title: 'Round: ' + round.toString(),
+          title: 'Rounds left: ' + widget.round.toString(),
         ),
         body: Column(
           children: <Widget>[
@@ -232,6 +219,7 @@ class _QuestionsPageState extends State<QuestionsPage> {
                                 gameMode: widget.gameMode,
                                 isAdmin: widget.isAdmin,
                                 avatarList: widget.avatarList,
+                                round: widget.round,
                               ),
                             ),
                           );
