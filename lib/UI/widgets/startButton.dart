@@ -24,9 +24,12 @@ class _StartAGameButtonState extends State<StartAGameButton> {
   Alignment axis;
   bool adCloseChecker;
   int rounds;
+  bool roundsSelected;
 
   @override
   void initState() {
+    rounds = 10;
+    roundsSelected = false;
     gameID = '';
     adCloseChecker = true;
     axis = Alignment.lerp(
@@ -373,93 +376,204 @@ class _StartAGameButtonState extends State<StartAGameButton> {
                                 ),
                                 onPressed: () {
                                   showDialog(
+                                    barrierColor: Colors.black.withOpacity(0.8),
                                     context: context,
                                     builder: (BuildContext context) {
-                                      return AlertDialog(
-                                        title: Text('How many rounds?'),
-                                        content: TextField(
-                                          keyboardType:
-                                              TextInputType.numberWithOptions(),
-                                          onChanged: (val) {
-                                            rounds = int.parse(val);
-                                          },
-                                        ),
-                                        actions: [
-                                          FlatButton(
-                                            onPressed: gameModeData['isLocked']
-                                                ? () {
-                                                    myAd.load(
-                                                      adUnitId:
-                                                          'ca-app-pub-2468807992323747/9025521431',
-                                                      targetingInfo:
-                                                          targetingInfo,
-                                                    );
-                                                    myAd.listener = (
-                                                      RewardedVideoAdEvent
-                                                          event, {
-                                                      String rewardType,
-                                                      int rewardAmount,
-                                                    }) {
-                                                      if (event ==
-                                                          RewardedVideoAdEvent
-                                                              .loaded) {
-                                                        myAd.show();
-                                                      }
-                                                      if (event ==
-                                                          RewardedVideoAdEvent
-                                                              .rewarded) {
-                                                        adCloseChecker =
-                                                            !adCloseChecker;
-                                                        createRoomID(
-                                                          gameMode:
-                                                              gameModeData[
-                                                                  'gameMode'],
-                                                          quesCount:
-                                                              gameModeData[
-                                                                  'quesCount'],
-                                                        );
-                                                        customProgressIndicator(
-                                                            context: context);
-                                                      }
-                                                      if (event ==
-                                                          RewardedVideoAdEvent
-                                                              .failedToLoad) {
-                                                        createRoomID(
-                                                          gameMode:
-                                                              gameModeData[
-                                                                  'gameMode'],
-                                                          quesCount:
-                                                              gameModeData[
-                                                                  'quesCount'],
-                                                        );
-                                                      }
-                                                      if (event ==
-                                                              RewardedVideoAdEvent
-                                                                  .closed &&
-                                                          adCloseChecker) {
-                                                        Navigator.pop(context);
-                                                      }
-                                                    };
-
-                                                    customProgressIndicator(
-                                                        context: context);
-                                                  }
-                                                : () {
-                                                    createRoomID(
-                                                      gameMode: gameModeData[
-                                                          'gameMode'],
-                                                      quesCount: gameModeData[
-                                                          'quesCount'],
-                                                    );
-                                                    customProgressIndicator(
-                                                        context: context);
-                                                  },
-                                            child: Text('Go'),
+                                      return StatefulBuilder(
+                                          builder: (context, setState) {
+                                        return AlertDialog(
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(15),
+                                            side: BorderSide(
+                                              color: secondaryColor,
+                                              width: 3,
+                                            ),
                                           ),
-                                        ],
-                                      );
+                                          contentPadding: EdgeInsets.all(0),
+                                          title: Text(
+                                            'How many rounds?',
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                              fontFamily: 'Gotham-Book',
+                                            ),
+                                          ),
+                                          content: Container(
+                                            height: MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                0.1,
+                                            width: MediaQuery.of(context)
+                                                .size
+                                                .width,
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                SizedBox(
+                                                  height: MediaQuery.of(context)
+                                                          .size
+                                                          .height *
+                                                      0.03,
+                                                ),
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceEvenly,
+                                                  children: [
+                                                    IconButton(
+                                                      icon: Icon(Icons.remove),
+                                                      onPressed: rounds != 5
+                                                          ? () {
+                                                              setState(() {
+                                                                rounds -= 5;
+                                                              });
+                                                            }
+                                                          : null,
+                                                      padding:
+                                                          EdgeInsets.all(0),
+                                                      color: secondaryColor,
+                                                    ),
+                                                    Container(
+                                                      width:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .width *
+                                                              0.2,
+                                                      child: Text(
+                                                        rounds.toString(),
+                                                        textAlign:
+                                                            TextAlign.center,
+                                                        style: TextStyle(
+                                                          fontFamily:
+                                                              'Gotham-Book',
+                                                          color: primaryColor,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          fontSize: MediaQuery.of(
+                                                                      context)
+                                                                  .size
+                                                                  .height *
+                                                              0.055,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    IconButton(
+                                                      color: secondaryColor,
+                                                      icon: Icon(Icons.add),
+                                                      onPressed: rounds != 15
+                                                          ? () {
+                                                              setState(() {
+                                                                rounds += 5;
+                                                              });
+                                                            }
+                                                          : null,
+                                                      padding:
+                                                          EdgeInsets.all(0),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          actions: [
+                                            IconButton(
+                                              onPressed: gameModeData[
+                                                      'isLocked']
+                                                  ? () {
+                                                      roundsSelected = true;
+                                                      Navigator.pop(context);
+
+                                                      myAd.load(
+                                                        adUnitId:
+                                                            'ca-app-pub-2468807992323747/9025521431',
+                                                        targetingInfo:
+                                                            targetingInfo,
+                                                      );
+                                                      myAd.listener = (
+                                                        RewardedVideoAdEvent
+                                                            event, {
+                                                        String rewardType,
+                                                        int rewardAmount,
+                                                      }) {
+                                                        if (event ==
+                                                            RewardedVideoAdEvent
+                                                                .loaded) {
+                                                          myAd.show();
+                                                        }
+                                                        if (event ==
+                                                            RewardedVideoAdEvent
+                                                                .rewarded) {
+                                                          adCloseChecker =
+                                                              !adCloseChecker;
+                                                          createRoomID(
+                                                            gameMode:
+                                                                gameModeData[
+                                                                    'gameMode'],
+                                                            quesCount:
+                                                                gameModeData[
+                                                                    'quesCount'],
+                                                          );
+                                                          customProgressIndicator(
+                                                              context: context);
+                                                        }
+                                                        if (event ==
+                                                            RewardedVideoAdEvent
+                                                                .failedToLoad) {
+                                                          createRoomID(
+                                                            gameMode:
+                                                                gameModeData[
+                                                                    'gameMode'],
+                                                            quesCount:
+                                                                gameModeData[
+                                                                    'quesCount'],
+                                                          );
+                                                        }
+                                                        if (event ==
+                                                                RewardedVideoAdEvent
+                                                                    .closed &&
+                                                            adCloseChecker) {
+                                                          Navigator.pop(
+                                                              context);
+                                                        }
+                                                      };
+
+                                                      customProgressIndicator(
+                                                          context: context);
+                                                    }
+                                                  : () {
+                                                      roundsSelected = true;
+                                                      Navigator.pop(context);
+
+                                                      createRoomID(
+                                                        gameMode: gameModeData[
+                                                            'gameMode'],
+                                                        quesCount: gameModeData[
+                                                            'quesCount'],
+                                                      );
+                                                      customProgressIndicator(
+                                                          context: context);
+                                                    },
+                                              icon: Icon(
+                                                Icons.check,
+                                                size: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.09,
+                                                color: Colors.blue,
+                                              ),
+                                            ),
+                                          ],
+                                        );
+                                      });
                                     },
-                                  );
+                                  ).then((value) {
+                                    if (!roundsSelected) {
+                                      setState(() {
+                                        rounds = 10;
+                                      });
+                                    }
+                                  });
                                 },
                               ),
                             ],
