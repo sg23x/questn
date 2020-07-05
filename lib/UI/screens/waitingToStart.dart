@@ -85,12 +85,7 @@ class _WaitingToStartState extends State<WaitingToStart> {
       },
     );
 
-    Future<bool> onBackPressed({
-      context,
-      isAdmin,
-      gameID,
-      playerID,
-    }) {
+    Future<bool> onBackPressed() {
       return showDialog(
             context: context,
             builder: (BuildContext context) {
@@ -115,18 +110,25 @@ class _WaitingToStartState extends State<WaitingToStart> {
                     ),
                   ),
                   FlatButton(
-                    onPressed: isAdmin
+                    onPressed: widget.isAdmin
                         ? () {
                             Navigator.pop(context);
                             Firestore.instance
                                 .collection('rooms')
-                                .document(gameID)
-                                .updateData(
-                              {'isGameEnded': true},
+                                .document(widget.gameID)
+                                .collection('users')
+                                .getDocuments()
+                                .then(
+                              (value) {
+                                for (DocumentSnapshot ds in value.documents) {
+                                  ds.reference.delete();
+                                }
+                              },
                             );
                           }
                         : () async {
-                            deletePlayer(id: playerID, gameID: gameID);
+                            deletePlayer(
+                                id: widget.playerID, gameID: widget.gameID);
                           },
                     child: Text(
                       "YES",
@@ -140,7 +142,7 @@ class _WaitingToStartState extends State<WaitingToStart> {
                   ),
                 ],
                 content: Text(
-                  isAdmin
+                  widget.isAdmin
                       ? "Are you sure you want to end the game?"
                       : "Are you sure you want to leave the game?",
                   style: TextStyle(
