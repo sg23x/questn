@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:psych/UI/constants.dart';
@@ -87,11 +89,15 @@ class _WaitForReadyState extends State<WaitForReady> {
             gameID: widget.gameID, field: 'isReady', playerField: 'isReady');
 
         checkForRoundsComplete();
-
-        listenForGameResult(
-          gameID: widget.gameID,
-          context: context,
-          name: widget.playerName,
+        Timer(
+          Duration(milliseconds: 1500),
+          () {
+            listenForGameResult(
+              gameID: widget.gameID,
+              context: context,
+              name: widget.playerName,
+            );
+          },
         );
       },
     );
