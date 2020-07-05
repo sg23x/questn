@@ -47,6 +47,19 @@ class _WaitForReadyState extends State<WaitForReady> {
     return (generateRandomIndex(widget.quesCount) + 1).toString();
   }
 
+  void checkForRoundsComplete() {
+    if (widget.isAdmin) {
+      if (widget.round == 0) {
+        Firestore.instance
+            .collection('rooms')
+            .document(widget.gameID)
+            .updateData(
+          {'isGameEnded': true},
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     WidgetsBinding.instance.addPostFrameCallback(
@@ -82,6 +95,7 @@ class _WaitForReadyState extends State<WaitForReady> {
                 name: value.data['name'],
               ),
             );
+        checkForRoundsComplete();
       },
     );
 

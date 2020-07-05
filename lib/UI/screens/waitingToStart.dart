@@ -48,7 +48,7 @@ class _WaitingToStartState extends State<WaitingToStart> {
         (value) {
           setState(
             () {
-              round = value.data['rounds'];
+              round = value.data['rounds'] - 1;
             },
           );
         },
