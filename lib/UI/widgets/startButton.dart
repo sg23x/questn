@@ -557,13 +557,16 @@ class _StartAGameButtonState extends State<StartAGameButton> {
                                                       customProgressIndicator(
                                                           context: context);
                                                     },
-                                              icon: Icon(
-                                                Icons.check,
-                                                size: MediaQuery.of(context)
-                                                        .size
-                                                        .width *
-                                                    0.09,
-                                                color: Colors.blue,
+                                              icon: Transform.rotate(
+                                                angle: pi * 1.95,
+                                                child: Icon(
+                                                  Icons.check,
+                                                  size: MediaQuery.of(context)
+                                                          .size
+                                                          .width *
+                                                      0.09,
+                                                  color: Colors.blue,
+                                                ),
                                               ),
                                             ),
                                           ],
