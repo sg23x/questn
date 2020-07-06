@@ -7,17 +7,28 @@ class ResponseCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: MediaQuery.of(context).size.width,
-      padding: EdgeInsets.all(10),
-      margin: EdgeInsets.all(10),
-      height: MediaQuery.of(context).size.height * 0.1,
-      color: Colors.blueGrey,
       child: Text(
         response,
         style: TextStyle(
           color: Colors.white,
-          fontSize: 20,
+          fontFamily: 'Gotham-Book',
+          fontSize: MediaQuery.of(context).size.height * 0.025,
+          height: 1.25,
         ),
       ),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        color: Colors.black.withOpacity(0.4),
+        border: Border.all(color: Colors.white, width: 2),
+      ),
+      padding: EdgeInsets.all(
+        MediaQuery.of(context).size.height * 0.03,
+      ),
+      margin: EdgeInsets.fromLTRB(
+          MediaQuery.of(context).size.height * 0.02,
+          MediaQuery.of(context).size.height * 0.02,
+          MediaQuery.of(context).size.height * 0.02,
+          0),
     );
   }
 }

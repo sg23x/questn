@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:psych/UI/constants.dart';
 import 'package:psych/UI/services/backPressCall.dart';
 import 'package:psych/UI/services/checkForGameEnd.dart';
 import 'package:psych/UI/screens/waitForSelections.dart';
@@ -66,88 +67,102 @@ class _ResponseSelectionPageState extends State<ResponseSelectionPage> {
           gameID: widget.gameID,
           isAdmin: widget.isAdmin,
           playerID: widget.playerID,
-          title: 'Rounds left: ' + widget.round.toString(),
+          title: 'Pick the best one!',
         ),
-        body: StreamBuilder(
-          builder: (context, snap) {
-            if (!snap.hasData) {
-              return SizedBox();
-            }
+        body: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                secondaryColor,
+                primaryColor,
+              ],
+              stops: [0.0, 0.8],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+            ),
+          ),
+          child: StreamBuilder(
+            builder: (context, snap) {
+              if (!snap.hasData) {
+                return SizedBox();
+              }
 
-            return Column(
-              children: <Widget>[
-                StreamBuilder(
-                  builder: (context, quessnap) {
-                    return QuestionCard(
-                      question: quessnap.data != null
-                          ? quessnap.data['currentQuestion']
-                          : '',
-                    );
-                  },
-                  stream: Firestore.instance
-                      .collection('rooms')
-                      .document(widget.gameID)
-                      .snapshots(),
-                ),
-                Expanded(
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: snap.data.documents.length,
-                    itemBuilder: (context, i) {
-                      return GestureDetector(
-                        onTap: () {
-                          if (widget.playerID !=
-                              snap.data.documents[i].documentID) {
-                            Firestore.instance
-                                .collection('rooms')
-                                .document(widget.gameID)
-                                .collection('users')
-                                .document(widget.playerID)
-                                .updateData(
-                              {
-                                'selection': snap.data.documents[i].documentID,
-                                'hasSelected': true,
-                              },
-                            );
-
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                builder: (BuildContext context) =>
-                                    WaitForSelectionsPage(
-                                  quesCount: widget.quesCount,
-                                  gameID: widget.gameID,
-                                  playerID: widget.playerID,
-                                  gameMode: widget.gameMode,
-                                  isAdmin: widget.isAdmin,
-                                  avatarList: widget.avatarList,
-                                  round: widget.round,
-                                  playerName: widget.playerName,
-                                ),
-                              ),
-                            );
-                          } else {
-                            showErrorDialog(
-                                context: context,
-                                errorMessage:
-                                    'You can\'t choose your own answer');
-                          }
-                        },
-                        child: ResponseCard(
-                          response: snap.data.documents[i]['response'],
-                        ),
+              return Column(
+                children: <Widget>[
+                  StreamBuilder(
+                    builder: (context, quessnap) {
+                      return QuestionCard(
+                        question: quessnap.data != null
+                            ? quessnap.data['currentQuestion']
+                            : '',
                       );
                     },
+                    stream: Firestore.instance
+                        .collection('rooms')
+                        .document(widget.gameID)
+                        .snapshots(),
                   ),
-                ),
-              ],
-            );
-          },
-          stream: Firestore.instance
-              .collection('rooms')
-              .document(widget.gameID)
-              .collection('users')
-              .snapshots(),
+                  Expanded(
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: snap.data.documents.length,
+                      itemBuilder: (context, i) {
+                        return GestureDetector(
+                          onTap: () {
+                            if (widget.playerID !=
+                                snap.data.documents[i].documentID) {
+                              Firestore.instance
+                                  .collection('rooms')
+                                  .document(widget.gameID)
+                                  .collection('users')
+                                  .document(widget.playerID)
+                                  .updateData(
+                                {
+                                  'selection':
+                                      snap.data.documents[i].documentID,
+                                  'hasSelected': true,
+                                },
+                              );
+
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (BuildContext context) =>
+                                      WaitForSelectionsPage(
+                                    quesCount: widget.quesCount,
+                                    gameID: widget.gameID,
+                                    playerID: widget.playerID,
+                                    gameMode: widget.gameMode,
+                                    isAdmin: widget.isAdmin,
+                                    avatarList: widget.avatarList,
+                                    round: widget.round,
+                                    playerName: widget.playerName,
+                                  ),
+                                ),
+                              );
+                            } else {
+                              showErrorDialog(
+                                  context: context,
+                                  errorMessage:
+                                      'You can\'t choose your own answer');
+                            }
+                          },
+                          child: ResponseCard(
+                            response: snap.data.documents[i]['response'],
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              );
+            },
+            stream: Firestore.instance
+                .collection('rooms')
+                .document(widget.gameID)
+                .collection('users')
+                .snapshots(),
+          ),
         ),
       ),
     );

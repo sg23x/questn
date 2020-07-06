@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:psych/UI/constants.dart';
 
 class QuestionCard extends StatefulWidget {
   QuestionCard({@required this.question});
@@ -9,58 +10,22 @@ class QuestionCard extends StatefulWidget {
 }
 
 class _QuestionCardState extends State<QuestionCard> {
-  Color col;
-  Color borderCol;
-  @override
-  void initState() {
-    col = Colors.white;
-    borderCol = Colors.white;
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
-    WidgetsBinding.instance.addPostFrameCallback(
-      (_) {
-        setState(
-          () {
-            col = Colors.black;
-            borderCol = Colors.cyan;
-          },
-        );
-      },
-    );
-    return AnimatedContainer(
-      duration: Duration(
-        milliseconds: 1000,
-      ),
-      decoration: BoxDecoration(
-        color: col,
-        borderRadius: BorderRadius.circular(
-          15,
-        ),
-        border: Border.all(
-          color: borderCol,
-          width: 5,
-        ),
-      ),
-      constraints: BoxConstraints(
-        maxWidth: MediaQuery.of(context).size.width,
-        minWidth: MediaQuery.of(context).size.width,
-      ),
-      padding: EdgeInsets.all(
-        MediaQuery.of(context).size.height * 0.03,
-      ),
-      margin: EdgeInsets.all(
-        MediaQuery.of(context).size.width * 0.03,
-      ),
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      color: Colors.black.withOpacity(0.8),
       child: Text(
         widget.question,
         style: TextStyle(
           color: Colors.white,
-          fontFamily: 'Indie-Flower',
+          fontFamily: 'Gotham-Book',
           fontSize: MediaQuery.of(context).size.height * 0.025,
+          height: 1.25,
         ),
+      ),
+      padding: EdgeInsets.all(
+        MediaQuery.of(context).size.height * 0.03,
       ),
     );
   }
