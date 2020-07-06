@@ -141,6 +141,9 @@ class _StartAGameButtonState extends State<StartAGameButton> {
           ),
         ),
       );
+      setState(() {
+        rounds = 10;
+      });
     }
 
     void del({String gameMode, int quesCount}) async {
