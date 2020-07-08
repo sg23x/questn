@@ -90,7 +90,7 @@ class _WaitForReadyState extends State<WaitForReady> {
 
         checkForRoundsComplete();
         Timer(
-          Duration(milliseconds: 1500),
+          Duration(milliseconds: 2500),
           () {
             listenForGameResult(
               gameID: widget.gameID,
