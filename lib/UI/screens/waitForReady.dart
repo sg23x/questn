@@ -119,223 +119,226 @@ class _WaitForReadyState extends State<WaitForReady> {
           if (!snappp.hasData) {
             return SizedBox();
           }
-          return Scaffold(
-            appBar: customAppBar(
-              context: context,
-              gameID: widget.gameID,
-              isAdmin: widget.isAdmin,
-              playerID: widget.playerID,
-              title: 'Rounds left: ' + widget.round.toString(),
-            ),
-            body: ListView(
-              children: <Widget>[
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Text(
-                      "Players who chose your answer:",
-                      style: TextStyle(
-                        fontSize: 20,
-                      ),
-                    ),
-                  ],
-                ),
-                ListView.builder(
-                  itemBuilder: (context, i) {
-                    return Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Text(
-                          snappp.data.documents
-                              .where((x) => x['selection'] == widget.playerID)
-                              .toList()[i]['name'],
-                          style: TextStyle(
-                            fontSize: 20,
-                          ),
-                        ),
-                      ],
-                    );
-                  },
-                  itemCount: snappp.data.documents
-                      .where(
-                        (x) => x['selection'] == widget.playerID,
-                      )
-                      .toList()
-                      .length,
-                  shrinkWrap: true,
-                ),
-                SizedBox(
-                  height: 30,
-                ),
-                Row(
-                  children: <Widget>[
-                    Text(
-                      "RESPONSES:",
-                      style: TextStyle(
-                        fontSize: 30,
-                      ),
-                    ),
-                  ],
-                  mainAxisAlignment: MainAxisAlignment.center,
-                ),
-                ListView.builder(
-                  physics: NeverScrollableScrollPhysics(),
-                  itemBuilder: (context, i) {
-                    return ResultResponseCard(
-                      response: snappp.data.documents[i]['response'],
-                      timesSelected: snappp.data.documents
-                          .where(
-                            (x) =>
-                                x['selection'] ==
-                                snappp.data.documents[i].documentID,
-                          )
-                          .toList()
-                          .length
-                          .toString(),
-                    );
-                  },
-                  shrinkWrap: true,
-                  itemCount: snappp.data.documents.length,
-                ),
-                Row(
-                  children: <Widget>[
-                    Text(
-                      "SCORE:",
-                      style: TextStyle(
-                        fontSize: 30,
-                      ),
-                    ),
-                  ],
-                  mainAxisAlignment: MainAxisAlignment.center,
-                ),
-                ListView.builder(
-                  physics: NeverScrollableScrollPhysics(),
-                  itemBuilder: (context, ind) {
-                    return PlayerScoreCard(
-                      name: snappp.data.documents[ind]['name'],
-                      score: snappp.data.documents[ind]['score'].toString(),
-                      isReady: snappp.data.documents[ind]['isReady'],
-                      scoreAdded: snappp.data.documents
-                          .where(
-                            (x) =>
-                                x['selection'] ==
-                                snappp.data.documents[ind].documentID,
-                          )
-                          .toList()
-                          .length
-                          .toString(),
-                    );
-                  },
-                  itemCount: snappp.data.documents.length,
-                  shrinkWrap: true,
-                ),
-                Container(
-                  width: MediaQuery.of(context).size.height * 0.4,
-                  margin: EdgeInsets.symmetric(
-                    horizontal: 10,
-                  ),
-                  child: Row(
-                    children: [
-                      RaisedButton(
-                        color: Colors.red,
-                        onPressed: () async {
-                          widget.isAdmin ? fetchQues(snappp) : null;
-
-                          Firestore.instance
-                              .collection('rooms')
-                              .document(widget.gameID)
-                              .collection('users')
-                              .document(widget.playerID)
-                              .updateData(
-                            {
-                              'hasSelected': false,
-                              'hasSubmitted': false,
-                            },
-                          );
-
-                          changeReadyStateToTrue();
-                        },
-                        child: Text(
-                          'ready',
-                          style: TextStyle(
-                            color: Colors.white,
-                          ),
+          return AbsorbPointer(
+            absorbing: widget.round == 0 ? true : false,
+            child: Scaffold(
+              appBar: customAppBar(
+                context: context,
+                gameID: widget.gameID,
+                isAdmin: widget.isAdmin,
+                playerID: widget.playerID,
+                title: 'Rounds left: ' + widget.round.toString(),
+              ),
+              body: ListView(
+                children: <Widget>[
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Text(
+                        "Players who chose your answer:",
+                        style: TextStyle(
+                          fontSize: 20,
                         ),
                       ),
-                      widget.isAdmin
-                          ? RaisedButton(
-                              onPressed: () {
-                                showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return AlertDialog(
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(
-                                          10,
-                                        ),
-                                      ),
-                                      actions: <Widget>[
-                                        FlatButton(
-                                          onPressed: () {
-                                            Navigator.of(context).pop(false);
-                                          },
-                                          child: Text(
-                                            "NO",
-                                            style: TextStyle(
-                                              fontFamily: 'Gotham-Book',
-                                              fontSize: MediaQuery.of(context)
-                                                      .size
-                                                      .width *
-                                                  0.04,
-                                              color: primaryColor,
-                                            ),
-                                          ),
-                                        ),
-                                        FlatButton(
-                                          onPressed: () async {
-                                            Firestore.instance
-                                                .collection('rooms')
-                                                .document(widget.gameID)
-                                                .updateData(
-                                                    {'isGameEnded': true});
-                                            Navigator.of(context).pop(false);
-                                          },
-                                          child: Text(
-                                            "YES",
-                                            style: TextStyle(
-                                              fontFamily: 'Gotham-Book',
-                                              fontWeight: FontWeight.w900,
-                                              fontSize: MediaQuery.of(context)
-                                                      .size
-                                                      .width *
-                                                  0.04,
-                                              color: secondaryColor,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                      content: Text(
-                                        "Are you sure you want to end the game?",
-                                        style: TextStyle(
-                                          fontFamily: 'Gotham-Book',
-                                          fontSize: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.05,
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                );
-                              },
-                              color: Colors.green,
-                              child: Text('End game'),
-                            )
-                          : SizedBox(),
                     ],
                   ),
-                ),
-              ],
+                  ListView.builder(
+                    itemBuilder: (context, i) {
+                      return Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Text(
+                            snappp.data.documents
+                                .where((x) => x['selection'] == widget.playerID)
+                                .toList()[i]['name'],
+                            style: TextStyle(
+                              fontSize: 20,
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                    itemCount: snappp.data.documents
+                        .where(
+                          (x) => x['selection'] == widget.playerID,
+                        )
+                        .toList()
+                        .length,
+                    shrinkWrap: true,
+                  ),
+                  SizedBox(
+                    height: 30,
+                  ),
+                  Row(
+                    children: <Widget>[
+                      Text(
+                        "RESPONSES:",
+                        style: TextStyle(
+                          fontSize: 30,
+                        ),
+                      ),
+                    ],
+                    mainAxisAlignment: MainAxisAlignment.center,
+                  ),
+                  ListView.builder(
+                    physics: NeverScrollableScrollPhysics(),
+                    itemBuilder: (context, i) {
+                      return ResultResponseCard(
+                        response: snappp.data.documents[i]['response'],
+                        timesSelected: snappp.data.documents
+                            .where(
+                              (x) =>
+                                  x['selection'] ==
+                                  snappp.data.documents[i].documentID,
+                            )
+                            .toList()
+                            .length
+                            .toString(),
+                      );
+                    },
+                    shrinkWrap: true,
+                    itemCount: snappp.data.documents.length,
+                  ),
+                  Row(
+                    children: <Widget>[
+                      Text(
+                        "SCORE:",
+                        style: TextStyle(
+                          fontSize: 30,
+                        ),
+                      ),
+                    ],
+                    mainAxisAlignment: MainAxisAlignment.center,
+                  ),
+                  ListView.builder(
+                    physics: NeverScrollableScrollPhysics(),
+                    itemBuilder: (context, ind) {
+                      return PlayerScoreCard(
+                        name: snappp.data.documents[ind]['name'],
+                        score: snappp.data.documents[ind]['score'].toString(),
+                        isReady: snappp.data.documents[ind]['isReady'],
+                        scoreAdded: snappp.data.documents
+                            .where(
+                              (x) =>
+                                  x['selection'] ==
+                                  snappp.data.documents[ind].documentID,
+                            )
+                            .toList()
+                            .length
+                            .toString(),
+                      );
+                    },
+                    itemCount: snappp.data.documents.length,
+                    shrinkWrap: true,
+                  ),
+                  Container(
+                    width: MediaQuery.of(context).size.height * 0.4,
+                    margin: EdgeInsets.symmetric(
+                      horizontal: 10,
+                    ),
+                    child: Row(
+                      children: [
+                        RaisedButton(
+                          color: Colors.red,
+                          onPressed: () async {
+                            widget.isAdmin ? fetchQues(snappp) : null;
+
+                            Firestore.instance
+                                .collection('rooms')
+                                .document(widget.gameID)
+                                .collection('users')
+                                .document(widget.playerID)
+                                .updateData(
+                              {
+                                'hasSelected': false,
+                                'hasSubmitted': false,
+                              },
+                            );
+
+                            changeReadyStateToTrue();
+                          },
+                          child: Text(
+                            'ready',
+                            style: TextStyle(
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                        widget.isAdmin
+                            ? RaisedButton(
+                                onPressed: () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            10,
+                                          ),
+                                        ),
+                                        actions: <Widget>[
+                                          FlatButton(
+                                            onPressed: () {
+                                              Navigator.of(context).pop(false);
+                                            },
+                                            child: Text(
+                                              "NO",
+                                              style: TextStyle(
+                                                fontFamily: 'Gotham-Book',
+                                                fontSize: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.04,
+                                                color: primaryColor,
+                                              ),
+                                            ),
+                                          ),
+                                          FlatButton(
+                                            onPressed: () async {
+                                              Firestore.instance
+                                                  .collection('rooms')
+                                                  .document(widget.gameID)
+                                                  .updateData(
+                                                      {'isGameEnded': true});
+                                              Navigator.of(context).pop(false);
+                                            },
+                                            child: Text(
+                                              "YES",
+                                              style: TextStyle(
+                                                fontFamily: 'Gotham-Book',
+                                                fontWeight: FontWeight.w900,
+                                                fontSize: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.04,
+                                                color: secondaryColor,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                        content: Text(
+                                          "Are you sure you want to end the game?",
+                                          style: TextStyle(
+                                            fontFamily: 'Gotham-Book',
+                                            fontSize: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.05,
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  );
+                                },
+                                color: Colors.green,
+                                child: Text('End game'),
+                              )
+                            : SizedBox(),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
           );
         },
