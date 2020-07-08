@@ -8,9 +8,10 @@ void listenForGameResult({
   @required context,
   @required name,
 }) {
+  bool flag = true;
   Firestore.instance.collection('rooms').document(gameID).snapshots().listen(
     (event) async {
-      if (event.data['isGameEnded'] == true) {
+      if (event.data['isGameEnded'] == true && flag) {
         QuerySnapshot query = await Firestore.instance
             .collection('rooms')
             .document(gameID)
@@ -116,6 +117,7 @@ void listenForGameResult({
             );
           },
         );
+        flag = false;
       }
     },
   );
