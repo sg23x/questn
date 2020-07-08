@@ -30,15 +30,15 @@ class WaitingToStart extends StatefulWidget {
 }
 
 class _WaitingToStartState extends State<WaitingToStart> {
-  List<AssetImage> avatarList = [
-    AssetImage('assets/avatars/avatar1.png'),
-    AssetImage('assets/avatars/avatar2.png'),
-    AssetImage('assets/avatars/avatar3.png'),
-    AssetImage('assets/avatars/avatar4.png'),
-    AssetImage('assets/avatars/avatar5.png'),
-    AssetImage('assets/avatars/avatar6.png'),
-    AssetImage('assets/avatars/avatar7.png'),
-    AssetImage('assets/avatars/avatar8.png'),
+  List<String> avatarList = [
+    'assets/avatars/avatar1.png',
+    'assets/avatars/avatar2.png',
+    'assets/avatars/avatar3.png',
+    'assets/avatars/avatar4.png',
+    'assets/avatars/avatar5.png',
+    'assets/avatars/avatar6.png',
+    'assets/avatars/avatar7.png',
+    'assets/avatars/avatar8.png',
   ];
   int round;
   bool abc = true;

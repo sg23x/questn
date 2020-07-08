@@ -44,7 +44,9 @@ class PlayerWaitingCard extends StatelessWidget {
             child: CircleAvatar(
               radius: MediaQuery.of(context).size.width * 0.11,
               backgroundColor: Colors.grey,
-              backgroundImage: avatarList[cardIndex],
+              backgroundImage: AssetImage(
+                avatarList[cardIndex],
+              ),
             ),
           ),
           Container(
