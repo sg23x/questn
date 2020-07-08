@@ -65,7 +65,7 @@ void checkForNavigation({
         }
       }
       if (currentPage == 'WaitForReady') {
-        if (event.data['isReady'] == true) {
+        if (event.data['isReady'] == true && xyz) {
           HapticFeedback.vibrate();
           Navigator.pushReplacement(
             context,
@@ -82,6 +82,7 @@ void checkForNavigation({
               ),
             ),
           );
+          xyz = false;
         }
       }
     },
