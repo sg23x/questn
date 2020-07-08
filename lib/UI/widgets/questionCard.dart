@@ -14,7 +14,7 @@ class _QuestionCardState extends State<QuestionCard> {
   Widget build(BuildContext context) {
     return Container(
       width: MediaQuery.of(context).size.width,
-      color: Colors.black.withOpacity(0.8),
+      color: Colors.black.withOpacity(0.9),
       child: Text(
         widget.question,
         style: TextStyle(
