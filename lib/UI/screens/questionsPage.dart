@@ -236,9 +236,9 @@ class _QuestionsPageState extends State<QuestionsPage> {
                 ),
                 child: Container(
                   child: Icon(
-                    Icons.arrow_forward,
+                    Icons.arrow_forward_ios,
                     color: Colors.white.withOpacity(isButtonEnabled ? 1 : 0.6),
-                    size: MediaQuery.of(context).size.height * 0.07,
+                    size: MediaQuery.of(context).size.height * 0.04,
                   ),
                   decoration: BoxDecoration(
                     border: Border.all(
