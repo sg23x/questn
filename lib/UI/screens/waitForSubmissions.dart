@@ -94,6 +94,7 @@ class WaitForSubmissions extends StatelessWidget {
               ),
               itemBuilder: (context, i) {
                 return PlayerWaitingCard(
+                  scale: 1,
                   avatarList: avatarList,
                   playersCount: snap.data.documents.length,
                   borderColor: snap.data.documents[i]['hasSubmitted']

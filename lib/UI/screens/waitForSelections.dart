@@ -139,6 +139,7 @@ class WaitForSelectionsPage extends StatelessWidget {
               ),
               itemBuilder: (context, i) {
                 return PlayerWaitingCard(
+                  scale: 1,
                   avatarList: avatarList,
                   playersCount: usersnap.data.documents.length,
                   borderColor: usersnap.data.documents[i]['hasSelected']
