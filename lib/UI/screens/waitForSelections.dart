@@ -33,61 +33,6 @@ class WaitForSelectionsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    void navigatorAndScoreUpdator() async {
-      DocumentSnapshot ds =
-          await Firestore.instance.collection('rooms').document(gameID).get();
-
-      ds.reference.snapshots().listen(
-        (event) {
-          if (event.data['isResponseSelected'] == true) {
-            if (abc) {
-              Firestore.instance
-                  .collection('rooms')
-                  .document(gameID)
-                  .collection('users')
-                  .getDocuments()
-                  .then(
-                (event) {
-                  Firestore.instance
-                      .collection('rooms')
-                      .document(gameID)
-                      .collection('users')
-                      .document(playerID)
-                      .updateData(
-                    {
-                      'score': FieldValue.increment(event.documents
-                          .where((element) => element['selection'] == playerID)
-                          .toList()
-                          .length),
-                    },
-                  );
-                },
-              );
-
-              HapticFeedback.vibrate();
-
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (BuildContext context) => WaitForReady(
-                    quesCount: quesCount,
-                    playerID: playerID,
-                    gameID: gameID,
-                    gameMode: gameMode,
-                    isAdmin: isAdmin,
-                    avatarList: avatarList,
-                    round: round,
-                    playerName: playerName,
-                  ),
-                ),
-              );
-              abc = !abc;
-            }
-          }
-        },
-      );
-    }
-
     WidgetsBinding.instance.addPostFrameCallback(
       (_) async {
         checkForGameEnd(
@@ -95,7 +40,7 @@ class WaitForSelectionsPage extends StatelessWidget {
           gameID: gameID,
           playerID: playerID,
         );
-        navigatorAndScoreUpdator();
+
         isAdmin
             ? changeNavigationStateToTrue(
                 playerField: 'hasSelected',
@@ -132,25 +77,88 @@ class WaitForSelectionsPage extends StatelessWidget {
               return SizedBox();
             }
 
-            return GridView.builder(
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                childAspectRatio: 1,
-                crossAxisCount: 2,
-              ),
-              itemBuilder: (context, i) {
-                return PlayerWaitingCard(
-                  scale: 1,
-                  avatarList: avatarList,
-                  playersCount: usersnap.data.documents.length,
-                  borderColor: usersnap.data.documents[i]['hasSelected']
-                      ? Colors.green
-                      : Colors.red,
-                  cardIndex: i,
-                  name: usersnap.data.documents[i]['name'],
+            return StreamBuilder(
+              builder: (context, roomsnap) {
+                if (!roomsnap.hasData) {
+                  return SizedBox();
+                }
+
+                WidgetsBinding.instance.addPostFrameCallback(
+                  (_) async {
+                    if (roomsnap.data['isResponseSelected'] == true) {
+                      if (abc) {
+                        Firestore.instance
+                            .collection('rooms')
+                            .document(gameID)
+                            .collection('users')
+                            .getDocuments()
+                            .then(
+                          (event) {
+                            Firestore.instance
+                                .collection('rooms')
+                                .document(gameID)
+                                .collection('users')
+                                .document(playerID)
+                                .updateData(
+                              {
+                                'score': FieldValue.increment(event.documents
+                                    .where((element) =>
+                                        element['selection'] == playerID)
+                                    .toList()
+                                    .length),
+                              },
+                            );
+                          },
+                        );
+
+                        HapticFeedback.vibrate();
+
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (BuildContext context) => WaitForReady(
+                              quesCount: quesCount,
+                              playerID: playerID,
+                              gameID: gameID,
+                              gameMode: gameMode,
+                              isAdmin: isAdmin,
+                              avatarList: avatarList,
+                              round: round,
+                              playerName: playerName,
+                            ),
+                          ),
+                        );
+                        abc = !abc;
+                      }
+                    }
+                  },
+                );
+
+                return GridView.builder(
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    childAspectRatio: 1,
+                    crossAxisCount: 2,
+                  ),
+                  itemBuilder: (context, i) {
+                    return PlayerWaitingCard(
+                      scale: 1,
+                      avatarList: avatarList,
+                      playersCount: usersnap.data.documents.length,
+                      borderColor: usersnap.data.documents[i]['hasSelected']
+                          ? Colors.green
+                          : Colors.red,
+                      cardIndex: i,
+                      name: usersnap.data.documents[i]['name'],
+                    );
+                  },
+                  shrinkWrap: true,
+                  itemCount: usersnap.data.documents.length,
                 );
               },
-              shrinkWrap: true,
-              itemCount: usersnap.data.documents.length,
+              stream: Firestore.instance
+                  .collection('rooms')
+                  .document(gameID)
+                  .snapshots(),
             );
           },
           stream: Firestore.instance

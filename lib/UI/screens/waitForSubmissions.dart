@@ -1,10 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:psych/UI/constants.dart';
+import 'package:psych/UI/screens/responseSelection.dart';
 import 'package:psych/UI/services/backPressCall.dart';
 import 'package:psych/UI/services/changeNavigationState.dart';
 import 'package:psych/UI/services/checkForGameEnd.dart';
-import 'package:psych/UI/services/checkForNavigation.dart';
 import 'package:psych/UI/services/listenForGameResult.dart';
 import 'package:psych/UI/widgets/customAppBar.dart';
 import 'package:psych/UI/widgets/playerCard.dart';
@@ -38,18 +39,7 @@ class WaitForSubmissions extends StatelessWidget {
           gameID: gameID,
           playerID: playerID,
         );
-        checkForNavigation(
-          quesCount: quesCount,
-          context: context,
-          gameID: gameID,
-          playerID: playerID,
-          gameMode: gameMode,
-          isAdmin: isAdmin,
-          round: round,
-          currentPage: 'WaitForSubmissions',
-          avatarList: avatarList,
-          playerName: playerName,
-        );
+
         isAdmin
             ? changeNavigationStateToTrue(
                 playerField: 'hasSubmitted',
@@ -78,35 +68,70 @@ class WaitForSubmissions extends StatelessWidget {
             return Scaffold();
           }
 
-          return Scaffold(
-            backgroundColor: primaryColor,
-            appBar: customAppBar(
-              context: context,
-              gameID: gameID,
-              isAdmin: isAdmin,
-              playerID: playerID,
-              title: 'Please wait...',
-            ),
-            body: GridView.builder(
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                childAspectRatio: 1,
-                crossAxisCount: 2,
-              ),
-              itemBuilder: (context, i) {
-                return PlayerWaitingCard(
-                  scale: 1,
-                  avatarList: avatarList,
-                  playersCount: snap.data.documents.length,
-                  borderColor: snap.data.documents[i]['hasSubmitted']
-                      ? Colors.green
-                      : Colors.red,
-                  cardIndex: i,
-                  name: snap.data.documents[i]['name'],
-                );
-              },
-              shrinkWrap: true,
-              itemCount: snap.data.documents.length,
-            ),
+          return StreamBuilder(
+            builder: (context, roomsnap) {
+              if (!roomsnap.hasData) {
+                return Scaffold();
+              }
+              WidgetsBinding.instance.addPostFrameCallback(
+                (_) async {
+                  if (roomsnap.data['isResponseSubmitted'] == true) {
+                    HapticFeedback.vibrate();
+
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (BuildContext newcontext) =>
+                            ResponseSelectionPage(
+                          quesCount: quesCount,
+                          playerID: playerID,
+                          gameID: gameID,
+                          gameMode: gameMode,
+                          isAdmin: isAdmin,
+                          avatarList: avatarList,
+                          round: round,
+                          playerName: playerName,
+                        ),
+                      ),
+                    );
+                  }
+                },
+              );
+              return Scaffold(
+                backgroundColor: primaryColor,
+                appBar: customAppBar(
+                  context: context,
+                  gameID: gameID,
+                  isAdmin: isAdmin,
+                  playerID: playerID,
+                  title: 'Please wait...',
+                ),
+                body: GridView.builder(
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    childAspectRatio: 1,
+                    crossAxisCount: 2,
+                  ),
+                  itemBuilder: (context, i) {
+                    return PlayerWaitingCard(
+                      scale: 1,
+                      avatarList: avatarList,
+                      playersCount: snap.data.documents.length,
+                      borderColor: snap.data.documents[i]['hasSubmitted']
+                          ? Colors.green
+                          : Colors.red,
+                      cardIndex: i,
+                      name: snap.data.documents[i]['name'],
+                    );
+                  },
+                  shrinkWrap: true,
+                  itemCount: snap.data.documents.length,
+                ),
+              );
+            },
+            stream: Firestore.instance
+                .collection('rooms')
+                .document(gameID)
+                .snapshots(),
           );
         },
         stream: Firestore.instance
