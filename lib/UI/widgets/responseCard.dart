@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
 class ResponseCard extends StatelessWidget {
-  ResponseCard({@required this.response});
+  ResponseCard({@required this.response, this.borderColor});
   final String response;
+  Color borderColor = Colors.black.withOpacity(0.4);
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -19,7 +20,10 @@ class ResponseCard extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
         color: Colors.black.withOpacity(0.4),
-        border: Border.all(color: Colors.white, width: 2),
+        border: Border.all(
+          color: borderColor,
+          width: 2,
+        ),
       ),
       padding: EdgeInsets.all(
         MediaQuery.of(context).size.height * 0.03,

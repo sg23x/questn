@@ -149,6 +149,7 @@ class _ResponseSelectionPageState extends State<ResponseSelectionPage> {
                           },
                           child: ResponseCard(
                             response: snap.data.documents[i]['response'],
+                            borderColor: Colors.white,
                           ),
                         );
                       },
