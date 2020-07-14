@@ -36,9 +36,11 @@ class ResponseSelectionPage extends StatefulWidget {
 
 class _ResponseSelectionPageState extends State<ResponseSelectionPage> {
   bool abc = true;
+  bool shuff = true;
 
   @override
   Widget build(BuildContext context) {
+    List responses = [];
     WidgetsBinding.instance.addPostFrameCallback(
       (_) async {
         checkForGameEnd(
@@ -87,6 +89,13 @@ class _ResponseSelectionPageState extends State<ResponseSelectionPage> {
                 return SizedBox();
               }
 
+              if (shuff) {
+                responses.addAll(snap.data.documents);
+                responses.shuffle();
+                print(responses);
+                shuff = false;
+              }
+
               return Column(
                 children: <Widget>[
                   StreamBuilder(
@@ -105,12 +114,11 @@ class _ResponseSelectionPageState extends State<ResponseSelectionPage> {
                   Expanded(
                     child: ListView.builder(
                       shrinkWrap: true,
-                      itemCount: snap.data.documents.length,
+                      itemCount: responses.length,
                       itemBuilder: (context, i) {
                         return GestureDetector(
                           onTap: () {
-                            if (widget.playerID !=
-                                snap.data.documents[i].documentID) {
+                            if (widget.playerID != responses[i].documentID) {
                               Firestore.instance
                                   .collection('rooms')
                                   .document(widget.gameID)
@@ -118,8 +126,7 @@ class _ResponseSelectionPageState extends State<ResponseSelectionPage> {
                                   .document(widget.playerID)
                                   .updateData(
                                 {
-                                  'selection':
-                                      snap.data.documents[i].documentID,
+                                  'selection': responses[i].documentID,
                                   'hasSelected': true,
                                 },
                               );
@@ -148,7 +155,7 @@ class _ResponseSelectionPageState extends State<ResponseSelectionPage> {
                             }
                           },
                           child: ResponseCard(
-                            response: snap.data.documents[i]['response'],
+                            response: responses[i]['response'],
                             borderColor: Colors.white,
                           ),
                         );
