@@ -20,6 +20,8 @@ class ResponseSelectionPage extends StatefulWidget {
     @required this.avatarList,
     @required this.round,
     @required this.playerName,
+    @required this.roomStream,
+    @required this.userStream,
   });
   final String gameID;
   final String playerID;
@@ -29,6 +31,8 @@ class ResponseSelectionPage extends StatefulWidget {
   final List avatarList;
   final int round;
   final String playerName;
+  final Stream roomStream;
+  final Stream userStream;
 
   @override
   _ResponseSelectionPageState createState() => _ResponseSelectionPageState();
@@ -92,7 +96,6 @@ class _ResponseSelectionPageState extends State<ResponseSelectionPage> {
               if (shuff) {
                 responses.addAll(snap.data.documents);
                 responses.shuffle();
-                print(responses);
                 shuff = false;
               }
 
@@ -106,10 +109,7 @@ class _ResponseSelectionPageState extends State<ResponseSelectionPage> {
                             : '',
                       );
                     },
-                    stream: Firestore.instance
-                        .collection('rooms')
-                        .document(widget.gameID)
-                        .snapshots(),
+                    stream: widget.roomStream,
                   ),
                   Expanded(
                     child: ListView.builder(
@@ -144,6 +144,8 @@ class _ResponseSelectionPageState extends State<ResponseSelectionPage> {
                                     avatarList: widget.avatarList,
                                     round: widget.round,
                                     playerName: widget.playerName,
+                                    roomStream: widget.roomStream,
+                                    userStream: widget.userStream,
                                   ),
                                 ),
                               );
@@ -165,11 +167,7 @@ class _ResponseSelectionPageState extends State<ResponseSelectionPage> {
                 ],
               );
             },
-            stream: Firestore.instance
-                .collection('rooms')
-                .document(widget.gameID)
-                .collection('users')
-                .snapshots(),
+            stream: widget.userStream,
           ),
         ),
       ),

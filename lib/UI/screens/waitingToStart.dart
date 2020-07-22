@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -43,6 +45,29 @@ class _WaitingToStartState extends State<WaitingToStart> {
   ];
   int round;
   bool abc = true;
+  Stream roomStream;
+  Stream userStream;
+  StreamController cont1 = StreamController.broadcast();
+  StreamController cont2 = StreamController.broadcast();
+
+  @override
+  void initState() {
+    roomStream = Firestore.instance
+        .collection('rooms')
+        .document(widget.gameID)
+        .snapshots()
+        .asBroadcastStream();
+    userStream = Firestore.instance
+        .collection('rooms')
+        .document(widget.gameID)
+        .collection('users')
+        .orderBy('timestamp')
+        .snapshots();
+
+    cont1.addStream(roomStream);
+    cont2.addStream(userStream);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -89,6 +114,8 @@ class _WaitingToStartState extends State<WaitingToStart> {
                   FlatButton(
                     onPressed: () {
                       Navigator.of(context).pop(false);
+                      print(cont1.stream);
+                      print(cont2.stream);
                     },
                     child: Text(
                       "NO",
@@ -151,13 +178,17 @@ class _WaitingToStartState extends State<WaitingToStart> {
       child: StreamBuilder(
         builder: (context, snap) {
           if (!snap.hasData) {
-            return Scaffold();
+            return Scaffold(
+              backgroundColor: Colors.pink,
+            );
           }
 
           return StreamBuilder(
             builder: (context, roomsnap) {
               if (!roomsnap.hasData) {
-                return Scaffold();
+                return Scaffold(
+                  backgroundColor: Colors.green,
+                );
               }
 
               WidgetsBinding.instance.addPostFrameCallback(
@@ -177,6 +208,8 @@ class _WaitingToStartState extends State<WaitingToStart> {
                           avatarList: avatarList,
                           round: round,
                           playerName: widget.playerName,
+                          roomStream: roomStream,
+                          userStream: userStream,
                         ),
                       ),
                     );
@@ -263,18 +296,10 @@ class _WaitingToStartState extends State<WaitingToStart> {
                 ),
               );
             },
-            stream: Firestore.instance
-                .collection('rooms')
-                .document(widget.gameID)
-                .snapshots(),
+            stream: roomStream,
           );
         },
-        stream: Firestore.instance
-            .collection('rooms')
-            .document(widget.gameID)
-            .collection('users')
-            .orderBy('timestamp')
-            .snapshots(),
+        stream: userStream,
       ),
     );
   }

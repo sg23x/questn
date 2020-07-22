@@ -19,6 +19,8 @@ class QuestionsPage extends StatefulWidget {
     @required this.avatarList,
     @required this.round,
     @required this.playerName,
+    @required this.roomStream,
+    @required this.userStream,
   });
   final String playerID;
   final String gameID;
@@ -28,6 +30,8 @@ class QuestionsPage extends StatefulWidget {
   final List avatarList;
   final int round;
   final String playerName;
+  final Stream roomStream;
+  final Stream userStream;
 
   @override
   _QuestionsPageState createState() => _QuestionsPageState();
@@ -119,10 +123,7 @@ class _QuestionsPageState extends State<QuestionsPage> {
                     question: snap.data['currentQuestion'],
                   );
                 },
-                stream: Firestore.instance
-                    .collection('rooms')
-                    .document(widget.gameID)
-                    .snapshots(),
+                stream: widget.roomStream,
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -176,6 +177,8 @@ class _QuestionsPageState extends State<QuestionsPage> {
                                       avatarList: widget.avatarList,
                                       round: widget.round,
                                       playerName: widget.playerName,
+                                      roomStream: widget.roomStream,
+                                      userStream: widget.userStream,
                                     ),
                                   ),
                                 )
@@ -276,6 +279,8 @@ class _QuestionsPageState extends State<QuestionsPage> {
                               avatarList: widget.avatarList,
                               round: widget.round,
                               playerName: widget.playerName,
+                              roomStream: widget.roomStream,
+                              userStream: widget.userStream,
                             ),
                           ),
                         );

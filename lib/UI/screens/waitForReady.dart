@@ -23,6 +23,8 @@ class WaitForReady extends StatefulWidget {
     @required this.avatarList,
     @required this.round,
     @required this.playerName,
+    @required this.roomStream,
+    @required this.userStream,
   });
   final String gameID;
   final String playerID;
@@ -32,6 +34,8 @@ class WaitForReady extends StatefulWidget {
   final List avatarList;
   final int round;
   final String playerName;
+  final Stream roomStream;
+  final Stream userStream;
 
   @override
   _WaitForReadyState createState() => _WaitForReadyState();
@@ -111,370 +115,376 @@ class _WaitForReadyState extends State<WaitForReady> {
         playerID: widget.playerID,
       ),
       child: StreamBuilder(
-        stream: Firestore.instance
-            .collection('rooms')
-            .document(widget.gameID)
-            .collection('users')
-            .snapshots(),
+        stream: widget.userStream,
         builder: (context, snappp) {
           if (!snappp.hasData) {
             return Scaffold();
           }
           return StreamBuilder(
-            builder: (context, roomsnap) {
-              if (!roomsnap.hasData) {
-                return Scaffold();
-              }
+              builder: (context, roomsnap) {
+                if (!roomsnap.hasData) {
+                  return Scaffold();
+                }
 
-              WidgetsBinding.instance.addPostFrameCallback(
-                (_) async {
-                  if (roomsnap.data['isReady'] == true && xyz) {
-                    HapticFeedback.vibrate();
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (BuildContext newcontext) => QuestionsPage(
-                          quesCount: widget.quesCount,
-                          playerID: widget.playerID,
-                          gameID: widget.gameID,
-                          gameMode: widget.gameMode,
-                          isAdmin: widget.isAdmin,
-                          avatarList: widget.avatarList,
-                          round: widget.round - 1,
-                          playerName: widget.playerName,
+                WidgetsBinding.instance.addPostFrameCallback(
+                  (_) async {
+                    if (roomsnap.data['isReady'] == true && xyz) {
+                      HapticFeedback.vibrate();
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (BuildContext newcontext) => QuestionsPage(
+                            quesCount: widget.quesCount,
+                            playerID: widget.playerID,
+                            gameID: widget.gameID,
+                            gameMode: widget.gameMode,
+                            isAdmin: widget.isAdmin,
+                            avatarList: widget.avatarList,
+                            round: widget.round - 1,
+                            playerName: widget.playerName,
+                            roomStream: widget.roomStream,
+                            userStream: widget.userStream,
+                          ),
                         ),
-                      ),
-                    );
-                    xyz = false;
-                  }
-                },
-              );
+                      );
+                      xyz = false;
+                    }
+                  },
+                );
 
-              return AbsorbPointer(
-                absorbing: widget.round == 0 ? true : false,
-                child: Scaffold(
-                  appBar: customAppBar(
-                    context: context,
-                    gameID: widget.gameID,
-                    isAdmin: widget.isAdmin,
-                    playerID: widget.playerID,
-                    title: 'Rounds left: ' + widget.round.toString(),
-                  ),
-                  body: Container(
-                    decoration: BoxDecoration(
-                      color: primaryColor,
+                return AbsorbPointer(
+                  absorbing: widget.round == 0 ? true : false,
+                  child: Scaffold(
+                    appBar: customAppBar(
+                      context: context,
+                      gameID: widget.gameID,
+                      isAdmin: widget.isAdmin,
+                      playerID: widget.playerID,
+                      title: 'Rounds left: ' + widget.round.toString(),
                     ),
-                    child: Stack(
-                      children: [
-                        ListView(
-                          children: <Widget>[
-                            SizedBox(
-                              height: MediaQuery.of(context).size.height * 0.02,
-                            ),
-                            snappp.data.documents
-                                        .where(
-                                          (x) =>
-                                              x['selection'] == widget.playerID,
-                                        )
-                                        .toList()
-                                        .length !=
-                                    0
-                                ? Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: <Widget>[
-                                      Text(
-                                        "Players who chose your answer:",
-                                        style: TextStyle(
-                                          fontSize: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.047,
-                                          color: Colors.white,
-                                          fontFamily: 'Gotham-Book',
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ],
-                                  )
-                                : SizedBox(),
-                            snappp.data.documents
-                                        .where(
-                                          (x) =>
-                                              x['selection'] == widget.playerID,
-                                        )
-                                        .toList()
-                                        .length !=
-                                    0
-                                ? Container(
-                                    height: MediaQuery.of(context).size.height *
-                                        0.28,
-                                    child: ListView.builder(
-                                      scrollDirection: Axis.horizontal,
-                                      itemBuilder: (context, i) {
-                                        return PlayerWaitingCard(
-                                            scale: 0.8,
-                                            name: snappp.data.documents
-                                                .where((x) =>
-                                                    x['selection'] ==
-                                                    widget.playerID)
-                                                .toList()[i]['name'],
-                                            cardIndex: i,
-                                            borderColor: secondaryColor,
-                                            playersCount:
-                                                snappp.data.documents.length,
-                                            avatarList: widget.avatarList);
-                                      },
-                                      itemCount: snappp.data.documents
+                    body: Container(
+                      decoration: BoxDecoration(
+                        color: primaryColor,
+                      ),
+                      child: Stack(
+                        children: [
+                          ListView(
+                            children: <Widget>[
+                              SizedBox(
+                                height:
+                                    MediaQuery.of(context).size.height * 0.02,
+                              ),
+                              snappp.data.documents
                                           .where(
                                             (x) =>
                                                 x['selection'] ==
                                                 widget.playerID,
                                           )
                                           .toList()
-                                          .length,
-                                      shrinkWrap: true,
-                                    ),
-                                  )
-                                : SizedBox(),
-                            Row(
-                              children: <Widget>[
-                                Text(
-                                  "TIMES SELECTED:",
-                                  style: TextStyle(
-                                    fontSize:
-                                        MediaQuery.of(context).size.width *
-                                            0.055,
-                                    color: Colors.white,
-                                    fontFamily: 'Gotham-Book',
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ],
-                              mainAxisAlignment: MainAxisAlignment.center,
-                            ),
-                            ListView.builder(
-                              physics: NeverScrollableScrollPhysics(),
-                              itemBuilder: (context, i) {
-                                return Row(
-                                  children: [
-                                    Container(
-                                      width: MediaQuery.of(context).size.width *
-                                          0.85,
-                                      child: ResponseCard(
-                                        response: snappp.data.documents[i]
-                                            ['response'],
-                                        borderColor: Colors.white,
-                                      ),
-                                    ),
-                                    Expanded(
-                                      child: Container(
-                                        margin: EdgeInsets.only(
-                                          right: MediaQuery.of(context)
-                                                  .size
-                                                  .height *
-                                              0.02,
+                                          .length !=
+                                      0
+                                  ? Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: <Widget>[
+                                        Text(
+                                          "Players who chose your answer:",
+                                          style: TextStyle(
+                                            fontSize: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.047,
+                                            color: Colors.white,
+                                            fontFamily: 'Gotham-Book',
+                                            fontWeight: FontWeight.bold,
+                                          ),
                                         ),
-                                        child: Center(
-                                          child: Text(
-                                            snappp.data.documents
-                                                .where(
-                                                  (x) =>
+                                      ],
+                                    )
+                                  : SizedBox(),
+                              snappp.data.documents
+                                          .where(
+                                            (x) =>
+                                                x['selection'] ==
+                                                widget.playerID,
+                                          )
+                                          .toList()
+                                          .length !=
+                                      0
+                                  ? Container(
+                                      height:
+                                          MediaQuery.of(context).size.height *
+                                              0.28,
+                                      child: ListView.builder(
+                                        scrollDirection: Axis.horizontal,
+                                        itemBuilder: (context, i) {
+                                          return PlayerWaitingCard(
+                                              scale: 0.8,
+                                              name: snappp.data.documents
+                                                  .where((x) =>
                                                       x['selection'] ==
-                                                      snappp.data.documents[i]
-                                                          .documentID,
-                                                )
-                                                .toList()
-                                                .length
-                                                .toString(),
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontFamily: 'Gotham-Book',
-                                                fontSize: MediaQuery.of(context)
-                                                        .size
-                                                        .width *
-                                                    0.082),
-                                          ),
-                                        ),
+                                                      widget.playerID)
+                                                  .toList()[i]['name'],
+                                              cardIndex: i,
+                                              borderColor: secondaryColor,
+                                              playersCount:
+                                                  snappp.data.documents.length,
+                                              avatarList: widget.avatarList);
+                                        },
+                                        itemCount: snappp.data.documents
+                                            .where(
+                                              (x) =>
+                                                  x['selection'] ==
+                                                  widget.playerID,
+                                            )
+                                            .toList()
+                                            .length,
+                                        shrinkWrap: true,
                                       ),
-                                    ),
-                                  ],
-                                );
-                              },
-                              shrinkWrap: true,
-                              itemCount: snappp.data.documents.length,
-                            ),
-                            SizedBox(
-                              height: MediaQuery.of(context).size.height * 0.03,
-                            ),
-                            Row(
-                              children: <Widget>[
-                                Text(
-                                  "SCORE:",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontFamily: 'Gotham-Book',
-                                    fontWeight: FontWeight.bold,
-                                    fontSize:
-                                        MediaQuery.of(context).size.width *
-                                            0.055,
-                                  ),
-                                ),
-                              ],
-                              mainAxisAlignment: MainAxisAlignment.center,
-                            ),
-                            ListView.builder(
-                              physics: NeverScrollableScrollPhysics(),
-                              itemBuilder: (context, ind) {
-                                return Row(
-                                  children: [
-                                    Container(
-                                      width: MediaQuery.of(context).size.width *
-                                          0.75,
-                                      child: ResponseCard(
-                                        response: snappp.data.documents[ind]
-                                            ['name'],
-                                        borderColor: snappp.data.documents[ind]
-                                                ['isReady']
-                                            ? Colors.green
-                                            : Colors.red,
-                                      ),
-                                    ),
-                                    Expanded(
-                                      child: Container(
-                                        margin: EdgeInsets.only(
-                                          right: MediaQuery.of(context)
-                                                  .size
-                                                  .height *
-                                              0.02,
-                                        ),
-                                        child: Center(
-                                          child: Column(
-                                            children: [
-                                              Text(
-                                                snappp.data
-                                                    .documents[ind]['score']
-                                                    .toString(),
-                                                style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontFamily: 'Gotham-Book',
-                                                    fontSize:
-                                                        MediaQuery.of(context)
-                                                                .size
-                                                                .width *
-                                                            0.082),
-                                              ),
-                                              SizedBox(
-                                                height: MediaQuery.of(context)
-                                                        .size
-                                                        .height *
-                                                    0.008,
-                                              ),
-                                              Text(
-                                                '(+' +
-                                                    snappp.data.documents
-                                                        .where(
-                                                          (x) =>
-                                                              x['selection'] ==
-                                                              snappp
-                                                                  .data
-                                                                  .documents[
-                                                                      ind]
-                                                                  .documentID,
-                                                        )
-                                                        .toList()
-                                                        .length
-                                                        .toString() +
-                                                    ')',
-                                                style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontFamily: 'Gotham-Book',
-                                                    fontSize:
-                                                        MediaQuery.of(context)
-                                                                .size
-                                                                .width *
-                                                            0.052),
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                );
-                              },
-                              itemCount: snappp.data.documents.length,
-                              shrinkWrap: true,
-                            ),
-                            SizedBox(
-                              height: MediaQuery.of(context).size.height * 0.11,
-                            ),
-                          ],
-                        ),
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            GestureDetector(
-                              child: Container(
-                                height:
-                                    MediaQuery.of(context).size.height * 0.09,
-                                color: Colors.black.withOpacity(0.8),
-                                child: Center(
-                                  child: Text(
-                                    isReadyButtonEnabled
-                                        ? 'R E A D Y ?'
-                                        : 'waiting for others..',
+                                    )
+                                  : SizedBox(),
+                              Row(
+                                children: <Widget>[
+                                  Text(
+                                    "TIMES SELECTED:",
                                     style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: isReadyButtonEnabled
-                                          ? FontWeight.bold
-                                          : FontWeight.normal,
-                                      backgroundColor: Colors.black,
-                                      fontFamily: 'Gotham-Book',
                                       fontSize:
                                           MediaQuery.of(context).size.width *
-                                              0.07,
+                                              0.055,
+                                      color: Colors.white,
+                                      fontFamily: 'Gotham-Book',
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                                mainAxisAlignment: MainAxisAlignment.center,
+                              ),
+                              ListView.builder(
+                                physics: NeverScrollableScrollPhysics(),
+                                itemBuilder: (context, i) {
+                                  return Row(
+                                    children: [
+                                      Container(
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.85,
+                                        child: ResponseCard(
+                                          response: snappp.data.documents[i]
+                                              ['response'],
+                                          borderColor: Colors.white,
+                                        ),
+                                      ),
+                                      Expanded(
+                                        child: Container(
+                                          margin: EdgeInsets.only(
+                                            right: MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                0.02,
+                                          ),
+                                          child: Center(
+                                            child: Text(
+                                              snappp.data.documents
+                                                  .where(
+                                                    (x) =>
+                                                        x['selection'] ==
+                                                        snappp.data.documents[i]
+                                                            .documentID,
+                                                  )
+                                                  .toList()
+                                                  .length
+                                                  .toString(),
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontFamily: 'Gotham-Book',
+                                                  fontSize:
+                                                      MediaQuery.of(context)
+                                                              .size
+                                                              .width *
+                                                          0.082),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  );
+                                },
+                                shrinkWrap: true,
+                                itemCount: snappp.data.documents.length,
+                              ),
+                              SizedBox(
+                                height:
+                                    MediaQuery.of(context).size.height * 0.03,
+                              ),
+                              Row(
+                                children: <Widget>[
+                                  Text(
+                                    "SCORE:",
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontFamily: 'Gotham-Book',
+                                      fontWeight: FontWeight.bold,
+                                      fontSize:
+                                          MediaQuery.of(context).size.width *
+                                              0.055,
+                                    ),
+                                  ),
+                                ],
+                                mainAxisAlignment: MainAxisAlignment.center,
+                              ),
+                              ListView.builder(
+                                physics: NeverScrollableScrollPhysics(),
+                                itemBuilder: (context, ind) {
+                                  return Row(
+                                    children: [
+                                      Container(
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.75,
+                                        child: ResponseCard(
+                                          response: snappp.data.documents[ind]
+                                              ['name'],
+                                          borderColor: snappp.data
+                                                  .documents[ind]['isReady']
+                                              ? Colors.green
+                                              : Colors.red,
+                                        ),
+                                      ),
+                                      Expanded(
+                                        child: Container(
+                                          margin: EdgeInsets.only(
+                                            right: MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                0.02,
+                                          ),
+                                          child: Center(
+                                            child: Column(
+                                              children: [
+                                                Text(
+                                                  snappp.data
+                                                      .documents[ind]['score']
+                                                      .toString(),
+                                                  style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontFamily: 'Gotham-Book',
+                                                      fontSize:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .width *
+                                                              0.082),
+                                                ),
+                                                SizedBox(
+                                                  height: MediaQuery.of(context)
+                                                          .size
+                                                          .height *
+                                                      0.008,
+                                                ),
+                                                Text(
+                                                  '(+' +
+                                                      snappp.data.documents
+                                                          .where(
+                                                            (x) =>
+                                                                x['selection'] ==
+                                                                snappp
+                                                                    .data
+                                                                    .documents[
+                                                                        ind]
+                                                                    .documentID,
+                                                          )
+                                                          .toList()
+                                                          .length
+                                                          .toString() +
+                                                      ')',
+                                                  style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontFamily: 'Gotham-Book',
+                                                      fontSize:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .width *
+                                                              0.052),
+                                                )
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  );
+                                },
+                                itemCount: snappp.data.documents.length,
+                                shrinkWrap: true,
+                              ),
+                              SizedBox(
+                                height:
+                                    MediaQuery.of(context).size.height * 0.11,
+                              ),
+                            ],
+                          ),
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              GestureDetector(
+                                child: Container(
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.09,
+                                  color: Colors.black.withOpacity(0.8),
+                                  child: Center(
+                                    child: Text(
+                                      isReadyButtonEnabled
+                                          ? 'R E A D Y ?'
+                                          : 'waiting for others..',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: isReadyButtonEnabled
+                                            ? FontWeight.bold
+                                            : FontWeight.normal,
+                                        backgroundColor: Colors.black,
+                                        fontFamily: 'Gotham-Book',
+                                        fontSize:
+                                            MediaQuery.of(context).size.width *
+                                                0.07,
+                                      ),
                                     ),
                                   ),
                                 ),
+                                onTap: isReadyButtonEnabled
+                                    ? () {
+                                        setState(
+                                          () {
+                                            isReadyButtonEnabled = false;
+                                          },
+                                        );
+                                        widget.isAdmin
+                                            ? fetchQues(snappp)
+                                            : null;
+
+                                        Firestore.instance
+                                            .collection('rooms')
+                                            .document(widget.gameID)
+                                            .collection('users')
+                                            .document(widget.playerID)
+                                            .updateData(
+                                          {
+                                            'hasSelected': false,
+                                            'hasSubmitted': false,
+                                          },
+                                        );
+
+                                        changeReadyStateToTrue();
+                                      }
+                                    : null,
                               ),
-                              onTap: isReadyButtonEnabled
-                                  ? () {
-                                      setState(
-                                        () {
-                                          isReadyButtonEnabled = false;
-                                        },
-                                      );
-                                      widget.isAdmin ? fetchQues(snappp) : null;
-
-                                      Firestore.instance
-                                          .collection('rooms')
-                                          .document(widget.gameID)
-                                          .collection('users')
-                                          .document(widget.playerID)
-                                          .updateData(
-                                        {
-                                          'hasSelected': false,
-                                          'hasSubmitted': false,
-                                        },
-                                      );
-
-                                      changeReadyStateToTrue();
-                                    }
-                                  : null,
-                            ),
-                          ],
-                        ),
-                      ],
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              );
-            },
-            stream: Firestore.instance
-                .collection('rooms')
-                .document(widget.gameID)
-                .snapshots(),
-          );
+                );
+              },
+              stream: widget.roomStream);
         },
       ),
     );

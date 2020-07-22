@@ -20,6 +20,8 @@ class WaitForSubmissions extends StatelessWidget {
     @required this.avatarList,
     @required this.round,
     @required this.playerName,
+    @required this.roomStream,
+    @required this.userStream,
   });
   final String gameID;
   final String playerID;
@@ -29,6 +31,8 @@ class WaitForSubmissions extends StatelessWidget {
   final List avatarList;
   final int round;
   final String playerName;
+  final Stream roomStream;
+  final Stream userStream;
   bool abc = true;
   @override
   Widget build(BuildContext context) {
@@ -65,13 +69,17 @@ class WaitForSubmissions extends StatelessWidget {
       child: StreamBuilder(
         builder: (context, snap) {
           if (!snap.hasData) {
-            return Scaffold();
+            return Scaffold(
+              backgroundColor: Colors.pink,
+            );
           }
 
           return StreamBuilder(
             builder: (context, roomsnap) {
               if (!roomsnap.hasData) {
-                return Scaffold();
+                return Scaffold(
+                  backgroundColor: Colors.green,
+                );
               }
               WidgetsBinding.instance.addPostFrameCallback(
                 (_) async {
@@ -91,6 +99,8 @@ class WaitForSubmissions extends StatelessWidget {
                           avatarList: avatarList,
                           round: round,
                           playerName: playerName,
+                          roomStream: roomStream,
+                          userStream: userStream,
                         ),
                       ),
                     );
@@ -128,18 +138,10 @@ class WaitForSubmissions extends StatelessWidget {
                 ),
               );
             },
-            stream: Firestore.instance
-                .collection('rooms')
-                .document(gameID)
-                .snapshots(),
+            stream: roomStream,
           );
         },
-        stream: Firestore.instance
-            .collection('rooms')
-            .document(gameID)
-            .collection('users')
-            .orderBy('timestamp')
-            .snapshots(),
+        stream: userStream,
       ),
     );
   }

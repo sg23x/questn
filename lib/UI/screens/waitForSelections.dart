@@ -20,6 +20,8 @@ class WaitForSelectionsPage extends StatelessWidget {
     @required this.avatarList,
     @required this.round,
     @required this.playerName,
+    @required this.roomStream,
+    @required this.userStream,
   });
   final String playerID;
   final String gameID;
@@ -29,6 +31,8 @@ class WaitForSelectionsPage extends StatelessWidget {
   final List avatarList;
   final int round;
   final String playerName;
+  final Stream roomStream;
+  final Stream userStream;
   bool abc = true;
 
   @override
@@ -125,6 +129,8 @@ class WaitForSelectionsPage extends StatelessWidget {
                               avatarList: avatarList,
                               round: round,
                               playerName: playerName,
+                              roomStream: roomStream,
+                              userStream: userStream,
                             ),
                           ),
                         );
@@ -155,18 +161,10 @@ class WaitForSelectionsPage extends StatelessWidget {
                   itemCount: usersnap.data.documents.length,
                 );
               },
-              stream: Firestore.instance
-                  .collection('rooms')
-                  .document(gameID)
-                  .snapshots(),
+              stream: roomStream,
             );
           },
-          stream: Firestore.instance
-              .collection('rooms')
-              .document(gameID)
-              .collection('users')
-              .orderBy('timestamp')
-              .snapshots(),
+          stream: userStream,
         ),
       ),
     );
