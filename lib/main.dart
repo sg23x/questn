@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:psych/UI/screens/nameInput.dart';
+import 'package:questn/UI/screens/nameInput.dart';
 
 main() {
   WidgetsFlutterBinding.ensureInitialized();

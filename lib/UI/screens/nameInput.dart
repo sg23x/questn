@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:psych/UI/constants.dart';
-import 'package:psych/UI/screens/gameSelection.dart';
+import 'package:questn/UI/constants.dart';
+import 'package:questn/UI/screens/gameSelection.dart';
 import 'package:double_back_to_close_app/double_back_to_close_app.dart';
 
 class NameInputPage extends StatefulWidget {

@@ -1,14 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:psych/UI/constants.dart';
-import 'package:psych/UI/services/backPressCall.dart';
-import 'package:psych/UI/services/checkForGameEnd.dart';
-import 'package:psych/UI/screens/waitForSelections.dart';
-import 'package:psych/UI/services/listenForGameResult.dart';
-import 'package:psych/UI/widgets/customAppBar.dart';
-import 'package:psych/UI/widgets/errorAlertDialog.dart';
-import 'package:psych/UI/widgets/questionCard.dart';
-import 'package:psych/UI/widgets/responseCard.dart';
+import 'package:questn/UI/constants.dart';
+import 'package:questn/UI/services/backPressCall.dart';
+import 'package:questn/UI/services/checkForGameEnd.dart';
+import 'package:questn/UI/screens/waitForSelections.dart';
+import 'package:questn/UI/services/listenForGameResult.dart';
+import 'package:questn/UI/widgets/customAppBar.dart';
+import 'package:questn/UI/widgets/errorAlertDialog.dart';
+import 'package:questn/UI/widgets/questionCard.dart';
+import 'package:questn/UI/widgets/responseCard.dart';
 
 class ResponseSelectionPage extends StatefulWidget {
   ResponseSelectionPage({

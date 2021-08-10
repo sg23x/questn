@@ -2,13 +2,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
-import 'package:psych/UI/constants.dart';
-import 'package:psych/UI/screens/questionsPage.dart';
-import 'package:psych/UI/services/checkForGameEnd.dart';
-import 'package:psych/UI/services/deletePlayer.dart';
-import 'package:psych/UI/widgets/customAppBar.dart';
-import 'package:psych/UI/widgets/playerCard.dart';
-import 'package:psych/UI/widgets/startTheGameButton.dart';
+import 'package:questn/UI/constants.dart';
+import 'package:questn/UI/screens/questionsPage.dart';
+import 'package:questn/UI/services/checkForGameEnd.dart';
+import 'package:questn/UI/services/deletePlayer.dart';
+import 'package:questn/UI/widgets/customAppBar.dart';
+import 'package:questn/UI/widgets/playerCard.dart';
+import 'package:questn/UI/widgets/startTheGameButton.dart';
 
 class WaitingToStart extends StatefulWidget {
   WaitingToStart({

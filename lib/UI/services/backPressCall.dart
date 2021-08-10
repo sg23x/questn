@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:psych/UI/constants.dart';
-import 'package:psych/UI/services/deletePlayer.dart';
+import 'package:questn/UI/constants.dart';
+import 'package:questn/UI/services/deletePlayer.dart';
 
 Future<bool> onBackPressed({
   context,

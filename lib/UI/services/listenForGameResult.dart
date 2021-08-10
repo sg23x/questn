@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:psych/UI/constants.dart';
-import 'package:psych/UI/screens/gameSelection.dart';
+import 'package:questn/UI/constants.dart';
+import 'package:questn/UI/screens/gameSelection.dart';
 
 void listenForGameResult({
   @required gameID,

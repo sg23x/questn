@@ -1,4 +1,4 @@
-package soumyagupta2307.psych
+package soumyagupta2307.questn
 
 import androidx.annotation.NonNull;
 import io.flutter.embedding.android.FlutterActivity

@@ -8,9 +8,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:84423144967:android:92658d3afacb7362f5dca2",
+        "mobilesdk_app_id": "1:84423144967:android:b8466f994c38f2e0f5dca2",
         "android_client_info": {
-          "package_name": "soumyagupta2307.psych"
+          "package_name": "soumyagupta2307.questn"
         }
       },
       "oauth_client": [
@@ -30,6 +30,13 @@
             {
               "client_id": "84423144967-5cr3db4m3jv6m175g6fholactk5880dn.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "84423144967-a6c3kskc44nr39e5tbo41mjhh59rirhg.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "soumyagupta2307-gmail.com.psych"
+              }
             }
           ]
         }

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:psych/UI/constants.dart';
+import 'package:questn/UI/constants.dart';
 
 gameEndedAlert({@required context}) {
   return showDialog(

@@ -1,11 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:psych/UI/constants.dart';
-import 'package:psych/UI/screens/waitingToStart.dart';
+import 'package:questn/UI/constants.dart';
+import 'package:questn/UI/screens/waitingToStart.dart';
 import 'dart:math';
 import 'package:firebase_admob/firebase_admob.dart';
-import 'package:psych/UI/widgets/customProgressIndicator.dart';
+import 'package:questn/UI/widgets/customProgressIndicator.dart';
 
 class StartAGameButton extends StatefulWidget {
   StartAGameButton({

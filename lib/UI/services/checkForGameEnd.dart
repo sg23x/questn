@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:psych/UI/screens/nameInput.dart';
-import 'package:psych/UI/widgets/gameEndedAlert.dart';
+import 'package:questn/UI/screens/nameInput.dart';
+import 'package:questn/UI/widgets/gameEndedAlert.dart';
 
 checkForGameEnd({
   gameID,
