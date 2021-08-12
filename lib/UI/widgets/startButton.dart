@@ -28,7 +28,7 @@ class _StartAGameButtonState extends State<StartAGameButton> {
 
   @override
   void initState() {
-    rounds = 10;
+    rounds = 5;
     roundsSelected = false;
     gameID = '';
     adCloseChecker = true;
@@ -142,7 +142,7 @@ class _StartAGameButtonState extends State<StartAGameButton> {
         ),
       );
       setState(() {
-        rounds = 10;
+        rounds = 5;
       });
     }
 
@@ -576,7 +576,7 @@ class _StartAGameButtonState extends State<StartAGameButton> {
                                   ).then((value) {
                                     if (!roundsSelected) {
                                       setState(() {
-                                        rounds = 10;
+                                        rounds = 5;
                                       });
                                     }
                                   });
